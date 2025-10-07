@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sofía Ramos - Colorimetría Profesional</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --gold: #D4AF37;
+            --gold-light: #F4E5C3;
+            --gold-dark: #AA8A2E;
+            --black: #0A0A0A;
+            --gray-dark: #1A1A1A;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--black);
+            color: #fff;
+            overflow-x: hidden;
+        }
+        
+        .cormorant {
+            font-family: 'Cormorant Garamond', serif;
+        }
+        
+        /* Hero Video Background */
+        .hero-section {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        #heroVideo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            object-fit: cover;
+        }
+        
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(212,175,55,0.2) 50%, rgba(0,0,0,0.8) 100%);
+            z-index: 2;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        /* Profile Image with Glow Effect */
+        .profile-container {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            margin: 0 auto 2rem;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .profile-ring {
+            position: absolute;
+            inset: -10px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light), var(--gold));
+            padding: 3px;
+            animation: rotate 8s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .profile-ring::before {
+            content: '';
+            position: absolute;
+            inset: -20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), transparent, var(--gold));
+            filter: blur(20px);
+            opacity: 0.8;
+            animation: pulse 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+        
+        .profile-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            background: var(--black);
+        }
+        
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        
+        .profile-glow {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212,175,55,0.3) 0%, transparent 70%);
+            animation: glow-move 4s ease-in-out infinite;
+        }
+        
+        @keyframes glow-move {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(10px, 10px); }
+        }
+        
+        /* Custom File Input */
+        .file-input-container {
+            position: relative;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+        
+        .file-input-label {
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            color: var(--black);
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .file-input-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(212,175,55,0.5);
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        /* Gradient Text */
+        .gradient-gold {
+            background: linear-gradient(135deg, #D4AF37 0%, #F4E5C3 50%, #D4AF37 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% auto;
+            animation: shine 3s linear infinite;
+        }
+        
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+        
+        /* Navigation */
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 999;
+            padding: 1.2rem 0;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-bar.scrolled {
+            padding: 0.8rem 0;
+            background: rgba(10, 10, 10, 0.98);
+            box-shadow: 0 5px 30px rgba(212,175,55,0.1);
+        }
+        
+        .nav-bar a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 1.5rem;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 500;
+            position: relative;
+        }
+        
+        .nav-bar a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--gold), var(--gold-light));
+            transition: width 0.3s ease;
+        }
+        
+        .nav-bar a:hover::after {
+            width: 100%;
+        }
+        
+        .nav-bar a:hover {
+            color: var(--gold);
+        }
+        
+        /* Glass Card Effect */
+        .glass-card {
+            background: rgba(26, 26, 26, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 20px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212,175,55,0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .glass-card:hover::before {
+            left: 100%;
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--gold);
+            box-shadow: 0 20px 60px rgba(212, 175, 55, 0.3);
+        }
+        
+        /* Button Styles */
+        .btn-gold {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 50%, var(--gold) 100%);
+            background-size: 200% auto;
+            color: var(--black);
+            font-weight: 700;
+            padding: 1.2rem 3rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-gold::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn-gold:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .btn-gold:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.5);
+            background-position: right center;
+        }
+        
+        /* Gallery with Modern Grid */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            height: 350px;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.2) rotate(2deg);
+        }
+        
+        .gallery-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(212,175,55,0.95), rgba(0,0,0,0.95));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.97);
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            max-width: 90%;
+            max-height: 90vh;
+            border-radius: 10px;
+            animation: modalZoom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 20px 80px rgba(212,175,55,0.3);
+        }
+        
+        @keyframes modalZoom {
+            from { transform: scale(0.7); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 30px;
+            right: 50px;
+            color: var(--gold);
+            font-size: 50px;
+            cursor: pointer;
+            z-index: 2001;
+            transition: all 0.3s ease;
+            text-shadow: 0 0 20px rgba(212,175,55,0.5);
+        }
+        
+        .close-modal:hover {
+            transform: rotate(90deg) scale(1.2);
+            color: var(--gold-light);
+        }
+        
+        /* Form Inputs */
+        input, textarea {
+            background: rgba(26, 26, 26, 0.8);
+            border: 2px solid rgba(212, 175, 55, 0.2);
+            border-radius: 15px;
+            color: #fff;
+            padding: 1.2rem;
+            width: 100%;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+            background: rgba(26, 26, 26, 0.95);
+        }
+        
+        /* Section Title */
+        .section-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: 3rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            animation: expandLine 2s ease-in-out infinite;
+        }
+        
+        @keyframes expandLine {
+            0%, 100% { width: 100px; opacity: 0.5; }
+            50% { width: 200px; opacity: 1; }
+        }
+        
+        /* Parallax Section */
+        .parallax-section {
+            position: relative;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .parallax-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 120%;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.1s ease-out;
+        }
+        
+        .parallax-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(212,175,55,0.3), rgba(0,0,0,0.8));
+            z-index: 1;
+        }
+        
+        .parallax-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        /* Video Container */
+        .video-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            transition: transform 0.4s ease;
+        }
+        
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(212,175,55,0.3);
+        }
+        
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 15px;
+        }
+        
+        .video-container iframe,
+        .video-container video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+        }
+        
+        /* Scroll Reveal Animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .profile-container {
+                width: 180px;
+                height: 180px;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .nav-bar a {
+                margin: 0 0.8rem;
+                font-size: 0.8rem;
+            }
+            
+            .gallery-item {
+                height: 280px;
+            }
+            
+            .close-modal {
+                top: 15px;
+                right: 20px;
+                font-size: 35px;
+            }
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--black);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gold-light);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <div class="container mx-auto px-4 flex justify-center flex-wrap">
+            <a href="#home">Inicio</a>
+            <a href="#about">Sobre Mí</a>
+            <a href="#gallery">Galería</a>
+            <a href="#videos">Videos</a>
+            <a href="#contact">Contacto</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Video Background -->
+    <section id="home" class="hero-section">
+        <video id="heroVideo" autoplay muted loop playsinline>
+            <source src="https://cdn.coverr.co/videos/coverr-woman-getting-her-hair-styled-5337/1080p.mp4" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+        
+        <div class="hero-content">
+            <!-- Profile Image with Glow Effect -->
+            <div class="profile-container">
+                <div class="profile-ring">
+                    <div class="profile-inner">
+                        <img id="profileImage" src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400" alt="Sofía Ramos" class="profile-image">
+                        <div class="profile-glow"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="file-input-container">
+                <!--<label for="profileInput" class="file-input-label">
+                    <i class="fas fa-camera mr-2"></i>
+                    Cambiar Foto
+                </label>-->
+                <input type="file" id="profileInput" accept="image/*">
+            </div>
+            
+            <h1 class="cormorant gradient-gold text-6xl md:text-8xl font-bold mb-6 mt-8" style="animation: fadeIn 1s ease-in;">
+                SOFÍA RAMOS
+            </h1>
+            
+            <p class="text-xl md:text-2xl text-gray-300 mb-8" style="animation: fadeIn 1.2s ease-in;">
+                Especialista en Colorimetría & Estilismo Profesional
+            </p>
+            
+            <div class="file-input-container">
+                <!--<label for="videoInput" class="file-input-label">
+                    <i class="fas fa-video mr-2"></i>
+                    Cambiar Video de Fondo
+                </label>-->
+                <input type="file" id="videoInput" accept="video/*">
+            </div>
+            
+            <div class="mt-8">
+                <a href="#contact" class="btn-gold">
+                    <span style="position: relative; z-index: 1;">Agenda tu Cita</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-24 px-4">
+        <div class="container mx-auto max-w-7xl">
+            <h2 class="section-title cormorant gradient-gold text-center mb-20 reveal">Sobre Mí</h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="glass-card p-8 reveal">
+                    <div class="text-center mb-6">
+                        <div class="inline-block p-4 rounded-full bg-gradient-to-br from-yellow-600 to-yellow-400 mb-4">
+                            <i class="fas fa-user text-4xl text-black"></i>
+                        </div>
+                        <h3 class="cormorant text-2xl gradient-gold mb-4 font-bold">Quién Soy</h3>
+                    </div>
+                    <p class="text-gray-300 leading-relaxed text-center">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                    </p>
+                </div>
+
+                <div class="glass-card p-8 reveal" style="animation-delay: 0.1s;">
+                    <div class="text-center mb-6">
+                        <div class="inline-block p-4 rounded-full bg-gradient-to-br from-yellow-600 to-yellow-400 mb-4">
+                            <i class="fas fa-bullseye text-4xl text-black"></i>
+                        </div>
+                        <h3 class="cormorant text-2xl gradient-gold mb-4 font-bold">Misión</h3>
+                    </div>
+                    <p class="text-gray-300 leading-relaxed text-center">
+                        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                    </p>
+                </div>
+
+                <div class="glass-card p-8 reveal" style="animation-delay: 0.2s;">
+                    <div class="text-center mb-6">
+                        <div class="inline-block p-4 rounded-full bg-gradient-to-br from-yellow-600 to-yellow-400 mb-4">
+                            <i class="fas fa-eye text-4xl text-black"></i>
+                        </div>
+                        <h3 class="cormorant text-2xl gradient-gold mb-4 font-bold">Visión</h3>
+                    </div>
+                    <p class="text-gray-300 leading-relaxed text-center">
+                        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim.
+                    </p>
+                </div>
+
+                <div class="glass-card p-8 reveal" style="animation-delay: 0.3s;">
+                    <div class="text-center mb-6">
+                        <div class="inline-block p-4 rounded-full bg-gradient-to-br from-yellow-600 to-yellow-400 mb-4">
+                            <i class="fas fa-palette text-4xl text-black"></i>
+                        </div>
+                        <h3 class="cormorant text-2xl gradient-gold mb-4 font-bold">Qué Hago</h3>
+                    </div>
+                    <p class="text-gray-300 leading-relaxed text-center">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Parallax Section -->
+    <section class="parallax-section">
+        <div class="parallax-bg" style="background-image: url('https://images.unsplash.com/photo-1562322140-8baeececf3df?w=1600');"></div>
+        <div class="parallax-overlay"></div>
+        <div class="parallax-content">
+            <h3 class="cormorant gradient-gold text-4xl md:text-6xl font-bold mb-6">
+                El Arte del Color
+            </h3>
+            <p class="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto">
+                Cada tonalidad cuenta una historia, cada matiz refleja una personalidad única
+            </p>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="py-24 px-4">
+        <div class="container mx-auto max-w-7xl">
+            <h2 class="section-title cormorant gradient-gold text-center mb-20 reveal">Galería de Trabajos</h2>
+            
+            <div class="gallery-grid">
+                <div class="gallery-item reveal" onclick="openModal(this)">
+                    <img src="https://images.unsplash.com/photo-1492106087820-71f1a00d2b11?w=600" alt="Trabajo 1">
+                    <div class="gallery-overlay">
+                        <i class="fas fa-search-plus text-5xl mb-4"></i>
+                        <p class="text-lg font-semibold">Ver más</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item reveal" onclick="openModal(this)">
+                    <img src="https://images.unsplash.com/photo-1470468969717-61d5d54fd036?w=600" alt="Trabajo 2">
+                    <div class="gallery-overlay">
+                        <i class="fas fa-search-plus text-5xl mb-4"></i>
+                        <p class="text-lg font-semibold">Ver más</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item reveal" onclick="openModal(this)">
+                    <img src="https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=600" alt="Trabajo 3">
+                    <div class="gallery-overlay">
+                        <i class="fas fa-search-plus text-5xl mb-4"></i>
+                        <p class="text-lg font-semibold">Ver más</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item reveal" onclick="openModal(this)">
+                    <img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=600" alt="Trabajo 4">
+                    <div class="gallery-overlay">
+                        <i class="fas fa-search-plus text-5xl mb-4"></i>
+                        <p class="text-lg font-semibold">Ver más</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item reveal" onclick="openModal(this)">
+                    <img src="https://images.unsplash.com/photo-1562322140-8baeececf3df?w=600" alt="Trabajo 5">
+                    <div class="gallery-overlay">
+                        <i class="fas fa-search-plus text-5xl mb-4"></i>
+                        <p class="text-lg font-semibold">Ver más</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item reveal" onclick="openModal(this)">
+                    <img src="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=600" alt="Trabajo 6">
+                    <div class="gallery-overlay">
+                        <i class="fas fa-search-plus text-5xl mb-4"></i>
+                        <p class="text-lg font-semibold">Ver más</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal -->
+    <div id="imageModal" class="modal" onclick="closeModal()">
+        <span class="close-modal">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
+    <!-- Videos Section -->
+    <section id="videos" class="py-24 px-4 bg-gradient-to-b from-black via-gray-900 to-black">
+        <div class="container mx-auto max-w-7xl">
+            <h2 class="section-title cormorant gradient-gold text-center mb-20 reveal">Videos</h2>
+            
+            <div class="grid md:grid-cols-2 gap-10">
+                <div class="glass-card p-6 video-card reveal">
+                    <h3 class="cormorant text-2xl gradient-gold mb-6 font-bold">Tutorial de Colorimetría</h3>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                </div>
+                
+                <div class="glass-card p-6 video-card reveal">
+                    <h3 class="cormorant text-2xl gradient-gold mb-6 font-bold">Transformación Completa</h3>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                </div>
+                
+                <div class="glass-card p-6 video-card reveal">
+                    <h3 class="cormorant text-2xl gradient-gold mb-6 font-bold">Técnicas Avanzadas</h3>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                </div>
+                
+                <div class="glass-card p-6 video-card reveal">
+                    <h3 class="cormorant text-2xl gradient-gold mb-6 font-bold">Detrás de Escenas</h3>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-24 px-4">
+        <div class="container mx-auto max-w-5xl">
+            <h2 class="section-title cormorant gradient-gold text-center mb-20 reveal">Contacto</h2>
+            
+            <div class="glass-card p-10 md:p-16 reveal">
+                <form id="contactForm">
+                    <div class="grid md:grid-cols-2 gap-8 mb-8">
+                        <div>
+                            <label class="block text-gray-300 mb-3 font-semibold">Nombre Completo</label>
+                            <input type="text" name="nombre" required placeholder="Tu nombre">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-300 mb-3 font-semibold">Correo Electrónico</label>
+                            <input type="email" name="email" required placeholder="tu@email.com">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-8">
+                        <label class="block text-gray-300 mb-3 font-semibold">Asunto</label>
+                        <input type="text" name="asunto" required placeholder="¿En qué podemos ayudarte?">
+                    </div>
+                    
+                    <div class="mb-8">
+                        <label class="block text-gray-300 mb-3 font-semibold">Mensaje</label>
+                        <textarea name="mensaje" rows="6" required placeholder="Cuéntanos sobre tu proyecto..."></textarea>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button type="submit" class="btn-gold">
+                            <span style="position: relative; z-index: 1;">
+                                <i class="fas fa-paper-plane mr-2"></i>
+                                Enviar Mensaje
+                            </span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Map Section -->
+    <section class="py-24 px-4 bg-gradient-to-b from-black to-gray-900">
+        <div class="container mx-auto max-w-7xl">
+            <h2 class="section-title cormorant gradient-gold text-center mb-20 reveal">Ubicación</h2>
+            
+            <div class="glass-card p-4 overflow-hidden reveal">
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3600.5087469668403!2d-103.4167!3d25.5428!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x868fdb5d1c0a7e31%3A0x7a0b5e5e5e5e5e5e!2sTorre%C3%B3n%2C%20Coahuila!5e0!3m2!1ses!2smx!4v1234567890"
+                    width="100%" 
+                    height="500" 
+                    style="border:0; border-radius: 15px;" 
+                    allowfullscreen="" 
+                    loading="lazy">
+                </iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-16 px-4 border-t border-gray-800">
+        <div class="container mx-auto text-center">
+            <h3 class="cormorant gradient-gold text-4xl mb-4 font-bold">SOFÍA RAMOS</h3>
+            <p class="text-gray-400 mb-8 text-lg">Especialista en Colorimetría Profesional</p>
+            
+            <div class="flex justify-center space-x-8 mb-8">
+                <a href="#" class="text-3xl text-gray-400 hover:text-yellow-600 transition transform hover:scale-110">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="text-3xl text-gray-400 hover:text-yellow-600 transition transform hover:scale-110">
+                    <i class="fab fa-facebook"></i>
+                </a>
+                <a href="#" class="text-3xl text-gray-400 hover:text-yellow-600 transition transform hover:scale-110">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+                <a href="#" class="text-3xl text-gray-400 hover:text-yellow-600 transition transform hover:scale-110">
+                    <i class="fab fa-tiktok"></i>
+                </a>
+            </div>
+            
+            <div class="w-48 h-1 bg-gradient-to-r from-transparent via-yellow-600 to-transparent mx-auto mb-6"></div>
+            
+            <p class="text-gray-500 text-sm">© 2025 Sofía Ramos. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Nav Bar Scroll Effect
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('.nav-bar');
+            if (window.scrollY > 100) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Profile Image Upload
+        document.getElementById('profileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('profileImage').src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Video Background Upload
+        document.getElementById('videoInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const videoURL = URL.createObjectURL(file);
+                const videoElement = document.getElementById('heroVideo');
+                videoElement.src = videoURL;
+                videoElement.load();
+                videoElement.play();
+            }
+        });
+
+        // Gallery Modal
+        function openModal(element) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const img = element.querySelector('img');
+            
+            modal.classList.add('active');
+            modalImg.src = img.src;
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.remove('active');
+        }
+
+        // Close modal with ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Form Submission
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Simple animation feedback
+            const button = this.querySelector('button');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<span style="position: relative; z-index: 1;"><i class="fas fa-check mr-2"></i>¡Mensaje Enviado!</span>';
+            button.style.background = 'linear-gradient(135deg, #4CAF50, #8BC34A)';
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.style.background = '';
+                this.reset();
+            }, 3000);
+        });
+
+        // Parallax Effect
+        window.addEventListener('scroll', function() {
+            const parallaxBg = document.querySelector('.parallax-bg');
+            if (parallaxBg) {
+                const scrolled = window.pageYOffset;
+                const parallaxSection = document.querySelector('.parallax-section');
+                const sectionTop = parallaxSection.offsetTop;
+                const sectionHeight = parallaxSection.offsetHeight;
+                
+                if (scrolled > sectionTop - window.innerHeight && scrolled < sectionTop + sectionHeight) {
+                    const yPos = (scrolled - sectionTop) * 0.5;
+                    parallaxBg.style.transform = `translateY(${yPos}px)`;
+                }
+            }
+        });
+
+        // Scroll Reveal Animation
+        const revealElements = document.querySelectorAll('.reveal');
+        
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        });
+
+        revealElements.forEach(el => {
+            revealObserver.observe(el);
+        });
+
+        // Animate on Load
+        window.addEventListener('load', function() {
+            document.querySelector('.hero-content').style.opacity = '1';
+        });
+    </script>
+</body>
+</html>
