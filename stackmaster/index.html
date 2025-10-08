@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crate Stacker - Apila las Cajas</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.55.2/phaser.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial Black', sans-serif;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        #game-container {
+            position: relative;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.5);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 5px solid #ffd700;
+        }
+
+        #ui-overlay {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .info-panel {
+            background: linear-gradient(135deg, rgba(255,215,0,0.95) 0%, rgba(255,140,0,0.95) 100%);
+            padding: 12px 20px;
+            border-radius: 12px;
+            color: #1a1a2e;
+            backdrop-filter: blur(10px);
+            border: 3px solid #fff;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .info-panel h3 {
+            font-size: 12px;
+            margin-bottom: 3px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 900;
+        }
+
+        .info-panel p {
+            font-size: 28px;
+            font-weight: 900;
+            margin: 0;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+        }
+
+        #drop-button {
+            display: none;
+        }
+
+        #tap-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+            z-index: 90;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        #tap-indicator.show {
+            opacity: 1;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        #tap-indicator p {
+            font-size: 32px;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 3px 3px 0px rgba(0,0,0,0.5), 0 0 20px rgba(255,215,0,0.8);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .hand-icon {
+            font-size: 80px;
+            animation: tap 1s ease-in-out infinite;
+        }
+
+        @keyframes tap {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .modal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: linear-gradient(135deg, rgba(255,215,0,0.98) 0%, rgba(255,140,0,0.98) 100%);
+            padding: 50px;
+            border-radius: 25px;
+            text-align: center;
+            z-index: 200;
+            border: 5px solid #fff;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            display: none;
+        }
+
+        .modal.show {
+            display: block;
+            animation: popIn 0.5s ease-out forwards;
+        }
+
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .modal h2 {
+            color: #1a1a2e;
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 0px rgba(255,255,255,0.5);
+            text-transform: uppercase;
+        }
+
+        .modal p {
+            color: #1a1a2e;
+            font-size: 24px;
+            margin: 15px 0;
+            font-weight: 700;
+        }
+
+        .modal button {
+            margin-top: 30px;
+            padding: 18px 60px;
+            font-size: 24px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: 5px solid #fff;
+            border-radius: 15px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(79,172,254,0.4);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .modal button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(79,172,254,0.6);
+        }
+
+        #game-over {
+            background: linear-gradient(135deg, rgba(238,90,36,0.98) 0%, rgba(255,107,107,0.98) 100%);
+        }
+
+        #game-over h2 {
+            color: #fff;
+        }
+
+        #game-over p {
+            color: #fff;
+        }
+
+        #game-over button {
+            background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+            color: #1a1a2e;
+            border: 5px solid #1a1a2e;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="ui-overlay">
+            <div class="info-panel">
+                <h3>Nivel</h3>
+                <p id="level">1</p>
+            </div>
+            <div class="info-panel">
+                <h3>Cajas</h3>
+                <p><span id="current-boxes">0</span>/<span id="target-boxes">5</span></p>
+            </div>
+            <div class="info-panel">
+                <h3>Puntos</h3>
+                <p id="score">0</p>
+            </div>
+            <div class="info-panel">
+                <h3>Record</h3>
+                <p id="high-score">0</p>
+            </div>
+        </div>
+
+        <button id="drop-button">SOLTAR</button>
+
+        <div id="tap-indicator">
+            <p>Toca la pantalla</p>
+            <div class="hand-icon">👆</div>
+        </div>
+
+        <div class="modal" id="level-complete">
+            <h2>¡NIVEL COMPLETADO!</h2>
+            <p>Nivel <span id="completed-level">1</span> Superado</p>
+            <p>Bonificación: +<span id="level-bonus">100</span></p>
+            <button onclick="nextLevel()">SIGUIENTE NIVEL</button>
+        </div>
+
+        <div class="modal" id="game-over">
+            <h2>¡GAME OVER!</h2>
+            <p>Nivel Alcanzado: <span id="final-level">1</span></p>
+            <p>Puntuación: <span id="final-score">0</span></p>
+            <p>Récord: <span id="final-high-score">0</span></p>
+            <button onclick="restartGame()">REINTENTAR</button>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // VARIABLES GLOBALES
+        // ============================================
+        let scene;
+        let crane;
+        let currentCrate;
+        let stackedCrates = [];
+        let ground;
+        
+        let level = 1;
+        let crateSpeed = 100;
+        let cratesStacked = 0;
+        let targetCrates = 5;
+        let canDrop = true;
+        let crateHeld = true;
+        let tapIndicatorTimeout;
+        let crateSizes = [
+            { w: 45, h: 45 },
+            { w: 50, h: 50 },
+            { w: 55, h: 55 },
+            { w: 50, h: 60 },
+            { w: 60, h: 50 }
+        ];
+        
+        let score = 0;
+        let highScore = 0;
+        let levelBonus = 100;
+        
+        let gameActive = true;
+        let birds = [];
+        let windActive = false;
+        let audioContext;
+
+        // ============================================
+        // CONFIGURACIÓN DE PHASER
+        // ============================================
+        const config = {
+            type: Phaser.AUTO,
+            width: 800,
+            height: 600,
+            parent: 'game-container',
+            backgroundColor: '#87CEEB',
+            physics: {
+                default: 'arcade',
+                arcade: {
+                    gravity: { y: 800 },
+                    debug: false,
+                    enableBody: true
+                }
+            },
+            scene: {
+                preload: preload,
+                create: create,
+                update: update
+            }
+        };
+
+        const game = new Phaser.Game(config);
+
+        // ============================================
+        // PRELOAD
+        // ============================================
+        function preload() {
+            // Crear texturas procedurales
+            this.textures.generate('crate', { data: ['3'], pixelWidth: 1 });
+        }
+
+        // ============================================
+        // CREATE
+        // ============================================
+        function create() {
+            scene = this;
+            
+            // Inicializar audio
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+            // Crear suelo
+            ground = this.add.rectangle(400, 570, 800, 60, 0x654321);
+            this.physics.add.existing(ground, true);
+
+            // Decoración del suelo
+            this.add.rectangle(400, 570, 800, 60, 0x654321);
+            this.add.rectangle(400, 570, 800, 10, 0x4a3319);
+
+            // Crear garra
+            createCrane(this);
+
+            // Crear primera caja
+            createNewCrate(this);
+
+            // Eventos de obstáculos
+            this.time.addEvent({
+                delay: 4000,
+                callback: () => spawnObstacles(this),
+                loop: true
+            });
+
+            // Botón y tecla
+            this.input.on('pointerdown', () => dropCrate(this));
+            this.input.keyboard.on('keydown-SPACE', () => dropCrate(this));
+
+            // Mostrar indicador inicial
+            showTapIndicator();
+
+            updateUI();
+        }
+
+        // ============================================
+        // UPDATE
+        // ============================================
+        function update(time, delta) {
+            if (!gameActive) return;
+
+            // Mover garra
+            if (crane && crateHeld) {
+                crane.x += crane.velocityX;
+                
+                if (crane.x <= 50 || crane.x >= 750) {
+                    crane.velocityX *= -1;
+                }
+
+                // Actualizar posición de la caja
+                if (currentCrate && crateHeld) {
+                    currentCrate.x = crane.x;
+                    currentCrate.y = crane.y + 40;
+                }
+            }
+
+            // Aplicar viento
+            if (windActive && currentCrate && !crateHeld) {
+                currentCrate.body.velocity.x += windActive;
+            }
+
+            // Mover pájaros
+            birds.forEach((bird, index) => {
+                if (bird.x > 850) {
+                    bird.destroy();
+                    birds.splice(index, 1);
+                }
+            });
+
+            // Verificar si la caja cayó fuera
+            if (currentCrate && !crateHeld) {
+                if (currentCrate.y > 650 || currentCrate.x < -50 || currentCrate.x > 850) {
+                    gameOver();
+                }
+            }
+        }
+
+        // ============================================
+        // CREAR GARRA MECÁNICA
+        // ============================================
+        function createCrane(scene) {
+            // Barra superior
+            scene.add.rectangle(400, 20, 800, 20, 0x555555).setDepth(10);
+
+            // Cable
+            const cable = scene.add.rectangle(400, 60, 6, 80, 0x333333).setDepth(9);
+
+            // Garra container
+            crane = scene.add.container(400, 100);
+            crane.velocityX = crateSpeed / 60;
+            crane.setDepth(10);
+
+            // Base de la garra
+            const base = scene.add.rectangle(0, 0, 60, 15, 0xFFD700);
+            base.setStrokeStyle(3, 0xFF8C00);
+
+            // Pinzas
+            const leftClaw = scene.add.polygon(0, 0, [
+                -25, 7, -30, 20, -20, 18
+            ], 0xFFD700);
+            leftClaw.setStrokeStyle(2, 0xFF8C00);
+
+            const rightClaw = scene.add.polygon(0, 0, [
+                25, 7, 30, 20, 20, 18
+            ], 0xFFD700);
+            rightClaw.setStrokeStyle(2, 0xFF8C00);
+
+            crane.add([base, leftClaw, rightClaw]);
+
+            // Animación de pinzas
+            scene.tweens.add({
+                targets: [leftClaw, rightClaw],
+                scaleX: 1.15,
+                duration: 400,
+                yoyo: true,
+                repeat: -1
+            });
+        }
+
+        // ============================================
+        // CREAR CAJA DE MADERA
+        // ============================================
+        function createNewCrate(scene) {
+            // Tamaño aleatorio para aumentar dificultad
+            const sizeOption = Phaser.Utils.Array.GetRandom(crateSizes);
+            const width = sizeOption.w;
+            const height = sizeOption.h;
+            
+            // Crear gráfico de caja
+            const graphics = scene.add.graphics();
+            
+            // Fondo madera
+            graphics.fillStyle(0x8B4513);
+            graphics.fillRect(0, 0, width, height);
+            
+            // Vetas horizontales
+            graphics.lineStyle(2, 0x654321);
+            const numLines = Math.floor(height / 10);
+            for (let i = 1; i < numLines; i++) {
+                graphics.lineBetween(0, i * height/numLines, width, i * height/numLines);
+            }
+            
+            // Vetas verticales
+            const numVertLines = Math.floor(width / 10);
+            for (let i = 1; i < numVertLines; i++) {
+                graphics.lineBetween(i * width/numVertLines, 0, i * width/numVertLines, height);
+            }
+            
+            // Bordes internos
+            graphics.lineStyle(4, 0x4a3319);
+            graphics.strokeRect(3, 3, width-6, height-6);
+            
+            // Bordes externos gruesos
+            graphics.lineStyle(6, 0x654321);
+            graphics.strokeRect(0, 0, width, height);
+
+            // Convertir a textura única
+            const textureName = 'crateTexture_' + Date.now() + '_' + Math.random();
+            graphics.generateTexture(textureName, width, height);
+            graphics.destroy();
+
+            // Crear sprite con físicas mejoradas
+            currentCrate = scene.physics.add.sprite(crane.x, crane.y + 40, textureName);
+            currentCrate.setCollideWorldBounds(true);
+            currentCrate.body.allowGravity = false;
+            currentCrate.setDepth(5);
+            
+            // Propiedades físicas para mejor comportamiento
+            currentCrate.body.setBounce(0.1, 0.1);
+            currentCrate.body.setDrag(50);
+            currentCrate.body.setAngularDrag(100);
+            currentCrate.body.setMaxVelocity(600, 800);
+            currentCrate.body.setMass(1);
+            
+            // Permitir rotación para física realista
+            currentCrate.body.allowRotation = true;
+            
+            currentCrate.crateWidth = width;
+            currentCrate.crateHeight = height;
+            
+            crateHeld = true;
+            
+            // Mostrar indicador después de 3 segundos si no ha soltado
+            clearTimeout(tapIndicatorTimeout);
+            tapIndicatorTimeout = setTimeout(() => {
+                if (crateHeld && gameActive) {
+                    showTapIndicator();
+                }
+            }, 3000);
+        }
+
+        // ============================================
+        // SOLTAR CAJA
+        // ============================================
+        function dropCrate(scene) {
+            if (!canDrop || !currentCrate || !crateHeld || !gameActive) return;
+
+            canDrop = false;
+            crateHeld = false;
+            hideTapIndicator();
+            clearTimeout(tapIndicatorTimeout);
+
+            // Activar gravedad y rotación
+            currentCrate.body.allowGravity = true;
+            currentCrate.body.allowRotation = true;
+            currentCrate.body.setVelocity(0, 0);
+            currentCrate.body.setAngularVelocity(0);
+
+            // Sonido
+            playSound('drop');
+
+            // Colisiones con rebote más realista
+            scene.physics.add.collider(currentCrate, ground, () => {
+                currentCrate.body.setAngularVelocity(currentCrate.body.angularVelocity * 0.5);
+                onCrateLanded(scene);
+            });
+
+            
+            // Colisión con las cajas apiladas existentes
+            stackedCrates.forEach(crate => {
+                scene.physics.add.collider(currentCrate, crate, () => {
+                    currentCrate.body.setAngularVelocity(currentCrate.body.angularVelocity * 0.5);
+                    onCrateLanded(scene);
+                });
+            });
+
+            // IMPORTANTE: agregar colisión recíproca entre todas las cajas existentes
+            stackedCrates.forEach(crateA => {
+                scene.physics.add.collider(crateA, currentCrate);
+            });
+
+            // Colisión con pájaros
+            birds.forEach(bird => {
+                scene.physics.add.overlap(currentCrate, bird, () => {
+                    hitByBird(scene, bird);
+                });
+            });
+
+            // Efecto de partículas
+            createParticles(scene, currentCrate.x, currentCrate.y, 0xFFD700, 8);
+        }
+
+        // ============================================
+        // CUANDO LA CAJA ATERRIZA
+        // ============================================
+        function onCrateLanded(scene) {
+            if (!currentCrate || crateHeld) return;
+            if (currentCrate.landed) return;
+            
+            currentCrate.landed = true;
+
+            // Sonido
+            playSound('land');
+            scene.cameras.main.shake(100, 0.005);
+
+            // Esperar a que se estabilice antes de verificar
+            scene.time.delayedCall(500, () => {
+                if (!currentCrate) return;
+                
+                // Verificar si está bien apilada
+                const crateX = currentCrate.x;
+                const crateY = currentCrate.y;
+                let isStacked = false;
+
+                if (stackedCrates.length === 0) {
+                    // Primera caja: área más amplia de aceptación
+                    if (crateX > 200 && crateX < 600 && crateY > 480) {
+                        isStacked = true;
+                    }
+                } else {
+                    // Verificar si está sobre alguna caja previa
+                    for (let crate of stackedCrates) {
+                        const horizontalDistance = Math.abs(crateX - crate.x);
+                        const verticalDistance = Math.abs(crateY - crate.y);
+                        
+                        // Tolerancia más amplia para apilar
+                        const maxHorizontalDistance = (currentCrate.crateWidth + crate.crateWidth) * 0.5;
+                        const maxVerticalDistance = (currentCrate.crateHeight + crate.crateHeight) * 0.8;
+                        
+                        if (horizontalDistance < maxHorizontalDistance && 
+                            verticalDistance < maxVerticalDistance &&
+                            crateY < crate.y) {
+                            isStacked = true;
+                            break;
+                        }
+                    }
+                    
+                    // También aceptar si está sobre el suelo pero cerca de la torre
+                    if (!isStacked && crateY > 480) {
+                        const lastCrate = stackedCrates[stackedCrates.length - 1];
+                        const distance = Math.abs(crateX - lastCrate.x);
+                        if (distance < 120) {
+                            isStacked = true;
+                        }
+                    }
+                }
+
+                if (isStacked) {
+                    // Éxito - detener completamente la caja
+                    currentCrate.body.setVelocity(0, 0);
+                    currentCrate.body.setAngularVelocity(0);
+                    currentCrate.body.moves = false;
+                    
+                    stackedCrates.push(currentCrate);
+                    cratesStacked++;
+                    score += 50;
+                    
+                    playSound('success');
+                    createParticles(scene, currentCrate.x, currentCrate.y, 0xFFFFFF, 15);
+                    createSuccessStars(scene, currentCrate.x, currentCrate.y);
+                    
+                    updateUI();
+
+                    // Verificar nivel completado
+                    if (cratesStacked >= targetCrates) {
+                        levelComplete();
+                    } else {
+                        // Nueva caja
+                        scene.time.delayedCall(500, () => {
+                            createNewCrate(scene);
+                            canDrop = true;
+                        });
+                    }
+                } else {
+                    // Falló
+                    gameOver();
+                }
+            });
+        }
+
+        // ============================================
+        // GENERAR OBSTÁCULOS
+        // ============================================
+        function spawnObstacles(scene) {
+            if (!gameActive || crateHeld) return;
+
+            const random = Math.random();
+
+            if (random < 0.35) {
+                spawnBird(scene);
+            } else if (random < 0.6) {
+                activateWind(scene);
+            }
+        }
+
+        // ============================================
+        // GENERAR PÁJARO
+        // ============================================
+        function spawnBird(scene) {
+            const y = Phaser.Math.Between(150, 450);
+            
+            const bird = scene.add.ellipse(-40, y, 35, 20, 0x000000);
+            scene.physics.add.existing(bird);
+            bird.body.setVelocity(250, 0);
+            bird.body.allowGravity = false;
+            bird.setDepth(8);
+            
+            // Ojo
+            const eye = scene.add.circle(-40, y - 3, 4, 0xFFFFFF);
+            scene.physics.add.existing(eye);
+            eye.body.setVelocity(250, 0);
+            eye.body.allowGravity = false;
+            eye.setDepth(9);
+
+            birds.push(bird);
+
+            // Animación
+            scene.tweens.add({
+                targets: bird,
+                scaleY: 0.8,
+                duration: 200,
+                yoyo: true,
+                repeat: -1
+            });
+
+            // Limpiar cuando salga
+            scene.time.delayedCall(4000, () => {
+                bird.destroy();
+                eye.destroy();
+            });
+        }
+
+        // ============================================
+        // ACTIVAR VIENTO
+        // ============================================
+        function activateWind(scene) {
+            const direction = Math.random() < 0.5 ? -3 : 3;
+            windActive = direction;
+
+            // Efecto visual
+            for (let i = 0; i < 25; i++) {
+                const line = scene.add.line(
+                    Phaser.Math.Between(50, 750),
+                    Phaser.Math.Between(100, 500),
+                    0, 0, 40, 0,
+                    0xFFFFFF, 0.4
+                ).setOrigin(0, 0.5);
+                line.setLineWidth(3);
+
+                scene.tweens.add({
+                    targets: line,
+                    x: line.x + (direction > 0 ? 150 : -150),
+                    alpha: 0,
+                    duration: 1800,
+                    onComplete: () => line.destroy()
+                });
+            }
+
+            // Desactivar
+            scene.time.delayedCall(2000, () => {
+                windActive = false;
+            });
+        }
+
+        // ============================================
+        // IMPACTO CON PÁJARO
+        // ============================================
+        function hitByBird(scene, bird) {
+            if (currentCrate && currentCrate.body) {
+                currentCrate.body.setVelocity(
+                    Phaser.Math.Between(-150, 150),
+                    -100
+                );
+            }
+
+            playSound('hit');
+            scene.cameras.main.shake(120, 0.006);
+
+            createParticles(scene, bird.x, bird.y, 0x000000, 10);
+            
+            bird.destroy();
+            birds = birds.filter(b => b !== bird);
+        }
+
+        // ============================================
+        // NIVEL COMPLETADO
+        // ============================================
+        function levelComplete() {
+            gameActive = false;
+            canDrop = false;
+
+            score += levelBonus;
+            playSound('win');
+
+            document.getElementById('completed-level').textContent = level;
+            document.getElementById('level-bonus').textContent = levelBonus;
+            document.getElementById('level-complete').classList.add('show');
+
+            updateUI();
+        }
+
+        // ============================================
+        // SIGUIENTE NIVEL
+        // ============================================
+        function nextLevel() {
+            document.getElementById('level-complete').classList.remove('show');
+
+            level++;
+            crateSpeed += 20;
+            targetCrates += 2;
+            levelBonus += 50;
+            cratesStacked = 0;
+
+            stackedCrates.forEach(c => c.destroy());
+            stackedCrates = [];
+            birds.forEach(b => b.destroy());
+            birds = [];
+
+            crane.velocityX = crateSpeed / 60;
+            
+            gameActive = true;
+            crateHeld = true;
+            canDrop = true;
+            windActive = false;
+
+            createNewCrate(scene);
+            document.getElementById('drop-button').classList.remove('disabled');
+            
+            updateUI();
+        }
+
+        // ============================================
+        // MOSTRAR/OCULTAR INDICADOR DE TAP
+        // ============================================
+        function showTapIndicator() {
+            document.getElementById('tap-indicator').classList.add('show');
+        }
+
+        function hideTapIndicator() {
+            document.getElementById('tap-indicator').classList.remove('show');
+        }
+
+        // ============================================
+        // GAME OVER
+        // ============================================
+        function gameOver() {
+            if (!gameActive) return;
+            
+            gameActive = false;
+            canDrop = false;
+
+            playSound('gameover');
+
+            if (score > highScore) {
+                highScore = score;
+            }
+
+            scene.cameras.main.shake(400, 0.012);
+            scene.cameras.main.fade(400, 50, 0, 0);
+
+            setTimeout(() => {
+                document.getElementById('final-level').textContent = level;
+                document.getElementById('final-score').textContent = score;
+                document.getElementById('final-high-score').textContent = highScore;
+                document.getElementById('game-over').classList.add('show');
+            }, 500);
+        }
+
+        // ============================================
+        // REINICIAR
+        // ============================================
+        function restartGame() {
+            document.getElementById('game-over').classList.remove('show');
+
+            level = 1;
+            crateSpeed = 100;
+            score = 0;
+            cratesStacked = 0;
+            targetCrates = 5;
+            levelBonus = 100;
+            gameActive = true;
+            canDrop = true;
+            crateHeld = true;
+            windActive = false;
+
+            stackedCrates = [];
+            birds = [];
+
+            scene.scene.restart();
+        }
+
+        // ============================================
+        // ACTUALIZAR UI
+        // ============================================
+        function updateUI() {
+            document.getElementById('level').textContent = level;
+            document.getElementById('current-boxes').textContent = cratesStacked;
+            document.getElementById('target-boxes').textContent = targetCrates;
+            document.getElementById('score').textContent = score;
+            document.getElementById('high-score').textContent = highScore;
+        }
+
+        // ============================================
+        // EFECTOS VISUALES
+        // ============================================
+        function createParticles(scene, x, y, color, count) {
+            for (let i = 0; i < count; i++) {
+                const angle = (Math.PI * 2 * i) / count;
+                const particle = scene.add.circle(x, y, 4, color);
+                scene.physics.add.existing(particle);
+                particle.body.setVelocity(
+                    Math.cos(angle) * 150,
+                    Math.sin(angle) * 150
+                );
+                
+                scene.tweens.add({
+                    targets: particle,
+                    alpha: 0,
+                    scale: 0,
+                    duration: 700,
+                    onComplete: () => particle.destroy()
+                });
+            }
+        }
+
+        function createSuccessStars(scene, x, y) {
+            for (let i = 0; i < 8; i++) {
+                const angle = (Math.PI * 2 * i) / 8;
+                const star = scene.add.star(x, y, 5, 4, 8, 0xFFD700);
+                
+                scene.tweens.add({
+                    targets: star,
+                    x: x + Math.cos(angle) * 80,
+                    y: y + Math.sin(angle) * 80,
+                    alpha: 0,
+                    scale: 0.3,
+                    duration: 800,
+                    onComplete: () => star.destroy()
+                });
+            }
+        }
+
+        // ============================================
+        // SONIDOS
+        // ============================================
+        function playSound(type) {
+            if (!audioContext) return;
+
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+
+            switch(type) {
+                case 'drop':
+                    osc.frequency.setValueAtTime(600, audioContext.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(300, audioContext.currentTime + 0.1);
+                    gain.gain.setValueAtTime(0.2, audioContext.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                    osc.type = 'square';
+                    osc.start();
+                    osc.stop(audioContext.currentTime + 0.1);
+                    break;
+
+                case 'land':
+                    osc.frequency.setValueAtTime(120, audioContext.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(40, audioContext.currentTime + 0.15);
+                    gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                    osc.type = 'sine';
+                    osc.start();
+                    osc.stop(audioContext.currentTime + 0.15);
+                    break;
+
+                case 'success':
+                    [523, 659, 784].forEach((freq, i) => {
+                        const o = audioContext.createOscillator();
+                        const g = audioContext.createGain();
+                        o.connect(g);
+                        g.connect(audioContext.destination);
+                        o.frequency.value = freq;
+                        g.gain.setValueAtTime(0.15, audioContext.currentTime + i * 0.1);
+                        g.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + i * 0.1 + 0.3);
+                        o.start(audioContext.currentTime + i * 0.1);
+                        o.stop(audioContext.currentTime + i * 0.1 + 0.3);
+                    });
+                    return;
+
+                case 'hit':
+                    osc.frequency.setValueAtTime(180, audioContext.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(80, audioContext.currentTime + 0.08);
+                    gain.gain.setValueAtTime(0.25, audioContext.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.08);
+                    osc.type = 'sawtooth';
+                    osc.start();
+                    osc.stop(audioContext.currentTime + 0.08);
+                    break;
+
+                case 'win':
+                    [523, 659, 784, 1047].forEach((freq, i) => {
+                        const o = audioContext.createOscillator();
+                        const g = audioContext.createGain();
+                        o.connect(g);
+                        g.connect(audioContext.destination);
+                        o.frequency.value = freq;
+                        g.gain.setValueAtTime(0.2, audioContext.currentTime + i * 0.12);
+                        g.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + i * 0.12 + 0.4);
+                        o.type = 'triangle';
+                        o.start(audioContext.currentTime + i * 0.12);
+                        o.stop(audioContext.currentTime + i * 0.12 + 0.4);
+                    });
+                    return;
+
+                case 'gameover':
+                    osc.frequency.setValueAtTime(350, audioContext.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(80, audioContext.currentTime + 0.5);
+                    gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                    osc.type = 'sawtooth';
+                    osc.start();
+                    osc.stop(audioContext.currentTime + 0.5);
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>
