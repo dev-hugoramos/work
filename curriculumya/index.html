@@ -1164,23 +1164,26 @@
 
         function updateLanguage() {
             const t = translations[currentLang];
-
+            
+            // Actualizar el texto del botón de idioma
+            $('#langBtnText').text(t.langBtnText);
+            
             // Actualizar todos los textos
-            $('[data-translate]').each(function () {
+            $('[data-translate]').each(function() {
                 const key = $(this).data('translate');
                 if (t[key]) {
                     $(this).text(t[key]);
                 }
             });
-
+        
             // Actualizar placeholders
-            $('[data-translate-placeholder]').each(function () {
+            $('[data-translate-placeholder]').each(function() {
                 const key = $(this).data('translate-placeholder');
                 if (t[key]) {
                     $(this).attr('placeholder', t[key]);
                 }
             });
-
+        
             updatePreview();
         }
 
