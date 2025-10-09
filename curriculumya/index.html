@@ -1426,8 +1426,15 @@
                 skills: skills,
                 language: currentLang
             };
-
+        
+            // Guardar en memoria Y en localStorage
             window.cvData = data;
+            try {
+                localStorage.setItem('cvData', JSON.stringify(data));
+            } catch (e) {
+                console.log('localStorage no disponible');
+            }
+            
             Swal.fire({
                 icon: 'success',
                 title: currentLang === 'es' ? '¡Éxito!' : 'Success!',
@@ -1438,8 +1445,18 @@
         }
 
         function loadData() {
-            const data = window.cvData;
-
+            // Intentar cargar desde localStorage primero, luego desde memoria
+            let data = window.cvData;
+            
+            try {
+                const savedData = localStorage.getItem('cvData');
+                if (savedData) {
+                    data = JSON.parse(savedData);
+                }
+            } catch (e) {
+                console.log('localStorage no disponible');
+            }
+            
             if (!data) {
                 Swal.fire({
                     icon: 'warning',
@@ -1449,34 +1466,34 @@
                 });
                 return;
             }
-
+        
             $('#fullName').val(data.personal.fullName || '');
             $('#jobTitle').val(data.personal.jobTitle || '');
             $('#email').val(data.personal.email || '');
             $('#phone').val(data.personal.phone || '');
             $('#linkedin').val(data.personal.linkedin || '');
             $('#location').val(data.personal.location || '');
-
+        
             if (data.personal.photo) {
                 photoData = data.personal.photo;
                 $('#photoPreview').addClass('active').attr('src', photoData);
             }
-
+        
             currentTemplate = data.style.template || 'modern';
             changeTemplate(currentTemplate);
-
+        
             experiences = data.experiences || [];
             education = data.education || [];
             skills = data.skills || [];
-
+        
             currentLang = data.language || 'es';
             updateLanguage();
-
+        
             renderExperienceList();
             renderEducationList();
             renderSkillsList();
             updatePreview();
-
+        
             Swal.fire({
                 icon: 'success',
                 title: currentLang === 'es' ? '¡Éxito!' : 'Success!',
@@ -1538,22 +1555,32 @@
         async function exportPDF() {
             const name = $('#fullName').val() || 'curriculum';
             const filename = name.replace(/\s+/g, '_') + '_CV.pdf';
-
-            const element = document.getElementById('cvPreview');
+            
+            // En móvil usar el modal, en desktop usar el preview normal
+            const isMobile = window.innerWidth <= 768;
+            const element = isMobile ? document.getElementById('cvPreviewModal') : document.getElementById('cvPreview');
+            
+            // Si es móvil, abrir el modal primero
+            if (isMobile && !$('#previewModal').hasClass('active')) {
+                openPreviewModal();
+                await new Promise(resolve => setTimeout(resolve, 500)); // Esperar a que se renderice
+            }
+            
             const buttons = document.querySelectorAll('.action-buttons');
-
             buttons.forEach(btn => btn.style.display = 'none');
-
+            
             const loadingMsg = document.createElement('div');
             loadingMsg.className = 'loading';
             loadingMsg.innerHTML = `
                 <div class="spinner"></div>
                 <p>${currentLang === 'es' ? 'Generando PDF...' : 'Generating PDF...'}</p>
             `;
-            document.querySelector('.preview-panel') ?
-                document.querySelector('.preview-panel').appendChild(loadingMsg) :
-                document.querySelector('.preview-modal-content').appendChild(loadingMsg);
-
+            
+            const container = isMobile ? document.querySelector('.preview-modal-content') : document.querySelector('.preview-panel');
+            if (container) {
+                container.appendChild(loadingMsg);
+            }
+        
             try {
                 const canvas = await html2canvas(element, {
                     scale: 3,
@@ -1563,20 +1590,20 @@
                     width: element.scrollWidth,
                     height: element.scrollHeight
                 });
-
+        
                 const { jsPDF } = window.jspdf;
-
+                
                 const pdf = new jsPDF('p', 'mm', 'a4');
                 const pageWidth = 210;
                 const pageHeight = 297;
                 const margin = 10;
                 const contentWidth = pageWidth - (2 * margin);
-
+                
                 const imgWidth = contentWidth;
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
+                
                 const imgData = canvas.toDataURL('image/jpeg', 1.0);
-
+                
                 // Escalar para que todo quepa en una página
                 if (imgHeight > pageHeight - (2 * margin)) {
                     const scale = (pageHeight - (2 * margin)) / imgHeight;
@@ -1587,24 +1614,30 @@
                 } else {
                     pdf.addImage(imgData, 'JPEG', margin, margin, imgWidth, imgHeight);
                 }
-
+        
                 pdf.save(filename);
-
+        
                 loadingMsg.remove();
                 buttons.forEach(btn => btn.style.display = 'flex');
-
+                
+                if (isMobile) {
+                    closePreviewModal();
+                }
+        
                 Swal.fire({
                     icon: 'success',
                     title: currentLang === 'es' ? '¡Éxito!' : 'Success!',
                     text: currentLang === 'es' ? 'PDF generado exitosamente' : 'PDF generated successfully',
                     confirmButtonColor: '#000',
-                    timer: 2000
+                    timer: 2000,
+                    showConfirmButton: false
                 });
-
+        
             } catch (error) {
                 console.error('Error al generar PDF:', error);
                 loadingMsg.remove();
                 buttons.forEach(btn => btn.style.display = 'flex');
+                
                 Swal.fire({
                     icon: 'error',
                     title: currentLang === 'es' ? 'Error' : 'Error',
