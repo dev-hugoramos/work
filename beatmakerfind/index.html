@@ -620,21 +620,22 @@
                         </div>
                         
                         <div v-else class="text-center py-5">
-                            <i class="fas fa-video-slash" style="font-size: 3rem; opacity: 0.3;"></i>
-                            <p class="mt-3">No se encontraron videos para este artista</p>
+                            <i class="fas fa-compact-disc" style="font-size: 3rem; opacity: 0.3;"></i>
+                            <p class="mt-3">No se identificaron fuentes de samples para este artista</p>
                         </div>
                         
-                        <div class="alert" style="background: rgba(255, 0, 204, 0.1); border: 1px solid rgba(255, 0, 204, 0.3); border-radius: 15px; margin-top: 20px;">
-                            <h6 style="color: #ff00cc;"><i class="fas fa-info-circle"></i> Cómo obtener tu API Key de YouTube (opcional):</h6>
-                            <ol style="font-size: 0.9rem; margin: 10px 0 0 0; padding-left: 20px;">
-                                <li>Ve a <a href="https://console.cloud.google.com/" target="_blank" style="color: #00ffff;">Google Cloud Console</a></li>
-                                <li>Crea un nuevo proyecto</li>
-                                <li>Habilita "YouTube Data API v3"</li>
-                                <li>Crea credenciales (API Key)</li>
-                                <li>Copia la API Key en la línea 620 del código</li>
-                            </ol>
+                        <div class="alert" style="background: rgba(0, 255, 255, 0.1); border: 1px solid rgba(0, 255, 255, 0.3); border-radius: 15px; margin-top: 20px;">
+                            <h6 style="color: #00ffff;"><i class="fas fa-info-circle"></i> Sobre las fuentes de samples:</h6>
+                            <p style="font-size: 0.9rem; margin: 10px 0 0 0;">
+                                Este sistema identifica las fuentes típicas de samples que usa cada artista/estilo:
+                            </p>
+                            <ul style="font-size: 0.85rem; margin: 10px 0 0 0; padding-left: 20px;">
+                                <li><strong>Artistas específicos:</strong> Ramsey Lewis, Roy Ayers, Curtis Mayfield, etc.</li>
+                                <li><strong>Géneros:</strong> Jazz, Soul, Funk, P-Funk, etc.</li>
+                                <li><strong>Estilos de producción:</strong> Boom bap, Trap, G-Funk, etc.</li>
+                            </ul>
                             <p style="font-size: 0.85rem; margin-top: 10px; opacity: 0.8;">
-                                <strong>Nota:</strong> Sin API key, los enlaces te llevarán directamente a búsquedas en YouTube (funciona perfectamente).
+                                <i class="fas fa-flask"></i> <strong>Base de datos incluye:</strong> Wu-Tang, Griselda, J Dilla, Madlib, MF DOOM, Dr. Dre, DJ Premier, Alchemist, Kanye West, Metro Boomin, y muchos más...
                             </p>
                         </div>
                     </div>
@@ -748,29 +749,99 @@
                     
                     await this.loadYoutubeVideos(artist);
                 },
+                getSampleSources(artist) {
+                    const name = artist.name.toLowerCase();
+                    const tags = artist.tags || [];
+                    const tagNames = tags.map(t => t.name.toLowerCase());
+                    
+                    // Base de datos de samples conocidos por artista
+                    const sampleDatabase = {
+                        'westside gunn': ['jazz soul samples', 'ramsey lewis', 'roy ayers', 'ahmad jamal', 'curtis mayfield', 'soul breaks'],
+                        'griselda': ['soul samples', 'jazz samples', 'ramsey lewis', 'roy ayers', 'herbie hancock'],
+                        'conway the machine': ['soul breaks', 'jazz loops', 'curtis mayfield', 'isaac hayes'],
+                        'benny the butcher': ['soul samples', 'jazz breaks', 'roy ayers', 'marvin gaye'],
+                        'wu-tang clan': ['soul samples', 'kung fu movies', 'jazz breaks', 'isaac hayes', 'bobby digital'],
+                        'rza': ['kung fu samples', 'soul breaks', 'old movie dialogues', 'dusty vinyl'],
+                        'ghostface killah': ['soul samples', 'delfonics', 'isaac hayes', 'marvin gaye'],
+                        'j dilla': ['jazz samples', 'soul breaks', '10cc', 'jackson 5', 'funkadelic', 'questlove drums'],
+                        'madlib': ['jazz samples', 'rare records', 'ethiopian jazz', 'brazilian music', 'psych rock'],
+                        'mf doom': ['obscure samples', 'jazz breaks', 'sade', 'super villain themes', 'old cartoons'],
+                        'dj premier': ['jazz loops', 'nas samples', 'gang starr sound', 'boom bap drums', 'scratches'],
+                        'pete rock': ['jazz samples', 'soul breaks', 'tom scott', 'james brown', 'trumpet loops'],
+                        'apollo brown': ['soul samples', 'motown', 'detroit sound', 'jazz breaks'],
+                        'alchemist': ['soul loops', 'rare vinyl', 'psychedelic rock', 'jazz samples', 'movie dialogues'],
+                        'tyler the creator': ['jazz chords', 'neo soul', 'thundercat', 'erykah badu style', 'alternative rnb'],
+                        'kanye west': ['soul samples', 'curtis mayfield', 'michael jackson', 'choir vocals', 'chipmunk soul'],
+                        '9th wonder': ['soul samples', 'little brother sound', 'phonte vocals', 'jazz breaks'],
+                        'flying lotus': ['jazz fusion', 'alice coltrane', 'sun ra', 'electronic jazz', 'experimental'],
+                        'knxwledge': ['rare soul', 'anderson paak drums', 'jazz chops', 'vinyl crackle'],
+                        'dr dre': ['funk samples', 'p-funk', 'george clinton', '808 drums', 'g-funk synths'],
+                        'dj quik': ['p-funk samples', 'roger troutman', 'zapp', 'west coast funk'],
+                        'havoc': ['dark samples', 'mobb deep sound', 'jazz loops', 'dusty breaks'],
+                        'erick sermon': ['funk samples', 'p-funk', 'parliament', 'bootsy collins'],
+                        'large professor': ['jazz samples', 'main source sound', 'rare grooves', 'soul breaks'],
+                        'q-tip': ['jazz samples', 'tribe called quest', 'roy ayers', 'grant green', 'abstract sound'],
+                        'hi-tek': ['soul samples', 'reflection eternal', 'talib kweli beats', 'jazz breaks'],
+                        'statik selektah': ['soul breaks', 'showoff radio', 'east coast sound', 'boom bap'],
+                        'marco polo': ['soul samples', 'vintage breaks', 'jazz loops', 'dusty drums'],
+                        'evidence': ['soul breaks', 'dilated peoples', 'west coast samples', 'funk loops'],
+                        'araabmuzik': ['electronic samples', 'edm influence', 'mpc beats', 'trap drums'],
+                        'metro boomin': ['dark samples', 'trap sound', '808 mafia', 'future type beats'],
+                        'southside': ['trap samples', '808 mafia', 'horror strings', 'dark melody'],
+                        'zaytoven': ['piano samples', 'gucci mane sound', 'church keys', 'trap drums'],
+                        'lex luger': ['orchestral hits', 'trap pioneer', 'waka flocka sound', 'racks beat'],
+                        'tay keith': ['memphis sound', 'blac youngsta beats', 'hard 808s', 'simple melody']
+                    };
+                    
+                    // Buscar coincidencias exactas o parciales
+                    for (let [key, samples] of Object.entries(sampleDatabase)) {
+                        if (name.includes(key) || key.includes(name)) {
+                            return samples;
+                        }
+                    }
+                    
+                    // Detección basada en tags
+                    if (tagNames.some(t => t.includes('jazz rap') || t.includes('jazz'))) {
+                        return ['jazz samples', 'soul breaks', 'roy ayers', 'herbie hancock', 'grant green', 'rare grooves'];
+                    } else if (tagNames.some(t => t.includes('boom bap'))) {
+                        return ['soul breaks', 'jazz loops', 'james brown', 'isaac hayes', 'dusty drums', 'vinyl samples'];
+                    } else if (tagNames.some(t => t.includes('trap'))) {
+                        return ['trap samples', '808 drums', 'dark melodies', 'orchestral hits', 'horror strings'];
+                    } else if (tagNames.some(t => t.includes('west coast') || t.includes('g-funk'))) {
+                        return ['funk samples', 'p-funk', 'george clinton', 'zapp', 'roger troutman', 'vocoder'];
+                    } else if (tagNames.some(t => t.includes('east coast'))) {
+                        return ['soul samples', 'jazz breaks', 'rare grooves', 'dusty vinyl', 'boom bap drums'];
+                    } else if (tagNames.some(t => t.includes('experimental') || t.includes('abstract'))) {
+                        return ['experimental samples', 'rare records', 'world music', 'psych rock', 'avant-garde'];
+                    } else if (tagNames.some(t => t.includes('soul'))) {
+                        return ['soul samples', 'motown', 'curtis mayfield', 'marvin gaye', 'aretha franklin'];
+                    }
+                    
+                    // Default
+                    return ['soul samples', 'jazz breaks', 'funk loops', 'vinyl records', 'rare grooves'];
+                },
+                
                 async loadYoutubeVideos(artist) {
                     this.loadingVideos = true;
                     
-                    // Generar términos de búsqueda
-                    this.searchTerms = [
-                        `${artist.name} sample breakdown`,
-                        `${artist.name} samples used`,
-                        `${artist.name} beat making`,
-                        `${artist.name} production breakdown`,
-                        `${artist.name} sampling tutorial`
-                    ];
+                    // Obtener las fuentes de samples específicas del artista
+                    const sampleSources = this.getSampleSources(artist);
+                    
+                    // Generar términos de búsqueda enfocados en samples
+                    this.searchTerms = sampleSources.map(source => `${source} sample`);
                     
                     // Si no hay API key, crear enlaces de búsqueda directa
                     if (!this.youtubeApiKey) {
                         this.videos = this.searchTerms.map((term, index) => ({
                             id: { videoId: `search-${index}` },
                             snippet: {
-                                title: `Buscar: "${term}"`,
-                                channelTitle: 'YouTube Search',
+                                title: term.replace(' sample', '').toUpperCase(),
+                                channelTitle: 'Sample Source',
+                                description: `Explora samples de ${term.replace(' sample', '')}`,
                                 publishedAt: new Date().toISOString(),
                                 thumbnails: {
                                     medium: {
-                                        url: 'https://via.placeholder.com/320x180/ff00cc/ffffff?text=Click+to+Search'
+                                        url: `https://via.placeholder.com/320x180/1a1a2e/ff00cc?text=${encodeURIComponent(term.replace(' sample', '').substring(0, 20))}`
                                     }
                                 }
                             },
@@ -801,12 +872,13 @@
                         this.videos = this.searchTerms.map((term, index) => ({
                             id: { videoId: `search-${index}` },
                             snippet: {
-                                title: `Buscar: "${term}"`,
-                                channelTitle: 'YouTube Search',
+                                title: term.replace(' sample', '').toUpperCase(),
+                                channelTitle: 'Sample Source',
+                                description: `Explora samples de ${term.replace(' sample', '')}`,
                                 publishedAt: new Date().toISOString(),
                                 thumbnails: {
                                     medium: {
-                                        url: 'https://via.placeholder.com/320x180/ff00cc/ffffff?text=Click+to+Search'
+                                        url: `https://via.placeholder.com/320x180/1a1a2e/ff00cc?text=${encodeURIComponent(term.replace(' sample', '').substring(0, 20))}`
                                     }
                                 }
                             },
