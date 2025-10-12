@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espacio Seguro - Apoyo Emocional</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.3.4/dist/vue.global.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            position: relative;
+        }
+
+        .floating-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 20s infinite ease-in-out;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(-100px)
+            }
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+            padding: 2rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-section {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .header-section h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+        }
+
+        .result-card {
+            margin-top: 2rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-radius: 20px;
+        }
+
+        .emotion-badge {
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            font-weight: 600;
+            margin: 10px 0;
+        }
+
+        .empathy-message {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            margin: 1.5rem 0;
+        }
+
+        .alert-help {
+            background: rgba(255, 59, 48, 0.9);
+            color: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .music-control {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .music-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="app-container">
+            <div class="floating-circle" :style="{width:'200px',height:'200px',top:'10%',left:'5%'}"></div>
+            <div class="floating-circle" :style="{width:'150px',height:'150px',top:'60%',right:'10%'}"></div>
+
+            <div class="content-wrapper">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <div class="card">
+                                <div class="header-section">
+                                    <h1>🌟 Espacio Seguro 🌟</h1>
+                                    <p class="mb-0">Un lugar donde tus emociones importan</p>
+                                </div>
+                                <div class="card-body p-4">
+                                    <!-- Nombre -->
+                                    <div v-if="!nameSubmitted">
+                                        <label class="form-label fw-bold">¿Cuál es tu nombre?</label>
+                                        <input v-model="name" type="text" class="form-control"
+                                            placeholder="Escribe tu nombre..." @keyup.enter="submitName">
+                                        <button @click="submitName" class="btn btn-primary w-100 mt-3"
+                                            :disabled="!name.trim()">✨ Continuar</button>
+                                    </div>
+
+                                    <!-- Sentimientos -->
+                                    <div v-if="nameSubmitted && !submitted">
+                                        <p class="text-muted">👋 Hola, <strong>{{ name }}</strong></p>
+                                        <label class="form-label fw-bold">¿Cómo te sientes hoy?</label>
+                                        <textarea v-model="feeling" class="form-control" rows="4"
+                                            placeholder="Comparte lo que sientes..." ref="feelingInput"></textarea>
+                                        <button @click="analyzeEmotion" class="btn btn-primary w-100 mt-3"
+                                            :disabled="!feeling || loading">
+                                            <span v-if="!loading">💬 Compartir mis sentimientos</span>
+                                            <span v-else>Analizando...</span>
+                                        </button>
+                                    </div>
+
+                                    <div v-if="loading" class="text-center py-4">
+                                        <div class="spinner-border text-primary"></div>
+                                        <p class="mt-2">Comprendiendo tus emociones...</p>
+                                    </div>
+
+                                    <!-- Resultado -->
+                                    <div v-if="result && !loading">
+                                        <div id="captureArea" class="result-card">
+                                            <div class="text-center mb-3">
+                                                <div class="emotion-badge">{{ emotionEmoji }} {{ emotionLabel }}</div>
+                                            </div>
+                                            <div class="empathy-message">{{ empathyMessage }}</div>
+                                            <div class="text-center mt-4">
+                                                <small>💝 Para: {{ name }}</small>
+                                                <div v-if="quote" class="mt-2"><em>"{{ quote }}"</em></div>
+                                            </div>
+                                        </div>
+
+                                        <div v-if="needsHelp" class="alert alert-help">
+                                            <h5>🤗 Hay gente aquí para ayudarte:</h5>
+                                            <p>Si estás pasando por un momento difícil:</p>
+                                            <ul>
+                                                <li><strong>Línea de la Vida (México):</strong> 800 911 2000</li>
+                                                <li><strong>SAPTEL:</strong> 55 5259 8121</li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="text-center mt-4">
+                                            <button @click="saveAsImage" class="btn btn-success btn-lg me-2">📸 Guardar
+                                                frase</button>
+                                            <button @click="reset" class="btn btn-outline-secondary btn-lg">🔄 Nuevo
+                                                sentimiento</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Footer -->
+                            <div class="text-center text-white mt-4">
+                                <p class="mb-2">💻 Desarrollado con ❤️ por <strong>Hugo Ramos Espino</strong></p>
+                                <a href="https://ko-fi.com/hugoramos" target="_blank" class="btn btn-sm" style="background: #FF5E5B; color: white; border-radius: 10px; text-decoration: none; padding: 8px 20px; font-weight: 600;">
+                                    ☕ Apóyame en Ko-fi
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Música -->
+            <div class="music-control">
+                <button @click="toggleMusic" class="music-btn">{{ isPlaying ? '🔊' : '🔇' }}</button>
+            </div>
+        </div>
+
+        <!-- Audio dinámico -->
+        
+    </div>
+
+    <script>
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    name: '',
+                    feeling: '',
+                    submitted: false,
+                    loading: false,
+                    result: null,
+                    isPlaying: false,
+                    nameSubmitted: false,
+                    emotionMap: {
+                        'joy': { label: 'Alegría', emoji: '😊', type: 'positive' },
+                        'sadness': { label: 'Tristeza', emoji: '😢', type: 'negative' },
+                        'anger': { label: 'Enojo', emoji: '😠', type: 'negative' },
+                        'fear': { label: 'Miedo', emoji: '😨', type: 'negative' },
+                        'love': { label: 'Amor', emoji: '❤️', type: 'positive' },
+                        'surprise': { label: 'Sorpresa', emoji: '😮', type: 'neutral' },
+                        'neutral': { label: 'Neutral', emoji: '😐', type: 'neutral' }
+                    },
+                    empathyPhrases: {
+                        'joy': [
+                            '¡{name}, qué alegría tan inmensa saber que estás radiante! Tu energía positiva es contagiosa y el mundo necesita más personas como tú. Estos momentos de felicidad son tesoros que debes guardar en tu corazón. Recuerda siempre que mereces cada instante de esta dicha, y que tu sonrisa tiene el poder de iluminar incluso los días más oscuros de quienes te rodean. ¡Sigue brillando con esa luz única que llevas dentro! 🌟✨',
+                            '{name}, es maravilloso ver cómo la alegría fluye a través de ti. Este sentimiento tan hermoso que experimentas es una muestra de tu capacidad para apreciar las cosas buenas de la vida. No permitas que nada ni nadie apague esa chispa especial que te caracteriza. Comparte esta felicidad con el mundo, porque tu energía positiva puede transformar vidas. Eres una bendición y mereces celebrar cada victoria, por pequeña que parezca. ¡Que esta alegría se multiplique en tu vida! 💫🌈',
+                            '¡Qué hermoso es verte así de feliz, {name}! La vida te está sonriendo y tú le estás devolviendo la sonrisa. Este momento de plenitud que estás viviendo es el resultado de tu valentía, tu perseverancia y tu capacidad de ver el lado bueno de las cosas. Guarda este sentimiento en tu memoria para esos días en que las cosas se pongan difíciles. Eres luz pura, y el universo conspira a tu favor. ¡Sigue adelante con esa actitud tan inspiradora! 🎉💖'
+                        ],
+                        'sadness': [
+                            '{name}, mi corazón está contigo en este momento tan difícil. La tristeza que sientes es profunda y completamente válida. No hay prisa por "estar bien", date el tiempo que necesites para procesar lo que estás viviendo. Llorar no es señal de debilidad, sino de valentía al permitirte sentir. Aunque ahora parezca imposible, te prometo que este dolor no será eterno. Poco a poco, encontrarás luz en medio de la oscuridad. Eres increíblemente fuerte, incluso en tu vulnerabilidad. No estás solo/a en esto, hay personas que se preocupan por ti profundamente. Permítete recibir apoyo y amor. Los días mejores llegarán, paso a paso. 💙🤗',
+                            'Querido/a {name}, puedo sentir el peso de la tristeza que cargas en este momento, y quiero que sepas que está bien sentirse así. No tienes que fingir estar bien para nadie. La vida nos presenta momentos oscuros, pero justamente esos momentos nos enseñan sobre nuestra propia fortaleza. Sé gentil contigo mismo/a, date permiso para sanar a tu propio ritmo. Recuerda que esta tormenta pasará, y cuando lo haga, saldrás de ella siendo una versión más sabia y resiliente de ti. Aunque no lo veas ahora, hay esperanza esperándote. Mereces amor, comprensión y días llenos de paz. Te abrazo desde la distancia. 🌙💜',
+                            '{name}, siento mucho que estés atravesando este momento de dolor. La tristeza puede sentirse como un océano interminable, pero quiero recordarte algo importante: has sobrevivido al 100% de tus días más difíciles hasta ahora, y también superarás este. No estás roto/a, estás sanando. Cada lágrima que derramas es parte de tu proceso de liberación. Date tiempo, date espacio, date amor. Busca apoyo en quienes te quieren y, si lo necesitas, no dudes en pedir ayuda profesional. Tu valor no disminuye por estar pasando un mal momento. Eres valioso/a, importante y profundamente amado/a. La luz volverá a tu vida. 🌅💕'
+                        ],
+                        'anger': [
+                            '{name}, veo que estás sintiendo mucha frustración y enojo, y quiero que sepas que tu emoción es completamente válida. Tienes derecho a sentirte así. Sin embargo, no permitas que este sentimiento te consuma por dentro. El enojo puede ser una fuerza destructiva o transformadora, y tú tienes el poder de elegir. Te invito a respirar profundamente, a alejarte de la situación si es posible, y a buscar formas saludables de canalizar esta energía. Quizás escribir, hacer ejercicio, o hablar con alguien de confianza. Recuerda que responder con calma no significa que no estés molesto/a, significa que tienes el control. Eres más grande que este momento de ira. 🌬️💪',
+                            'Querido/a {name}, entiendo perfectamente tu frustración y enojo. A veces la vida nos pone en situaciones que nos hacen hervir la sangre, y está bien reconocer esos sentimientos. Pero quiero recordarte algo: tú no eres tu enojo, eres mucho más que esta emoción temporal. Este sentimiento pasará, pero las decisiones que tomes mientras estés enojado/a podrían tener consecuencias duraderas. Tómate un momento, respira, cuenta hasta diez si es necesario. Canaliza esa energía poderosa hacia algo constructivo. Tu paz mental es más valiosa que tener la razón o vengarte. Eres capaz de transformar esta tormenta en crecimiento personal. 🧘✨',
+                            '{name}, puedo percibir la intensidad de lo que estás sintiendo ahora mismo. El enojo es una emoción humana natural, pero no dejes que te controle. Tienes todo el derecho de estar molesto/a, pero también tienes el poder de elegir cómo responder. Pregúntate: ¿esta situación seguirá siendo importante en 5 años? A veces, dar un paso atrás nos ayuda a ver las cosas con perspectiva. Busca formas saludables de liberar esa energía: camina, corre, grita en un lugar seguro si lo necesitas. Tu bienestar emocional es prioritario. Eres fuerte, sabio/a y capaz de navegar esta tormenta con gracia. 🔥🕊️'
+                        ],
+                        'fear': [
+                            '{name}, reconocer tu miedo ya es un acto de valentía increíble. El miedo es una emoción natural que nos protege, pero no debemos dejar que nos paralice. Lo que estás sintiendo es real y válido, pero quiero que recuerdes algo fundamental: has enfrentado miedos antes y has salido victorioso/a. Eres más fuerte de lo que crees. El miedo solo tiene el poder que tú le das. Respira profundo, da un paso a la vez, y verás cómo ese monstruo que parece gigante se hace más pequeño con cada avance. No estás solo en esto. Confía en ti, confía en el proceso, y recuerda que al otro lado del miedo está tu crecimiento. 🦋💫',
+                            'Querido/a {name}, puedo sentir la ansiedad y el miedo que estás experimentando en este momento. Es una sensación abrumadora, lo sé, pero quiero que sepas algo: el miedo no define tu futuro, solo muestra que te importa. Ese temor que sientes es evidencia de que estás a punto de crecer, de expandirte más allá de tu zona de confort. Los guerreros más valientes no son aquellos que no sienten miedo, sino aquellos que avanzan a pesar de él. Tú eres ese guerrero/a. Cada paso que das, por pequeño que sea, es una victoria. Respira, centra tu mente, y recuerda que tienes todo lo necesario dentro de ti para superar esto. 🌟💪',
+                            '{name}, el miedo que sientes ahora mismo es intenso, pero temporal. Quiero recordarte que algunos de tus mayores logros en la vida han venido después de momentos de gran temor. El miedo es solo una emoción, no es una profecía. No te dice lo que va a pasar, solo te muestra lo mucho que te importa el resultado. Permítete sentir ese miedo, acéptalo, pero no dejes que tome las decisiones por ti. Eres infinitamente más poderoso/a que cualquier miedo. Busca apoyo si lo necesitas, habla sobre lo que sientes, y da un paso a la vez. La valentía no es la ausencia de miedo, es actuar a pesar de él. Y tú eres valiente. 🌈✨'
+                        ],
+                        'love': [
+                            '¡{name}, qué hermoso es el amor que estás sintiendo! Este sentimiento tan puro y poderoso que habita en tu corazón es uno de los regalos más preciosos de la vida. El amor, en cualquiera de sus formas, tiene el poder de transformar, sanar y dar sentido a nuestra existencia. Cultiva ese amor con cuidado, protégelo, pero también compártelo sin miedo. Eres un ser lleno de luz y capacidad de amar profundamente, y eso es algo extraordinario. Permítete vivir este sentimiento plenamente, sin reservas, porque el amor verdadero siempre merece ser celebrado. Que este amor te llene de alegría y te inspire a ser la mejor versión de ti mismo/a. ❤️💕',
+                            '{name}, el amor que sientes en este momento es mágico y transformador. Ya sea amor romántico, familiar, de amistad o amor propio, este sentimiento es la fuerza más poderosa del universo. Alimenta ese amor con acciones conscientes, palabras amables y presencia genuina. Recuerda que amar también es un acto de valentía, porque nos hace vulnerables, pero también nos hace humanos. Disfruta cada momento, cada conversación, cada gesto de afecto. Eres digno/a de dar y recibir amor abundante. Que este sentimiento siga creciendo en tu vida. 🌹✨',
+                            '¡Qué maravilloso, {name}! El amor que estás experimentando es la evidencia de que tu corazón está abierto y dispuesto a conectar profundamente. Este sentimiento tan especial merece ser honrado y cuidado. No tengas miedo de expresar lo que sientes, de mostrar tu vulnerabilidad, porque ahí es donde reside la verdadera fuerza del amor. Ya sea amor hacia otra persona, hacia tu familia, tus amigos, o hacia ti mismo/a, este sentimiento es el que da color y significado a nuestra existencia. Permítete vivirlo plenamente, sin miedo al futuro. El presente es tuyo, y está lleno de amor. 💖🌟'
+                        ],
+                        'surprise': [
+                            '¡{name}, qué emocionante es vivir momentos inesperados! La vida tiene una forma mágica de sorprendernos justo cuando menos lo esperamos. Esta sensación de asombro que estás sintiendo es un recordatorio hermoso de que la vida está llena de posibilidades infinitas. Mantén tu mente abierta y tu corazón receptivo a todo lo que el universo tiene preparado para ti. Las mejores historias que contaremos en el futuro son aquellas que nunca vimos venir. Disfruta de esta sorpresa, aprende de ella, y permítele que agregue un nuevo matiz a tu historia personal. Eres parte de algo más grande y maravilloso. ✨🎉',
+                            'Querido/a {name}, las sorpresas son los condimentos que hacen que la vida sea verdaderamente interesante. Este momento inesperado que estás viviendo tiene algo que enseñarte, algo que mostrarte sobre ti mismo/a o sobre el mundo. Abraza lo desconocido con curiosidad y entusiasmo. La vida es impredecible, y esa es precisamente su belleza. Cada sorpresa es una oportunidad para crecer, para ver las cosas desde una nueva perspectiva, para expandir tu comprensión del mundo. Disfruta este momento, documéntalo en tu memoria, y permite que enriquezca tu experiencia de vida. ¡El universo siempre tiene algo extraordinario preparado para ti! 🌈💫',
+                            '{name}, ¡qué hermoso es dejarse sorprender por la vida! Este momento inesperado que estás experimentando es una prueba de que la vida siempre encuentra formas de maravillarnos. Mantén esa capacidad de asombro, esa chispa de curiosidad que te caracteriza. Las personas que pueden sorprenderse son aquellas que permanecen jóvenes de espíritu sin importar su edad. Aprovecha esta energía renovada para hacer algo diferente, para atreverte a explorar nuevos caminos. La sorpresa es el recordatorio del universo de que siempre hay más por descubrir, más por vivir, más por amar. ¡Disfruta el viaje! 🎊✨'
+                        ],
+                        'neutral': [
+                            '{name}, los días tranquilos también tienen su propia belleza y propósito. No todos los días tienen que ser una montaña rusa de emociones, y está perfectamente bien sentirse en equilibrio. Este momento de calma que estás experimentando te permite reflexionar, recargar energías y prepararte para lo que venga. Aprovecha esta serenidad para agradecer lo que tienes, organizar tus pensamientos y conectar contigo mismo/a. La vida no siempre necesita grandes emociones para ser significativa; a veces, la quietud es suficiente para nutrir el alma. 🌿🕊️',
+                            'Querido/a {name}, el sentirse neutral o tranquilo es un regalo que muchas veces pasa desapercibido. Estos momentos de equilibrio nos permiten respirar, reorganizar nuestras ideas y disfrutar de la vida sin presión. Aprovecha esta oportunidad para conectar contigo mismo, para hacer algo que te guste y que te nutra internamente. La neutralidad no es ausencia de emoción, es un espacio para la claridad y la introspección. Date permiso de disfrutarlo sin culpa ni expectativas. 💛✨',
+                            '{name}, estar en un estado neutral es una forma de equilibrio que la vida nos ofrece. No todos los momentos necesitan ser intensos para ser valiosos. Esta calma te permite observar tu entorno, cuidar de ti mismo/a y planificar tus próximos pasos con claridad. La neutralidad es un momento de pausa, de preparación, de reflexión. Disfruta de este estado, aprecia la tranquilidad y usa este tiempo para fortalecerte y conectar contigo y con los que te rodean. 🌸🕊️'
+                        ]
+                    }
+                }
+            },
+            computed: {
+                emotionLabel() {
+                    if (!this.result) return '';
+                    return this.emotionMap[this.result.emotion]?.label || 'Emoción';
+                },
+                emotionEmoji() {
+                    if (!this.result) return '';
+                    return this.emotionMap[this.result.emotion]?.emoji || '😊';
+                },
+                empathyMessage() {
+                    if (!this.result) return '';
+                    const message = this.generateEmpathyResponse(this.result.emotion, this.feeling);
+                    //this.speakMessage(message);
+                    return message;
+                },
+                needsHelp() {
+                    if (!this.result) return false;
+                    const negativeEmotions = ['sadness', 'anger', 'fear'];
+                    return negativeEmotions.includes(this.result.emotion) && this.result.score > 0.7;
+                }
+            },
+            methods: {
+                detectEmotionFromKeywords(text) {
+                    const lowerText = text.toLowerCase();
+                    const keywords = {
+                        'sadness': ['triste', 'tristeza', 'deprimido', 'depresión', 'lloro', 'llorar', 'llorando', 'dolor', 'pérdida', 'muerte', 'murió', 'falleció', 'duelo', 'solo', 'sola', 'soledad', 'vacío', 'desesperado', 'desesperanza', 'melancolía', 'nostalgia', 'perdí', 'extraño', 'falta', 'abandonado', 'desanimado'],
+                        'anger': ['enojado', 'enojo', 'rabia', 'furioso', 'furia', 'molesto', 'irritado', 'frustrado', 'frustración', 'odio', 'coraje', 'enfadado', 'ira', 'injusto', 'injusticia', 'harto', 'cansado de', 'indignado', 'maldito', 'cabrón', 'no puedo más', 'me da rabia'],
+                        'fear': ['miedo', 'temor', 'asustado', 'aterrado', 'pánico', 'ansiedad', 'ansioso', 'nervioso', 'preocupado', 'preocupación', 'terror', 'angustia', 'angustiado', 'inseguro', 'inseguridad', 'amenaza', 'peligro', 'tengo miedo', 'me asusta', 'vulnerable'],
+                        'joy': ['feliz', 'felicidad', 'alegre', 'alegría', 'contento', 'emocionado', 'emoción', 'dichoso', 'eufórico', 'radiante', 'maravilloso', 'genial', 'increíble', 'fantástico', 'excelente', 'bendecido', 'afortunado', 'agradecido', 'celebrar', 'logré', 'conseguí'],
+                        'love': ['amor', 'amo', 'quiero', 'cariño', 'te amo', 'enamorado', 'enamorada', 'adorar', 'adoro', 'pasión', 'afecto', 'romántico', 'corazón', 'beso', 'abrazo', 'pareja', 'novio', 'novia', 'esposo', 'esposa', 'familia']
+                    };
+                    let scores = { 'sadness': 0, 'anger': 0, 'fear': 0, 'joy': 0, 'love': 0, 'neutral': 0 };
+                    for (let emotion in keywords) {
+                        keywords[emotion].forEach(keyword => {
+                            if (lowerText.includes(keyword)) scores[emotion] += 1;
+                        });
+                    }
+                    let maxScore = 0;
+                    let detectedEmotion = 'neutral';
+                    for (let emotion in scores) {
+                        if (scores[emotion] > maxScore) {
+                            maxScore = scores[emotion];
+                            detectedEmotion = emotion;
+                        }
+                    }
+                    return { emotion: detectedEmotion, score: maxScore > 0 ? 0.8 : 0.3 };
+                },
+                submitName() {
+                    if (!this.name.trim()) { alert('Por favor ingresa tu nombre'); return; }
+                    this.nameSubmitted = true;
+                    this.$nextTick(() => { if (this.$refs.feelingInput) this.$refs.feelingInput.focus(); });
+                },
+                async analyzeEmotion() {
+                    if (!this.feeling.trim()) { alert('Por favor comparte cómo te sientes'); return; }
+                    this.loading = true;
+                    this.submitted = true;
+                    try {
+                        const keywordResult = this.detectEmotionFromKeywords(this.feeling);
+                        if (keywordResult.score >= 0.8) {
+                            this.result = keywordResult;
+                        } else {
+                            try {
+                                const response = await fetch("https://api-inference.huggingface.co/models/finiteautomata/beto-emotion-analysis", {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({ inputs: this.feeling })
+                                });
+                                const data = await response.json();
+                                if (data && data[0] && data[0].length > 0) {
+                                    const topEmotion = data[0].reduce((prev, curr) => (prev.score > curr.score) ? prev : curr);
+                                    this.result = (keywordResult.score > topEmotion.score * 0.5) ? keywordResult : { emotion: topEmotion.label.toLowerCase(), score: topEmotion.score };
+                                } else { this.result = keywordResult.score > 0 ? keywordResult : { emotion: 'neutral', score: 0.5 }; }
+                            } catch { this.result = keywordResult.score > 0 ? keywordResult : { emotion: 'neutral', score: 0.5 }; }
+                        }
+                    } catch (e) { console.error(e); this.result = { emotion: 'neutral', score: 0.5 }; }
+                    finally { this.loading = false; }
+                },
+                generateEmpathyResponse(emotion, text) {
+                    const name = this.name || "Amigo/a";
+                    text = text.toLowerCase();
+                    const isLoss = text.includes("murió") || text.includes("falleció") || text.includes("muerte");
+                    const isAnxiety = text.includes("ansiedad") || text.includes("preocupado") || text.includes("nervioso");
+                    const isLonely = text.includes("solo") || text.includes("sola") || text.includes("soledad");
+                    const isSelfDoubt = text.includes("inútil") || text.includes("no sirvo") || text.includes("no valgo");
+                    if (isLoss) return `${name}, lamento profundamente tu pérdida. Perder a alguien tan importante deja un vacío imposible de llenar, y está bien que necesites llorar. No te obligues a estar bien aún. El amor que sientes por esa persona no se borra con el tiempo; se transforma en recuerdos que te acompañarán siempre. Permítete sentir, recordar, llorar. No estás solo en esto. 💜`;
+                    if (isAnxiety) return `${name}, puedo sentir tu ansiedad y preocupación. Respira. No tienes que tener todas las respuestas hoy. Date permiso de ir paso a paso, de cuidarte, de soltar un poco el control. A veces, lo mejor que puedes hacer es simplemente estar aquí, en el presente. Tienes más fortaleza de la que crees. 🌿`;
+                    if (isLonely) return `${name}, la soledad puede sentirse pesada, pero no significa que estés olvidado. Hay personas que te valoran más de lo que imaginas. Usa este momento para reconectarte contigo mismo, y recuerda que pedir compañía o apoyo no te hace débil. Eres valioso, incluso cuando nadie lo dice en voz alta. 💫`;
+                    if (isSelfDoubt) return `${name}, entiendo que te sientas así, pero por favor recuerda: tu valor no depende de lo que hagas o logres. Ya eres suficiente solo por ser tú. Tienes una historia, una luz, una esencia que nadie más posee. No te compares, no te castigues. Permítete descansar, sanar, creer en ti otra vez. ❤️`;
+                    const phrases = this.empathyPhrases[emotion] || this.empathyPhrases['neutral'];
+                    return phrases[Math.floor(Math.random() * phrases.length)].replace('{name}', name);
+                },
+                toggleMusic() {
+                    const audio = this.$refs.bgMusic;
+                    if (this.isPlaying) { audio.pause(); } else { audio.play().catch(e => console.log(e)); }
+                    this.isPlaying = !this.isPlaying;
+                },
+                async saveAsImage() {
+                    const element = document.getElementById('captureArea');
+                    try {
+                        const canvas = await html2canvas(element, { backgroundColor: null, scale: 2 });
+                        const link = document.createElement('a');
+                        link.download = `espacio-seguro-${this.name}.jpg`;
+                        link.href = canvas.toDataURL('image/jpeg', 0.95);
+                        link.click();
+                    } catch (e) { console.error(e); alert('Hubo un error al guardar la imagen.'); }
+                },
+                reset() {
+                    this.feeling = '';
+                    this.submitted = false;
+                    this.result = null;
+                    this.$nextTick(() => { if (this.$refs.feelingInput) this.$refs.feelingInput.focus(); });
+                },
+                speakMessage(message) {
+                    if (!('speechSynthesis' in window)) return;
+                    const utterance = new SpeechSynthesisUtterance(message);
+                    utterance.lang = 'es-ES';
+                    window.speechSynthesis.cancel();
+                    window.speechSynthesis.speak(utterance);
+                }
+            }
+        }).mount('#app');
+    </script>
+
+</body>
+
+</html>
