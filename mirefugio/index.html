@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Refugio - Apoyo Emocional</title>
+    <title>Espacio Seguro - Apoyo Emocional</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/vue@3.3.4/dist/vue.global.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -121,6 +121,15 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             visibility: hidden;
         }
+
+        .fade {
+            transition: opacity 0.6s ease;
+            opacity: 1;
+        }
+
+        .fade-leave-active {
+            opacity: 0;
+        }
     </style>
 </head>
 
@@ -136,7 +145,7 @@
                         <div class="col-lg-8">
                             <div class="card">
                                 <div class="header-section">
-                                    <h1>🌟 Mi Refugio 🌟</h1>
+                                    <h1>🌟 Espacio Seguro 🌟</h1>
                                     <p class="mb-0">Un lugar donde tus emociones importan</p>
                                 </div>
                                 <div class="card-body p-4">
@@ -173,7 +182,10 @@
                                             <div class="text-center mb-3">
                                                 <div class="emotion-badge">{{ emotionEmoji }} {{ emotionLabel }}</div>
                                             </div>
-                                            <div class="empathy-message">{{ empathyMessage }}</div>
+                                            <div class="empathy-message" v-if="result && !loading"
+                                                v-bind:class="{ fade: fadeEffect }">
+                                                {{ empathyMessage }}
+                                            </div>
                                             <div class="text-center mt-4">
                                                 <small>💝 Para: {{ name }}</small>
                                                 <div v-if="quote" class="mt-2"><em>"{{ quote }}"</em></div>
@@ -201,7 +213,8 @@
                             <!-- Footer -->
                             <div class="text-center text-white mt-4">
                                 <p class="mb-2">💻 Desarrollado con ❤️ por <strong>Hugo Ramos Espino</strong></p>
-                                <a href="https://ko-fi.com/hugoramos" target="_blank" class="btn btn-sm" style="background: #FF5E5B; color: white; border-radius: 10px; text-decoration: none; padding: 8px 20px; font-weight: 600;">
+                                <a href="https://ko-fi.com/hugoramos" target="_blank" class="btn btn-sm"
+                                    style="background: #FF5E5B; color: white; border-radius: 10px; text-decoration: none; padding: 8px 20px; font-weight: 600;">
                                     ☕ Apóyame en Ko-fi
                                 </a>
                             </div>
@@ -217,7 +230,7 @@
         </div>
 
         <!-- Audio dinámico -->
-        
+
     </div>
 
     <script>
@@ -278,7 +291,9 @@
                             'Querido/a {name}, el sentirse neutral o tranquilo es un regalo que muchas veces pasa desapercibido. Estos momentos de equilibrio nos permiten respirar, reorganizar nuestras ideas y disfrutar de la vida sin presión. Aprovecha esta oportunidad para conectar contigo mismo, para hacer algo que te guste y que te nutra internamente. La neutralidad no es ausencia de emoción, es un espacio para la claridad y la introspección. Date permiso de disfrutarlo sin culpa ni expectativas. 💛✨',
                             '{name}, estar en un estado neutral es una forma de equilibrio que la vida nos ofrece. No todos los momentos necesitan ser intensos para ser valiosos. Esta calma te permite observar tu entorno, cuidar de ti mismo/a y planificar tus próximos pasos con claridad. La neutralidad es un momento de pausa, de preparación, de reflexión. Disfruta de este estado, aprecia la tranquilidad y usa este tiempo para fortalecerte y conectar contigo y con los que te rodean. 🌸🕊️'
                         ]
-                    }
+                    },
+
+                    fadeEffect: true
                 }
             },
             computed: {
@@ -337,6 +352,7 @@
                     if (!this.feeling.trim()) { alert('Por favor comparte cómo te sientes'); return; }
                     this.loading = true;
                     this.submitted = true;
+                    this.fadeEffect = false;
                     try {
                         const keywordResult = this.detectEmotionFromKeywords(this.feeling);
                         if (keywordResult.score >= 0.8) {
@@ -356,7 +372,7 @@
                             } catch { this.result = keywordResult.score > 0 ? keywordResult : { emotion: 'neutral', score: 0.5 }; }
                         }
                     } catch (e) { console.error(e); this.result = { emotion: 'neutral', score: 0.5 }; }
-                    finally { this.loading = false; }
+                    finally { this.loading = false; this.fadeEffect = true; }
                 },
                 generateEmpathyResponse(emotion, text) {
                     const name = this.name || "Amigo/a";
