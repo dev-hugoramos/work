@@ -291,9 +291,7 @@
                             'Querido/a {name}, el sentirse neutral o tranquilo es un regalo que muchas veces pasa desapercibido. Estos momentos de equilibrio nos permiten respirar, reorganizar nuestras ideas y disfrutar de la vida sin presión. Aprovecha esta oportunidad para conectar contigo mismo, para hacer algo que te guste y que te nutra internamente. La neutralidad no es ausencia de emoción, es un espacio para la claridad y la introspección. Date permiso de disfrutarlo sin culpa ni expectativas. 💛✨',
                             '{name}, estar en un estado neutral es una forma de equilibrio que la vida nos ofrece. No todos los momentos necesitan ser intensos para ser valiosos. Esta calma te permite observar tu entorno, cuidar de ti mismo/a y planificar tus próximos pasos con claridad. La neutralidad es un momento de pausa, de preparación, de reflexión. Disfruta de este estado, aprecia la tranquilidad y usa este tiempo para fortalecerte y conectar contigo y con los que te rodean. 🌸🕊️'
                         ]
-                    },
-
-                    fadeEffect: true
+                    }
                 }
             },
             computed: {
@@ -352,7 +350,6 @@
                     if (!this.feeling.trim()) { alert('Por favor comparte cómo te sientes'); return; }
                     this.loading = true;
                     this.submitted = true;
-                    this.fadeEffect = false;
                     try {
                         const keywordResult = this.detectEmotionFromKeywords(this.feeling);
                         if (keywordResult.score >= 0.8) {
@@ -372,7 +369,7 @@
                             } catch { this.result = keywordResult.score > 0 ? keywordResult : { emotion: 'neutral', score: 0.5 }; }
                         }
                     } catch (e) { console.error(e); this.result = { emotion: 'neutral', score: 0.5 }; }
-                    finally { this.loading = false; this.fadeEffect = true; }
+                    finally { this.loading = false; }
                 },
                 generateEmpathyResponse(emotion, text) {
                     const name = this.name || "Amigo/a";
