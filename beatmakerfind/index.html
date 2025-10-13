@@ -510,7 +510,7 @@
                     <div v-for="(artist, index) in results" :key="artist.id" class="col-md-6 col-lg-4">
                         <div class="artist-card fade-in" :style="{ animationDelay: (index * 0.1) + 's' }" @click="openVideoModal(artist)">
                             <div class="artist-avatar">
-                                <i class="fas fa-user-music"></i>
+                                <i class="fas fa-compact-disc"></i>
                             </div>
                             <h4 class="artist-name">{{ artist.name }}</h4>
                             <p class="artist-type">
@@ -754,43 +754,308 @@
                     const tags = artist.tags || [];
                     const tagNames = tags.map(t => t.name.toLowerCase());
                     
-                    // Base de datos de samples conocidos por artista
+                    // Base de datos expandida con artistas específicos para samplear
                     const sampleDatabase = {
-                        'westside gunn': ['jazz soul samples', 'ramsey lewis', 'roy ayers', 'ahmad jamal', 'curtis mayfield', 'soul breaks'],
-                        'griselda': ['soul samples', 'jazz samples', 'ramsey lewis', 'roy ayers', 'herbie hancock'],
-                        'conway the machine': ['soul breaks', 'jazz loops', 'curtis mayfield', 'isaac hayes'],
-                        'benny the butcher': ['soul samples', 'jazz breaks', 'roy ayers', 'marvin gaye'],
-                        'wu-tang clan': ['soul samples', 'kung fu movies', 'jazz breaks', 'isaac hayes', 'bobby digital'],
-                        'rza': ['kung fu samples', 'soul breaks', 'old movie dialogues', 'dusty vinyl'],
-                        'ghostface killah': ['soul samples', 'delfonics', 'isaac hayes', 'marvin gaye'],
-                        'j dilla': ['jazz samples', 'soul breaks', '10cc', 'jackson 5', 'funkadelic', 'questlove drums'],
-                        'madlib': ['jazz samples', 'rare records', 'ethiopian jazz', 'brazilian music', 'psych rock'],
-                        'mf doom': ['obscure samples', 'jazz breaks', 'sade', 'super villain themes', 'old cartoons'],
-                        'dj premier': ['jazz loops', 'nas samples', 'gang starr sound', 'boom bap drums', 'scratches'],
-                        'pete rock': ['jazz samples', 'soul breaks', 'tom scott', 'james brown', 'trumpet loops'],
-                        'apollo brown': ['soul samples', 'motown', 'detroit sound', 'jazz breaks'],
-                        'alchemist': ['soul loops', 'rare vinyl', 'psychedelic rock', 'jazz samples', 'movie dialogues'],
-                        'tyler the creator': ['jazz chords', 'neo soul', 'thundercat', 'erykah badu style', 'alternative rnb'],
-                        'kanye west': ['soul samples', 'curtis mayfield', 'michael jackson', 'choir vocals', 'chipmunk soul'],
-                        '9th wonder': ['soul samples', 'little brother sound', 'phonte vocals', 'jazz breaks'],
-                        'flying lotus': ['jazz fusion', 'alice coltrane', 'sun ra', 'electronic jazz', 'experimental'],
-                        'knxwledge': ['rare soul', 'anderson paak drums', 'jazz chops', 'vinyl crackle'],
-                        'dr dre': ['funk samples', 'p-funk', 'george clinton', '808 drums', 'g-funk synths'],
-                        'dj quik': ['p-funk samples', 'roger troutman', 'zapp', 'west coast funk'],
-                        'havoc': ['dark samples', 'mobb deep sound', 'jazz loops', 'dusty breaks'],
-                        'erick sermon': ['funk samples', 'p-funk', 'parliament', 'bootsy collins'],
-                        'large professor': ['jazz samples', 'main source sound', 'rare grooves', 'soul breaks'],
-                        'q-tip': ['jazz samples', 'tribe called quest', 'roy ayers', 'grant green', 'abstract sound'],
-                        'hi-tek': ['soul samples', 'reflection eternal', 'talib kweli beats', 'jazz breaks'],
-                        'statik selektah': ['soul breaks', 'showoff radio', 'east coast sound', 'boom bap'],
-                        'marco polo': ['soul samples', 'vintage breaks', 'jazz loops', 'dusty drums'],
-                        'evidence': ['soul breaks', 'dilated peoples', 'west coast samples', 'funk loops'],
-                        'araabmuzik': ['electronic samples', 'edm influence', 'mpc beats', 'trap drums'],
-                        'metro boomin': ['dark samples', 'trap sound', '808 mafia', 'future type beats'],
-                        'southside': ['trap samples', '808 mafia', 'horror strings', 'dark melody'],
-                        'zaytoven': ['piano samples', 'gucci mane sound', 'church keys', 'trap drums'],
-                        'lex luger': ['orchestral hits', 'trap pioneer', 'waka flocka sound', 'racks beat'],
-                        'tay keith': ['memphis sound', 'blac youngsta beats', 'hard 808s', 'simple melody']
+                        'westside gunn': [
+                            'Ramsey Lewis - Sun Goddess',
+                            'Roy Ayers - Everybody Loves The Sunshine',
+                            'Ahmad Jamal - Swahililand',
+                            'Curtis Mayfield - Pusherman',
+                            'The Isley Brothers - Footsteps In The Dark',
+                            'Bill Withers - Who Is He',
+                            'Marvin Gaye - Inner City Blues',
+                            'Al Green - Simply Beautiful',
+                            'The Delfonics - La La Means I Love You',
+                            'Bobby Caldwell - What You Won\'t Do',
+                            'Grover Washington Jr - Moonstream',
+                            'Isaac Hayes - Walk On By'
+                        ],
+                        'griselda': [
+                            'Ramsey Lewis - Wade In The Water',
+                            'Roy Ayers - We Live In Brooklyn',
+                            'Herbie Hancock - Chameleon',
+                            'Curtis Mayfield - Move On Up',
+                            'Isaac Hayes - Hyperbolicsyllabicsesquedalymistic',
+                            'The Emotions - Blind Alley',
+                            'Lou Donaldson - Ode To Billie Joe',
+                            'Ahmad Jamal - Poinciana',
+                            'Joe Sample - In All My Wildest Dreams',
+                            'Mongo Santamaria - Mambo Mongo'
+                        ],
+                        'conway the machine': [
+                            'Curtis Mayfield - Little Child Runnin Wild',
+                            'Isaac Hayes - Walk On By',
+                            'Barry White - I\'m Gonna Love You',
+                            'The Dramatics - In The Rain',
+                            'Al Green - Love And Happiness',
+                            'Marvin Gaye - Trouble Man',
+                            'Donny Hathaway - The Ghetto',
+                            'Bill Withers - Use Me',
+                            'Roy Ayers - Running Away'
+                        ],
+                        'benny the butcher': [
+                            'Roy Ayers - We Live In Brooklyn',
+                            'Marvin Gaye - Since I Had You',
+                            'Curtis Mayfield - Pusherman',
+                            'The Isley Brothers - Between The Sheets',
+                            'Isaac Hayes - Walk On By',
+                            'Al Green - I\'m Still In Love',
+                            'Quincy Jones - Summer In The City',
+                            'Bobby Womack - Across 110th Street'
+                        ],
+                        'wu-tang clan': [
+                            'The Charmels - As Long As I\'ve Got You',
+                            'Thelonious Monk - Ba Lue Bolivar Ba Lues Are',
+                            'Gladys Knight - The Way We Were',
+                            'Isaac Hayes - Walk On By',
+                            'Syl Johnson - Different Strokes',
+                            'David Porter - I\'m Afraid The Masquerade Is Over',
+                            'Willie Mitchell - Groovin',
+                            'James Brown - The Boss',
+                            'Kung Fu Movie Dialogues',
+                            'The Dramatics - In The Rain'
+                        ],
+                        'rza': [
+                            'Bobby Byrd - I Know You Got Soul',
+                            'Willie Mitchell - Groovin',
+                            'Thelonious Monk - Blue Monk',
+                            'Isaac Hayes - Walk On By',
+                            'Kung Fu Movies OST',
+                            'The Dramatics - In The Rain',
+                            'David Porter - I\'m Afraid The Masquerade',
+                            'Syl Johnson - Is It Because I\'m Black'
+                        ],
+                        'ghostface killah': [
+                            'The Delfonics - La La Means I Love You',
+                            'Isaac Hayes - Walk On By',
+                            'Marvin Gaye - Trouble Man',
+                            'Al Green - I\'m Glad You\'re Mine',
+                            'The Emotions - Blind Alley',
+                            'Curtis Mayfield - Move On Up',
+                            'Barry White - I\'m Gonna Love You',
+                            'Teddy Pendergrass - The More I Get'
+                        ],
+                        'j dilla': [
+                            '10cc - Worst Band In The World',
+                            'Jackson 5 - It\'s Great To Be Here',
+                            'The Beastie Boys - The New Style',
+                            'Funkadelic - You\'ll Like It Too',
+                            'George Duke - Someday',
+                            'Minnie Riperton - Baby This Love',
+                            'The Isley Brothers - Footsteps In The Dark',
+                            'Dionne Warwick - You\'re Gonna Need Me',
+                            'Tom Scott - Today',
+                            'The Pharcyde - Runnin',
+                            'ESG - UFO',
+                            'Enoch Light - Hi Heel Sneakers'
+                        ],
+                        'madlib': [
+                            'Mulatu Astatke - Yègellé Tezeta',
+                            'David Axelrod - The Smile',
+                            'Shuggie Otis - Strawberry Letter 23',
+                            'Milton Nascimento - Vera Cruz',
+                            'Marcos Valle - Samba De Verão',
+                            'Stark Reality - The Cisco Kid',
+                            'Sun Ra - Space Is The Place',
+                            'Cortex - Huit Octobre 1971',
+                            'Os Mutantes - A Minha Menina',
+                            'Caetano Veloso - Irene',
+                            'Jorge Ben - Taj Mahal',
+                            'Edu Lobo - Ponteio'
+                        ],
+                        'mf doom': [
+                            'Sade - Kiss Of Life',
+                            'Quincy Jones - Ironside',
+                            'George Benson - Footin It',
+                            'Bukowski - How To Be Old',
+                            'Fantastic Four - The Whole World Is A Stage',
+                            'Super Villain Themes',
+                            'David Matthews - Dune',
+                            'Bobbie Gentry - Mornin Glory',
+                            'Cortex - Troupeau Bleu',
+                            'Old Cartoons Dialogue',
+                            'Steely Dan - Black Cow',
+                            'James Brown - The Payback'
+                        ],
+                        'dj premier': [
+                            'Bob James - Nautilus',
+                            'Joe Sample - In All My Wildest Dreams',
+                            'Donald Byrd - Wind Parade',
+                            'Gary Burton - Las Vegas Tango',
+                            'Ahmad Jamal - Swahililand',
+                            'Isaac Hayes - Ike\'s Rap II',
+                            'The Imperials - Little Anthony',
+                            'Mountain - Long Red',
+                            'James Brown - Funky Drummer',
+                            'Curtis Mayfield - Little Child Runnin Wild'
+                        ],
+                        'pete rock': [
+                            'Tom Scott - Today',
+                            'James Brown - Funky Drummer',
+                            'The Emotions - Blind Alley',
+                            'Bob James - Take Me To The Mardi Gras',
+                            'David Axelrod - Holy Thursday',
+                            'Ahmad Jamal - Swahililand',
+                            'Grant Green - Maybe Tomorrow',
+                            'Stanley Clarke - Lopsy Lu',
+                            'Isaac Hayes - Ike\'s Mood',
+                            'The Honey Drippers - Impeach The President'
+                        ],
+                        'apollo brown': [
+                            'The Dramatics - In The Rain',
+                            'Al Green - Simply Beautiful',
+                            'Marvin Gaye - Inner City Blues',
+                            'Curtis Mayfield - Move On Up',
+                            'Isaac Hayes - Walk On By',
+                            'The Delfonics - Ready Or Not',
+                            'Donny Hathaway - The Ghetto',
+                            'Barry White - Never Never Gonna Give Up',
+                            'Smokey Robinson - Quiet Storm'
+                        ],
+                        'alchemist': [
+                            'David Axelrod - The Human Abstract',
+                            'The Doors - Riders On The Storm',
+                            'Pink Floyd - Any Colour You Like',
+                            'Isaac Hayes - Hyperbolicsyllabicsesquedalymistic',
+                            'Ennio Morricone - The Ecstasy Of Gold',
+                            'John Carpenter - Halloween Theme',
+                            'Vangelis - Blade Runner Theme',
+                            'Goblin - Profondo Rosso',
+                            'Tangerine Dream - Love On A Real Train',
+                            'Giorgio Moroder - Chase'
+                        ],
+                        'tyler the creator': [
+                            'Thundercat - Them Changes',
+                            'Erykah Badu - Green Eyes',
+                            'D\'Angelo - Untitled',
+                            'The Internet - Get Away',
+                            'Frank Ocean - Pyramids',
+                            'Stevie Wonder - That Girl',
+                            'Roy Ayers - Everybody Loves The Sunshine',
+                            'Prince - When Doves Cry',
+                            'Tame Impala - New Person Same Old Mistakes',
+                            'OutKast - Aquemini'
+                        ],
+                        'kanye west': [
+                            'Curtis Mayfield - Move On Up',
+                            'Michael Jackson - P.Y.T',
+                            'Chaka Khan - Through The Fire',
+                            'Ray Charles - I Got A Woman',
+                            'Nina Simone - Strange Fruit',
+                            'Lauryn Hill - Mystery Of Iniquity',
+                            'Shirley Bassey - Diamonds Are Forever',
+                            'King Crimson - 21st Century Schizoid Man',
+                            'Daft Punk - Harder Better Faster',
+                            'Bon Iver - Woods'
+                        ],
+                        '9th wonder': [
+                            'The Emotions - Blind Alley',
+                            'Bill Withers - Grandma\'s Hands',
+                            'Curtis Mayfield - Right On For The Darkness',
+                            'Marvin Gaye - Inner City Blues',
+                            'Al Green - Love And Happiness',
+                            'Donny Hathaway - Someday We\'ll All Be Free',
+                            'Isaac Hayes - Walk On By',
+                            'The Delfonics - La La Means I Love You'
+                        ],
+                        'flying lotus': [
+                            'Alice Coltrane - Blue Nile',
+                            'Sun Ra - Space Is The Place',
+                            'Herbie Hancock - Cantaloupe Island',
+                            'Miles Davis - Bitches Brew',
+                            'Weather Report - Birdland',
+                            'John Coltrane - A Love Supreme',
+                            'Pharoah Sanders - The Creator Has A Master Plan',
+                            'McCoy Tyner - Sahara'
+                        ],
+                        'knxwledge': [
+                            'Anderson .Paak - The Season',
+                            'Madlib - Slim\'s Return',
+                            'Luther Vandross - Never Too Much',
+                            'Minnie Riperton - Inside My Love',
+                            'George Duke - Dukey Stick',
+                            'Stevie Wonder - Do I Do',
+                            'Prince - I Wanna Be Your Lover',
+                            'Patrice Rushen - Forget Me Nots'
+                        ],
+                        'dr dre': [
+                            'George Clinton - Atomic Dog',
+                            'Parliament - Flashlight',
+                            'Funkadelic - (Not Just) Knee Deep',
+                            'Zapp - More Bounce To The Ounce',
+                            'Roger Troutman - I Heard It Through The Grapevine',
+                            'Bootsy Collins - I\'d Rather Be With You',
+                            'Ohio Players - Funky Worm',
+                            'Leon Haywood - I Want\'a Do Something Freaky',
+                            'Charles Wright - Express Yourself',
+                            'Joe Cocker - Woman To Woman'
+                        ],
+                        'dj quik': [
+                            'Zapp - Computer Love',
+                            'Roger Troutman - So Ruff So Tuff',
+                            'Parliament - Give Up The Funk',
+                            'Bootsy Collins - Mug Push',
+                            'Slave - Just A Touch Of Love',
+                            'Ohio Players - Love Rollercoaster',
+                            'Bar-Kays - Freakshow On The Dance Floor',
+                            'Cameo - Word Up'
+                        ],
+                        'havoc': [
+                            'The Impeach - The Impeach',
+                            'Patrice Rushen - Hang It Up',
+                            'Stanley Clarke - Slow Dance',
+                            'Bob James - Nautilus',
+                            'Isaac Hayes - Walk On By',
+                            'The Honey Drippers - Impeach The President',
+                            'Donald Byrd - Wind Parade'
+                        ],
+                        'large professor': [
+                            'Michael Jackson - Human Nature',
+                            'Bob James - Nautilus',
+                            'Ahmad Jamal - Swahililand',
+                            'Grant Green - Down Here On The Ground',
+                            'Donald Byrd - Wind Parade',
+                            'Stanley Clarke - Silly Putty',
+                            'Joe Sample - Rainbows'
+                        ],
+                        'q-tip': [
+                            'Roy Ayers - We Live In Brooklyn',
+                            'Grant Green - Maybe Tomorrow',
+                            'Freddie Hubbard - Red Clay',
+                            'Lonnie Liston Smith - Expansions',
+                            'Grover Washington Jr - Hydra',
+                            'Donald Byrd - Wind Parade',
+                            'The Chambers Brothers - Time Has Come',
+                            'Lou Donaldson - Ode To Billie Joe'
+                        ],
+                        'metro boomin': [
+                            'Halloween Movie Theme',
+                            'Nightmare On Elm Street Theme',
+                            'Friday The 13th Theme',
+                            'The Exorcist Theme',
+                            'Requiem For A Dream Theme',
+                            'Dark Knight Rises Theme',
+                            'Inception - Time by Hans Zimmer',
+                            'Saw Theme',
+                            'Psycho Strings'
+                        ],
+                        'zaytoven': [
+                            'Church Piano Loops',
+                            'Gospel Organ Sounds',
+                            'Sunday Morning Church',
+                            'Mahalia Jackson - Precious Lord',
+                            'Kirk Franklin - Stomp',
+                            'Fred Hammond - Let The Praise Begin',
+                            'Traditional Gospel Keys'
+                        ],
+                        'lex luger': [
+                            'Hans Zimmer - Inception Horn',
+                            'Batman Theme Strings',
+                            'Orchestral Hit Samples',
+                            'Brass Hit Samples',
+                            'Epic Movie Trailer Sounds',
+                            'Requiem For A Dream'
+                        ]
                     };
                     
                     // Buscar coincidencias exactas o parciales
@@ -800,25 +1065,99 @@
                         }
                     }
                     
-                    // Detección basada en tags
+                    // Detección basada en tags con artistas específicos
                     if (tagNames.some(t => t.includes('jazz rap') || t.includes('jazz'))) {
-                        return ['jazz samples', 'soul breaks', 'roy ayers', 'herbie hancock', 'grant green', 'rare grooves'];
-                    } else if (tagNames.some(t => t.includes('boom bap'))) {
-                        return ['soul breaks', 'jazz loops', 'james brown', 'isaac hayes', 'dusty drums', 'vinyl samples'];
+                        return [
+                            'Roy Ayers - Everybody Loves The Sunshine',
+                            'Herbie Hancock - Chameleon',
+                            'Grant Green - Maybe Tomorrow',
+                            'Ahmad Jamal - Swahililand',
+                            'Lonnie Liston Smith - Expansions',
+                            'Donald Byrd - Wind Parade',
+                            'Bob James - Nautilus',
+                            'Grover Washington Jr - Mister Magic',
+                            'Ramsey Lewis - Sun Goddess',
+                            'George Duke - Dukey Stick'
+                        ];
+                    } else if (tagNames.some(t => t.includes('boom bap') || t.includes('90'))) {
+                        return [
+                            'The Emotions - Blind Alley',
+                            'James Brown - Funky Drummer',
+                            'Isaac Hayes - Walk On By',
+                            'Curtis Mayfield - Move On Up',
+                            'Joe Sample - In All My Wildest Dreams',
+                            'The Honey Drippers - Impeach The President',
+                            'Tom Scott - Today',
+                            'Bob James - Take Me To The Mardi Gras',
+                            'Ahmad Jamal - Swahililand',
+                            'The Isley Brothers - Footsteps In The Dark'
+                        ];
                     } else if (tagNames.some(t => t.includes('trap'))) {
-                        return ['trap samples', '808 drums', 'dark melodies', 'orchestral hits', 'horror strings'];
+                        return [
+                            'Halloween Theme',
+                            'Hans Zimmer - Time',
+                            'Dark Knight Rises Chant',
+                            'Inception Horn',
+                            'Requiem For A Dream',
+                            'Friday The 13th Theme',
+                            'The Exorcist Theme',
+                            'Psycho Strings',
+                            'Saw Theme'
+                        ];
                     } else if (tagNames.some(t => t.includes('west coast') || t.includes('g-funk'))) {
-                        return ['funk samples', 'p-funk', 'george clinton', 'zapp', 'roger troutman', 'vocoder'];
+                        return [
+                            'Parliament - Flashlight',
+                            'George Clinton - Atomic Dog',
+                            'Zapp - More Bounce To The Ounce',
+                            'Bootsy Collins - I\'d Rather Be With You',
+                            'Roger Troutman - I Heard It',
+                            'Funkadelic - (Not Just) Knee Deep',
+                            'Ohio Players - Funky Worm',
+                            'Leon Haywood - I Want\'a Do Something',
+                            'Bar-Kays - Freakshow',
+                            'Cameo - Word Up'
+                        ];
                     } else if (tagNames.some(t => t.includes('east coast'))) {
-                        return ['soul samples', 'jazz breaks', 'rare grooves', 'dusty vinyl', 'boom bap drums'];
-                    } else if (tagNames.some(t => t.includes('experimental') || t.includes('abstract'))) {
-                        return ['experimental samples', 'rare records', 'world music', 'psych rock', 'avant-garde'];
+                        return [
+                            'Bob James - Nautilus',
+                            'The Emotions - Blind Alley',
+                            'Isaac Hayes - Walk On By',
+                            'Curtis Mayfield - Little Child Runnin Wild',
+                            'Ahmad Jamal - Swahililand',
+                            'Tom Scott - Today',
+                            'Grant Green - Maybe Tomorrow',
+                            'Joe Sample - Rainbows',
+                            'The Honey Drippers - Impeach',
+                            'Marvin Gaye - Inner City Blues'
+                        ];
                     } else if (tagNames.some(t => t.includes('soul'))) {
-                        return ['soul samples', 'motown', 'curtis mayfield', 'marvin gaye', 'aretha franklin'];
+                        return [
+                            'Curtis Mayfield - Move On Up',
+                            'Marvin Gaye - What\'s Going On',
+                            'Al Green - Love And Happiness',
+                            'Isaac Hayes - Walk On By',
+                            'The Delfonics - La La Means I Love You',
+                            'Bill Withers - Use Me',
+                            'Donny Hathaway - The Ghetto',
+                            'Aretha Franklin - Rock Steady',
+                            'The Dramatics - In The Rain',
+                            'Barry White - Never Gonna Give Up'
+                        ];
                     }
                     
-                    // Default
-                    return ['soul samples', 'jazz breaks', 'funk loops', 'vinyl records', 'rare grooves'];
+                    // Default - Lista general de soul/jazz clásico
+                    return [
+                        'Isaac Hayes - Walk On By',
+                        'Curtis Mayfield - Move On Up',
+                        'James Brown - Funky Drummer',
+                        'Roy Ayers - Everybody Loves The Sunshine',
+                        'Bob James - Nautilus',
+                        'The Emotions - Blind Alley',
+                        'Ahmad Jamal - Swahililand',
+                        'Marvin Gaye - Inner City Blues',
+                        'The Isley Brothers - Footsteps In The Dark',
+                        'Al Green - Love And Happiness'
+                    ];
                 },
                 
                 async loadYoutubeVideos(artist) {
