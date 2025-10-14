@@ -808,6 +808,237 @@
                 padding: 0.7rem;
             }
         }
+
+        /* Footer Mejorado */
+        .app-footer {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%);
+            color: white;
+            padding: 3rem 2rem 1rem;
+            margin-top: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-main {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-info h4 {
+            color: #3498db;
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .developer-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #ecf0f1;
+            margin-bottom: 0.25rem;
+        }
+
+        .developer-title {
+            color: #bdc3c7;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-description {
+            color: #ecf0f1;
+            line-height: 1.6;
+            max-width: 500px;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .support-section h5,
+        .contact-section h5 {
+            color: #3498db;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .support-section p,
+        .contact-section p {
+            color: #bdc3c7;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .kofi-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: linear-gradient(135deg, #FF5E5B 0%, #FF8A80 100%);
+            color: white;
+            text-decoration: none;
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 94, 91, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kofi-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .kofi-btn:hover::before {
+            left: 100%;
+        }
+
+        .kofi-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 94, 91, 0.4);
+        }
+
+        .kofi-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .kofi-text {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .kofi-subtext {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .social-link:hover {
+            background: rgba(52, 152, 219, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .footer-stats {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #bdc3c7;
+        }
+
+        .footer-copyright {
+            color: #95a5a6;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Footer */
+        @media (max-width: 768px) {
+            .app-footer {
+                padding: 2rem 1rem 1rem;
+            }
+
+            .footer-main {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+                gap: 1.5rem;
+            }
+
+            .footer-stats {
+                justify-content: center;
+                gap: 1.5rem;
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+
+            .kofi-btn {
+                padding: 1.25rem 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .footer-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .stat-item {
+                padding: 0.5rem;
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 8px;
+            }
+        }
     </style>
 </head>
 
@@ -969,14 +1200,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Footer -->
-                            <div class="text-center text-white mt-4">
-                                <p class="mb-2">💻 Desarrollado con ❤️ por <strong>Hugo Ramos Espino</strong></p>
-                                <a href="https://ko-fi.com/hugoramos" target="_blank" class="btn btn-sm"
-                                    style="background: #FF5E5B; color: white; border-radius: 10px; text-decoration: none; padding: 8px 20px; font-weight: 600;">
-                                    ☕ Apóyame en Ko-fi
-                                </a>
-                            </div>
+                            <!-- Footer movido al final de la página -->
                         </div>
                     </div>
                 </div>
@@ -1091,6 +1315,68 @@
             </div>
         </div>
 
+        <!-- Footer Mejorado -->
+        <footer class="app-footer">
+            <div class="footer-content">
+                <div class="footer-main">
+                    <div class="footer-info">
+                        <div class="developer-info">
+                            <h4>💻 Desarrollado con ❤️</h4>
+                            <p class="developer-name">Hugo Ramos Espino</p>
+                            <p class="developer-title">Desarrollador Full Stack & UX Designer</p>
+                        </div>
+                        <div class="footer-description">
+                            <p>Mi Refugio es una aplicación creada con amor y dedicación para brindar apoyo emocional inteligente. Cada línea de código está pensada para ayudarte en tu bienestar mental.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="footer-links">
+                        <div class="support-section">
+                            <h5>🤝 Apoya este proyecto</h5>
+                            <p>Tu apoyo me ayuda a seguir mejorando la aplicación y crear más herramientas para el bienestar mental.</p>
+                            <a href="https://ko-fi.com/hugoramos" target="_blank" class="kofi-btn">
+                                <span class="kofi-icon">☕</span>
+                                <span class="kofi-text">Apóyame en Ko-fi</span>
+                                <span class="kofi-subtext">Café para el desarrollador</span>
+                            </a>
+                        </div>
+                        
+                        <div class="contact-section">
+                            <h5>📧 Conecta conmigo</h5>
+                            <div class="social-links">
+                                <a href="mailto:hugoramos.developer2024@gmail.com" class="social-link email">
+                                    📧 Email
+                                </a>
+                                <a href="https://github.com/dev-hugoramos" target="_blank" class="social-link github">
+                                    🐙 GitHub
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="footer-bottom">
+                    <div class="footer-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">12</span>
+                            <span class="stat-label">Emociones detectadas</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">100%</span>
+                            <span class="stat-label">Privacidad garantizada</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">24/7</span>
+                            <span class="stat-label">Disponible siempre</span>
+                        </div>
+                    </div>
+                    <div class="footer-copyright">
+                        <p>© 2024 Hugo Ramos Espino. Hecho con ❤️ para tu bienestar emocional.</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
     </div>
 
     <script>
@@ -1126,7 +1412,10 @@
                         'excitement': { label: 'Emoción', emoji: '🤩', type: 'positive', color: '#F39C12' },
                         'gratitude': { label: 'Gratitud', emoji: '🙏', type: 'positive', color: '#27AE60' },
                         'confusion': { label: 'Confusión', emoji: '😕', type: 'neutral', color: '#95A5A6' },
-                        'hopeful': { label: 'Esperanza', emoji: '🌟', type: 'positive', color: '#3498DB' }
+                        'hopeful': { label: 'Esperanza', emoji: '🌟', type: 'positive', color: '#3498DB' },
+                        'suicide_crisis': { label: 'Crisis de Suicidio', emoji: '🚨', type: 'critical', color: '#E74C3C' },
+                        'self_harm': { label: 'Autolesión', emoji: '⚠️', type: 'critical', color: '#E67E22' },
+                        'health_crisis': { label: 'Crisis de Salud', emoji: '🏥', type: 'critical', color: '#9B59B6' }
                     },
                     empathyPhrases: {
                         'joy': [
@@ -1188,6 +1477,21 @@
                             '¡{name}, qué hermoso es sentir esperanza en tu corazón! La esperanza es como una estrella que brilla incluso en la noche más oscura. Es esa chispa de luz que nos recuerda que siempre hay posibilidades, que siempre hay algo por lo que luchar. Tu esperanza no es ingenua, es valiente. Es la decisión consciente de creer en un futuro mejor, incluso cuando el presente es difícil. Mantén esa esperanza viva, aliméntala con acciones pequeñas cada día, y verás cómo se convierte en realidad. 🌟💫',
                             'Querido/a {name}, la esperanza que sientes es uno de los regalos más preciosos que puedes tener. No es solo un sentimiento, es una fuerza que puede mover montañas. Cuando tienes esperanza, tienes poder para crear el cambio que deseas ver en tu vida. La esperanza te da la fuerza para seguir adelante cuando las cosas se ponen difíciles. Comparte tu esperanza con otros, porque es contagiosa y puede iluminar el camino de quienes te rodean. Eres un faro de luz en este mundo. 🕯️✨',
                             '{name}, sentir esperanza es como tener un jardín secreto en tu corazón donde las flores más hermosas pueden florecer. Es esa certeza interna de que las cosas pueden mejorar, de que hay un mañana lleno de posibilidades. Tu esperanza no es fantasía, es fe en tu propia capacidad de crear y atraer cosas buenas a tu vida. Cada día que eliges la esperanza sobre el miedo, estás eligiendo la vida. Sigue creyendo, sigue esperando, porque tu esperanza es el primer paso hacia la realización de tus sueños. 🌈💖'
+                        ],
+                        'suicide_crisis': [
+                            '🚨 {name}, por favor escucha con atención: Lo que estás sintiendo en este momento es temporal, aunque parezca que no hay salida. Tu vida tiene un valor incalculable y este dolor que sientes ahora no será para siempre. Por favor, no tomes ninguna decisión permanente basada en sentimientos temporales. Hay personas que te aman y se preocupan por ti, aunque en este momento no puedas verlo. Tu existencia importa, tu historia no ha terminado. Por favor, busca ayuda inmediatamente. Puedes llamar al 911, a la línea de crisis 988, o hablar con alguien de confianza AHORA MISMO. No estás solo/a. 🌟💙',
+                            'Querido/a {name}, siento profundamente el dolor que estás experimentando. Es comprensible que te sientas abrumado/a y que veas la muerte como la única salida, pero te prometo que hay otras opciones. Este momento de desesperación es pasajero, aunque ahora no lo parezca. Tu cerebro está en modo de supervivencia y puede estar distorsionando la realidad. Por favor, dale tiempo a tu mente para calmarse. Hay profesionales capacitados que pueden ayudarte a superar esta crisis. Tu vida vale la pena ser vivida. Por favor, busca ayuda profesional INMEDIATAMENTE. No estás solo/a en esto. 💙🤝',
+                            '{name}, entiendo que estás pasando por uno de los momentos más difíciles de tu vida. El dolor que sientes es real y válido, pero también es temporal. La depresión y los pensamientos suicidas son condiciones médicas tratables, no defectos de carácter. Hay esperanza y hay ayuda disponible. Por favor, no tomes decisiones permanentes en un estado temporal. Tu familia, amigos, o incluso extraños como yo, nos preocupamos por ti. Tu vida tiene propósito y significado, aunque en este momento no puedas verlo. Por favor, busca ayuda profesional AHORA. La línea de crisis está disponible 24/7. No estás solo/a. 🌈💙'
+                        ],
+                        'self_harm': [
+                            '⚠️ {name}, entiendo que el dolor emocional puede ser tan intenso que buscas formas de aliviarlo, pero lastimarte físicamente no es la solución. El dolor que sientes es real y válido, pero hay formas más saludables de manejarlo. Por favor, considera hablar con un profesional de la salud mental que puede ayudarte a desarrollar estrategias de afrontamiento más seguras. Tu cuerpo merece ser tratado con amor y respeto. Si ya te has lastimado, por favor busca atención médica si es necesario. No estás solo/a en esto y hay ayuda disponible. 💙🤝',
+                            'Querido/a {name}, siento mucho que estés pasando por tanto dolor que sientes la necesidad de lastimarte. Este comportamiento es una señal de que estás sufriendo profundamente y necesitas apoyo profesional. La autolesión puede proporcionar alivio temporal, pero no resuelve el problema subyacente. Hay alternativas más saludables para manejar el dolor emocional. Por favor, considera buscar ayuda de un terapeuta o consejero que pueda ayudarte a desarrollar herramientas de afrontamiento más efectivas. Tu bienestar es importante. 🌟💙',
+                            '{name}, entiendo que estás experimentando un dolor emocional tan intenso que parece insoportable. La autolesión puede sentirse como la única forma de alivio, pero hay otras opciones. Por favor, recuerda que mereces cuidado y compasión, especialmente hacia ti mismo/a. Si estás teniendo pensamientos de autolesión, por favor habla con alguien de confianza o busca ayuda profesional. Hay líneas de crisis disponibles las 24 horas que pueden ayudarte a superar este momento difícil. No tienes que enfrentar esto solo/a. 💙🌈'
+                        ],
+                        'health_crisis': [
+                            '🏥 {name}, siento profundamente que estés enfrentando una crisis de salud tan difícil. Es completamente normal sentir miedo, ansiedad y tristeza ante diagnósticos médicos serios. Tu valentía al enfrentar esta situación es admirable. Por favor, recuerda que no estás solo/a en esto - hay equipos médicos especializados, grupos de apoyo, y personas que te aman y están aquí para ayudarte. Es importante que expreses tus emociones y no las guardes dentro. Considera hablar con un consejero especializado en pacientes con enfermedades graves. Tu fuerza interior es más grande de lo que crees. 💙🌟',
+                            'Querido/a {name}, enfrentar una crisis de salud es una de las experiencias más desafiantes que una persona puede vivir. Es natural sentir una mezcla de emociones: miedo, tristeza, ira, negación. Todas estas emociones son válidas y parte del proceso. Por favor, no dudes en buscar apoyo emocional además del tratamiento médico. Los grupos de apoyo, terapeutas especializados, y seres queridos pueden ser una red de apoyo invaluable. Tu actitud y determinación pueden marcar una gran diferencia en tu proceso de curación. Eres más fuerte de lo que sabes. 🌈💪',
+                            '{name}, mi corazón está contigo mientras enfrentas esta crisis de salud. Es comprensible que te sientas abrumado/a y que las emociones sean intensas. La incertidumbre sobre el futuro puede ser aterradora, pero por favor recuerda que la medicina moderna avanza constantemente y hay muchas historias de esperanza y recuperación. Mantén la comunicación abierta con tu equipo médico y no tengas miedo de hacer preguntas. También es crucial cuidar tu salud mental durante este proceso. Busca apoyo profesional si lo necesitas. No estás solo/a en esta lucha. 💙🤝'
                         ]
                     },
                     // Sistema de música generada programáticamente
@@ -1239,6 +1543,21 @@
                             frequencies: [330, 440, 523], // Mi, La, Do
                             tempo: 100,
                             pattern: 'balanced'
+                        },
+                        'suicide_crisis': {
+                            frequencies: [220, 277, 330], // La, Do, Mi (calmante)
+                            tempo: 60,
+                            pattern: 'calming'
+                        },
+                        'self_harm': {
+                            frequencies: [220, 330, 415], // La, Mi, La sostenido (tranquilizador)
+                            tempo: 70,
+                            pattern: 'soothing'
+                        },
+                        'health_crisis': {
+                            frequencies: [392, 523, 659], // Sol, Do, Mi (esperanzador)
+                            tempo: 85,
+                            pattern: 'hopeful'
                         }
                     }
                 }
@@ -1281,17 +1600,39 @@
             methods: {
                 detectEmotionFromKeywords(text) {
                     const lowerText = text.toLowerCase();
+                    
+                    // PRIORIDAD 1: Detectar situaciones críticas PRIMERO
+                    const criticalKeywords = {
+                        'suicide_crisis': ['me quiero morir', 'quiero morir', 'me quiero suicidar', 'suicidar', 'suicidio', 'matarme', 'acabar con todo', 'no quiero vivir', 'mejor muerto', 'no vale la pena vivir', 'todo está perdido', 'no hay salida', 'quiero desaparecer', 'acabar con mi vida', 'terminar con esto', 'ya no puedo más', 'no aguanto más', 'mejor me mato', 'quiero matarme', 'no quiero existir'],
+                        'self_harm': ['cortarme', 'cortar', 'herirme', 'lastimarme', 'autolesión', 'dañarme', 'hacerme daño', 'golpearme', 'quemarme'],
+                        'health_crisis': ['cáncer', 'tumor', 'enfermedad terminal', 'me voy a morir', 'estoy enfermo', 'muy enfermo', 'hospital', 'quimioterapia', 'operación', 'cirugía urgente', 'diagnóstico terrible', 'médico dice', 'no hay cura']
+                    };
+                    
+                    // Verificar situaciones críticas primero
+                    for (let crisis in criticalKeywords) {
+                        for (let keyword of criticalKeywords[crisis]) {
+                            if (lowerText.includes(keyword)) {
+                                return { 
+                                    emotion: crisis, 
+                                    score: 0.95, 
+                                    confidence: 0.98,
+                                    isCritical: true
+                                };
+                            }
+                        }
+                    }
+                    
                     const keywords = {
-                        'sadness': ['triste', 'tristeza', 'deprimido', 'depresión', 'lloro', 'llorar', 'llorando', 'dolor', 'pérdida', 'muerte', 'murió', 'falleció', 'duelo', 'solo', 'sola', 'soledad', 'vacío', 'desesperado', 'desesperanza', 'melancolía', 'nostalgia', 'perdí', 'extraño', 'falta', 'abandonado', 'desanimado', 'sufro', 'sufrimiento'],
-                        'anger': ['enojado', 'enojo', 'rabia', 'furioso', 'furia', 'molesto', 'irritado', 'frustrado', 'frustración', 'odio', 'coraje', 'enfadado', 'ira', 'injusto', 'injusticia', 'harto', 'cansado de', 'indignado', 'maldito', 'cabrón', 'no puedo más', 'me da rabia', 'estúpido', 'idiota'],
-                        'fear': ['miedo', 'temor', 'asustado', 'aterrado', 'pánico', 'terror', 'angustia', 'angustiado', 'inseguro', 'inseguridad', 'amenaza', 'peligro', 'tengo miedo', 'me asusta', 'vulnerable'],
-                        'anxiety': ['ansiedad', 'ansioso', 'nervioso', 'preocupado', 'preocupación', 'estrés', 'estresado', 'agobiado', 'agobio', 'presión', 'presionado', 'tensión', 'tenso'],
-                        'joy': ['feliz', 'felicidad', 'alegre', 'alegría', 'contento', 'emocionado', 'emoción', 'dichoso', 'eufórico', 'radiante', 'maravilloso', 'genial', 'increíble', 'fantástico', 'excelente', 'bendecido', 'afortunado', 'celebrar', 'logré', 'conseguí', 'éxito', 'victoria'],
-                        'love': ['amor', 'amo', 'quiero', 'cariño', 'te amo', 'enamorado', 'enamorada', 'adorar', 'adoro', 'pasión', 'afecto', 'romántico', 'corazón', 'beso', 'abrazo', 'pareja', 'novio', 'novia', 'esposo', 'esposa', 'familia'],
-                        'gratitude': ['agradecido', 'agradecida', 'gracias', 'bendecido', 'bendecida', 'afortunado', 'afortunada', 'suerte', 'fortuna', 'agradezco', 'reconocimiento'],
-                        'excitement': ['emocionado', 'emocionada', 'excitado', 'excitada', 'expectativa', 'anticipación', 'esperando', 'anhelando', 'deseando'],
-                        'confusion': ['confundido', 'confundida', 'confusión', 'perdido', 'perdida', 'no entiendo', 'no sé', 'duda', 'dudoso', 'incierto'],
-                        'hopeful': ['esperanza', 'esperanzado', 'esperanzada', 'optimista', 'positivo', 'positiva', 'fe', 'creer', 'confío']
+                        'sadness': ['triste', 'tristeza', 'deprimido', 'depresión', 'lloro', 'llorar', 'llorando', 'dolor', 'pérdida', 'muerte', 'murió', 'falleció', 'duelo', 'solo', 'sola', 'soledad', 'vacío', 'desesperado', 'desesperanza', 'melancolía', 'nostalgia', 'perdí', 'extraño', 'falta', 'abandonado', 'desanimado', 'sufro', 'sufrimiento', 'llanto', 'llanto', 'desconsolado', 'afligido', 'apenado', 'apenado', 'dolorido', 'sintiendo dolor', 'me duele', 'me duele el corazón', 'roto', 'roto por dentro'],
+                        'anger': ['enojado', 'enojo', 'rabia', 'furioso', 'furia', 'molesto', 'irritado', 'frustrado', 'frustración', 'odio', 'coraje', 'enfadado', 'ira', 'injusto', 'injusticia', 'harto', 'cansado de', 'indignado', 'maldito', 'cabrón', 'no puedo más', 'me da rabia', 'estúpido', 'idiota', 'asco', 'repugnante', 'odioso', 'odio a', 'me cago en', 'me choca', 'me molesta', 'me irrita', 'me enfurece'],
+                        'fear': ['miedo', 'temor', 'asustado', 'aterrado', 'pánico', 'terror', 'angustia', 'angustiado', 'inseguro', 'inseguridad', 'amenaza', 'peligro', 'tengo miedo', 'me asusta', 'vulnerable', 'aterrador', 'horror', 'horroroso', 'espantoso', 'me espanta', 'me da miedo', 'terrorífico', 'susto', 'sustos', 'sobresaltado'],
+                        'anxiety': ['ansiedad', 'ansioso', 'nervioso', 'preocupado', 'preocupación', 'estrés', 'estresado', 'agobiado', 'agobio', 'presión', 'presionado', 'tensión', 'tenso', 'inquieto', 'inquietud', 'intranquilo', 'agitado', 'agitación', 'nervios', 'me pongo nervioso', 'me da ansiedad', 'me agobia', 'me estresa', 'me preocupa'],
+                        'joy': ['feliz', 'felicidad', 'alegre', 'alegría', 'contento', 'emocionado', 'emoción', 'dichoso', 'eufórico', 'radiante', 'maravilloso', 'genial', 'increíble', 'fantástico', 'excelente', 'bendecido', 'afortunado', 'celebrar', 'logré', 'conseguí', 'éxito', 'victoria', 'triunfo', 'gozo', 'gozoso', 'júbilo', 'jubiloso', 'alborozo', 'regocijo', 'placer', 'satisfecho', 'orgulloso'],
+                        'love': ['amor', 'amo', 'quiero', 'cariño', 'te amo', 'enamorado', 'enamorada', 'adorar', 'adoro', 'pasión', 'afecto', 'romántico', 'corazón', 'beso', 'abrazo', 'pareja', 'novio', 'novia', 'esposo', 'esposa', 'familia', 'querido', 'querida', 'amado', 'amada', 'cariñoso', 'ternura', 'ternura', 'mimo', 'mimos', 'consentir'],
+                        'gratitude': ['agradecido', 'agradecida', 'gracias', 'bendecido', 'bendecida', 'afortunado', 'afortunada', 'suerte', 'fortuna', 'agradezco', 'reconocimiento', 'reconocido', 'reconocida', 'agradecimiento', 'bendición', 'privilegiado', 'privilegiada'],
+                        'excitement': ['emocionado', 'emocionada', 'excitado', 'excitada', 'expectativa', 'anticipación', 'esperando', 'anhelando', 'deseando', 'ilusión', 'ilusionado', 'ansioso por', 'impaciente', 'expectante', 'emocionante'],
+                        'confusion': ['confundido', 'confundida', 'confusión', 'perdido', 'perdida', 'no entiendo', 'no sé', 'duda', 'dudoso', 'incierto', 'desorientado', 'desorientada', 'desconcertado', 'desconcertada', 'perplejo', 'perpleja', 'despistado', 'despistada', 'no tengo idea', 'no entiendo nada'],
+                        'hopeful': ['esperanza', 'esperanzado', 'esperanzada', 'optimista', 'positivo', 'positiva', 'fe', 'creer', 'confío', 'esperanzador', 'alentador', 'prometedor', 'prometedora', 'ilusión', 'ilusionado', 'ilusionada', 'motivado', 'motivada', 'animado', 'animada']
                     };
                     
                     let scores = {};
@@ -1534,11 +1875,18 @@
                     // Activar el contexto de audio para evitar restricciones de autoplay
                     if (!this.audioContextActivated) {
                         try {
-                            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                            audioContext.resume();
+                            if (!this.currentAudioContext || this.currentAudioContext.state === 'closed') {
+                                this.currentAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+                            }
+                            
+                            if (this.currentAudioContext.state === 'suspended') {
+                                this.currentAudioContext.resume();
+                            }
+                            
                             this.audioContextActivated = true;
+                            console.log('Audio context activado');
                         } catch (e) {
-                            console.log('Audio context no disponible');
+                            console.log('Audio context no disponible:', e);
                         }
                     }
                 },
@@ -1572,29 +1920,43 @@
                 
                 generateMelody(config) {
                     try {
-                        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                        this.currentAudioContext = audioContext;
+                        // Crear nuevo contexto de audio si no existe o está cerrado
+                        if (!this.currentAudioContext || this.currentAudioContext.state === 'closed') {
+                            this.currentAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+                        }
+                        
+                        const audioContext = this.currentAudioContext;
+                        
+                        // Resumir el contexto si está suspendido
+                        if (audioContext.state === 'suspended') {
+                            audioContext.resume();
+                        }
                         
                         const playNote = (frequency, duration, delay = 0) => {
                             setTimeout(() => {
-                                if (!this.isPlaying) return;
+                                if (!this.isPlaying || audioContext.state === 'closed') return;
                                 
-                                const oscillator = audioContext.createOscillator();
-                                const gainNode = audioContext.createGain();
-                                
-                                oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-                                oscillator.type = this.getWaveType(config.pattern);
-                                
-                                // Configurar envolvente de volumen
-                                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                                gainNode.gain.linearRampToValueAtTime(this.musicVolume * 0.15, audioContext.currentTime + 0.1);
-                                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration);
-                                
-                                oscillator.connect(gainNode);
-                                gainNode.connect(audioContext.destination);
-                                
-                                oscillator.start(audioContext.currentTime);
-                                oscillator.stop(audioContext.currentTime + duration);
+                                try {
+                                    const oscillator = audioContext.createOscillator();
+                                    const gainNode = audioContext.createGain();
+                                    
+                                    oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+                                    oscillator.type = this.getWaveType(config.pattern);
+                                    
+                                    // Configurar envolvente de volumen más suave
+                                    const volume = this.musicVolume * 0.1; // Reducir volumen general
+                                    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                                    gainNode.gain.linearRampToValueAtTime(volume, audioContext.currentTime + 0.05);
+                                    gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration);
+                                    
+                                    oscillator.connect(gainNode);
+                                    gainNode.connect(audioContext.destination);
+                                    
+                                    oscillator.start(audioContext.currentTime);
+                                    oscillator.stop(audioContext.currentTime + duration);
+                                } catch (e) {
+                                    console.log('Error reproduciendo nota:', e);
+                                }
                             }, delay);
                         };
                         
@@ -1635,6 +1997,18 @@
                                         playNote(freq * 1.5, beatDuration * 0.6, i * beatDuration * 0.3 + beatDuration * 0.3);
                                     });
                                     break;
+                                case 'soothing':
+                                    frequencies.forEach((freq, i) => {
+                                        playNote(freq, beatDuration * 3, i * beatDuration * 2);
+                                        playNote(freq * 0.8, beatDuration * 2, i * beatDuration * 2 + beatDuration * 1.5);
+                                    });
+                                    break;
+                                case 'hopeful':
+                                    playNote(frequencies[0], beatDuration * 2, 0);
+                                    playNote(frequencies[1], beatDuration * 2, beatDuration * 1);
+                                    playNote(frequencies[2], beatDuration * 2, beatDuration * 2);
+                                    playNote(frequencies[1], beatDuration * 2, beatDuration * 3);
+                                    break;
                                 default:
                                     frequencies.forEach((freq, i) => {
                                         playNote(freq, beatDuration, i * beatDuration * 0.6);
@@ -1664,7 +2038,9 @@
                         'calming': 'sine',
                         'uplifting': 'triangle',
                         'optimistic': 'triangle',
-                        'balanced': 'sine'
+                        'balanced': 'sine',
+                        'soothing': 'sine',
+                        'hopeful': 'triangle'
                     };
                     return waveTypes[pattern] || 'sine';
                 },
