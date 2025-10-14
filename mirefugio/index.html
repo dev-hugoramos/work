@@ -813,8 +813,8 @@
         .app-footer {
             background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%);
             color: white;
-            padding: 2rem 2rem 1rem;
-            margin-top: 2rem;
+            padding: 3rem 2rem 1rem;
+            margin-top: 4rem;
             position: relative;
             overflow: hidden;
         }
@@ -1194,12 +1194,13 @@
                                         <!-- Opciones adicionales -->
                                         <div v-if="userHistory.length > 0" class="text-center mt-3">
                                             <small class="text-muted">Opciones de privacidad:</small><br>
-                                            <button @click="exportData" class="btn btn-sm btn-outline-primary me-2">📄 Exportar datos</button>
+                                            <button @click="exportData" class="btn btn-sm btn-outline-primary me-2">📁 Exportar datos</button>
                                             <button @click="clearHistory" class="btn btn-sm btn-outline-danger">🗑️ Limpiar historial</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <!-- Footer movido al final de la página -->
                         </div>
                     </div>
                 </div>
@@ -1220,6 +1221,8 @@
             </div>
         </div>
 
+        <!-- Sistema de música generada programáticamente (sin archivos externos) -->
+
         <!-- Modal del Historial -->
         <div v-if="showHistoryModal" class="modal-overlay" @click="closeHistoryModal">
             <div class="modal-content" @click.stop>
@@ -1229,7 +1232,7 @@
                 </div>
                 <div class="modal-body">
                     <div v-if="userHistory.length === 0" class="empty-history">
-                        <div class="empty-icon">📭</div>
+                        <div class="empty-icon">📝</div>
                         <h4>Tu historial está vacío</h4>
                         <p>Comienza a compartir tus emociones para ver tu progreso aquí</p>
                     </div>
@@ -1305,7 +1308,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button @click="exportData" class="btn btn-outline-primary">📄 Exportar datos</button>
+                    <button @click="exportData" class="btn btn-outline-primary">📁 Exportar datos</button>
                     <button @click="clearHistory" class="btn btn-outline-danger">🗑️ Limpiar historial</button>
                     <button @click="closeHistoryModal" class="btn btn-primary">✅ Cerrar</button>
                 </div>
@@ -1320,7 +1323,7 @@
                         <div class="developer-info">
                             <h4>💻 Desarrollado con ❤️</h4>
                             <p class="developer-name">Hugo Ramos Espino</p>
-                            <p class="developer-title">Desarrollador Full Stack & UX Designer</p>
+                            <p class="developer-title">Desarrollador Full Stack & Android Developer</p>
                         </div>
                         <div class="footer-description">
                             <p>Mi Refugio es una aplicación creada con amor y dedicación para brindar apoyo emocional inteligente. Cada línea de código está pensada para ayudarte en tu bienestar mental.</p>
@@ -1355,7 +1358,7 @@
                 <div class="footer-bottom">
                     <div class="footer-stats">
                         <div class="stat-item">
-                            <span class="stat-number">27</span>
+                            <span class="stat-number">12</span>
                             <span class="stat-label">Emociones detectadas</span>
                         </div>
                         <div class="stat-item">
@@ -1368,7 +1371,7 @@
                         </div>
                     </div>
                     <div class="footer-copyright">
-                        <p>© 2024 Hugo Ramos Espino. Hecho con ❤️ para tu bienestar emocional.</p>
+                        <p>© 2025 Hugo Ramos Espino. Hecho con ❤️ para tu bienestar emocional.</p>
                     </div>
                 </div>
             </div>
