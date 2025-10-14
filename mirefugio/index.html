@@ -23,7 +23,7 @@
 
         .app-container {
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 30%, #f093fb 70%, #f5576c 100%);
             position: relative;
         }
 
@@ -241,6 +241,190 @@
         .suggestion-item:last-child {
             margin-bottom: 0;
         }
+
+        .volume-control {
+            margin-top: 10px;
+        }
+
+        .volume-slider {
+            width: 80px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* Mejoras para móviles */
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 0;
+            }
+
+            .content-wrapper {
+                padding: 1rem;
+            }
+
+            .header-section h1 {
+                font-size: 2rem;
+            }
+
+            .card {
+                margin: 0;
+                border-radius: 15px;
+            }
+
+            .card-body {
+                padding: 1.5rem !important;
+            }
+
+            .btn-lg {
+                font-size: 1rem;
+                padding: 0.75rem 1rem;
+            }
+
+            .music-control {
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .music-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+
+            .empathy-message {
+                font-size: 1.1rem;
+                line-height: 1.6;
+            }
+
+            .insights-card {
+                padding: 1rem;
+            }
+
+            .smart-suggestions {
+                padding: 1rem;
+            }
+
+            .result-card {
+                padding: 1.5rem;
+            }
+
+            .floating-circle {
+                display: none;
+            }
+
+            .btn {
+                margin-bottom: 0.5rem;
+                width: 100%;
+            }
+
+            .btn + .btn {
+                margin-left: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-section h1 {
+                font-size: 1.8rem;
+            }
+
+            .empathy-message {
+                font-size: 1rem;
+            }
+
+            .insights-card,
+            .smart-suggestions {
+                padding: 0.8rem;
+            }
+
+            .music-control {
+                bottom: 15px;
+                right: 15px;
+            }
+
+            .music-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 1rem;
+            }
+        }
+
+        /* Animaciones suaves */
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn {
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .suggestion-item {
+            transition: all 0.3s ease;
+        }
+
+        .suggestion-item:hover {
+            transform: translateX(5px);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Mejoras de accesibilidad */
+        .btn:focus,
+        input:focus,
+        textarea:focus {
+            outline: 2px solid #fff;
+            outline-offset: 2px;
+        }
+
+        /* Efectos de carga mejorados */
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            border-width: 0.3rem;
+        }
+
+        /* Mejoras visuales adicionales */
+        .emotion-badge {
+            font-size: 1.1rem;
+            padding: 12px 24px;
+        }
+
+        .confidence-bar {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .confidence-fill {
+            background: linear-gradient(90deg, #4CAF50, #8BC34A, #FFD700);
+        }
     </style>
 </head>
 
@@ -366,12 +550,15 @@
 
                                         <div v-if="needsHelp" class="alert alert-help">
                                             <h5>🤗 Hay gente aquí para ayudarte:</h5>
-                                            <p>Si estás pasando por un momento difícil:</p>
+                                            <p>Si estás pasando por un momento difícil, no estás solo/a:</p>
                                             <ul>
+                                                <li><strong>🚨 Emergencias:</strong> 911</li>
                                                 <li><strong>Línea de la Vida (México):</strong> 800 911 2000</li>
-                                                <li><strong>SAPTEL:</strong> 55 5259 8121</li>
+                                                <li><strong>SAPTEL (Suicidio):</strong> 55 5259 8121</li>
                                                 <li><strong>Crisis Text Line:</strong> Envía HOME al 741741</li>
+                                                <li><strong>Línea de Ayuda Psicológica:</strong> 800 911 2000</li>
                                             </ul>
+                                            <p class="mb-0"><strong>Recuerda:</strong> Tu vida tiene valor. Busca ayuda profesional. No tienes que enfrentar esto solo/a. 💙</p>
                                         </div>
 
                                         <!-- Sugerencias Inteligentes -->
@@ -414,11 +601,18 @@
 
             <!-- Música -->
             <div class="music-control">
-                <button @click="toggleMusic" class="music-btn">{{ isPlaying ? '🔊' : '🔇' }}</button>
+                <button @click="toggleMusic" class="music-btn" :title="isPlaying ? 'Pausar música' : 'Reproducir música'">
+                    {{ isPlaying ? '🔊' : '🔇' }}
+                </button>
+                <div class="volume-control" v-if="isPlaying">
+                    <input type="range" min="0" max="1" step="0.1" v-model="musicVolume" 
+                           @input="updateVolume" class="volume-slider" title="Control de volumen">
+                </div>
             </div>
         </div>
 
         <!-- Audio dinámico -->
+        <audio ref="bgMusic" :src="currentMusic" loop preload="auto" @ended="nextTrack"></audio>
 
     </div>
 
@@ -438,6 +632,8 @@
                     userHistory: JSON.parse(localStorage.getItem('emotionHistory') || '[]'),
                     currentMood: JSON.parse(localStorage.getItem('currentMood') || 'null'),
                     aiInsights: null,
+                    currentMusic: null,
+                    musicVolume: 0.3,
                     emotionMap: {
                         'joy': { label: 'Alegría', emoji: '😊', type: 'positive', color: '#FFD93D' },
                         'sadness': { label: 'Tristeza', emoji: '😢', type: 'negative', color: '#6C7CE7' },
@@ -513,6 +709,44 @@
                             'Querido/a {name}, la esperanza que sientes es uno de los regalos más preciosos que puedes tener. No es solo un sentimiento, es una fuerza que puede mover montañas. Cuando tienes esperanza, tienes poder para crear el cambio que deseas ver en tu vida. La esperanza te da la fuerza para seguir adelante cuando las cosas se ponen difíciles. Comparte tu esperanza con otros, porque es contagiosa y puede iluminar el camino de quienes te rodean. Eres un faro de luz en este mundo. 🕯️✨',
                             '{name}, sentir esperanza es como tener un jardín secreto en tu corazón donde las flores más hermosas pueden florecer. Es esa certeza interna de que las cosas pueden mejorar, de que hay un mañana lleno de posibilidades. Tu esperanza no es fantasía, es fe en tu propia capacidad de crear y atraer cosas buenas a tu vida. Cada día que eliges la esperanza sobre el miedo, estás eligiendo la vida. Sigue creyendo, sigue esperando, porque tu esperanza es el primer paso hacia la realización de tus sueños. 🌈💖'
                         ]
+                    },
+                    musicPlaylist: {
+                        'joy': [
+                            'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+                            // Música alegre y energética
+                        ],
+                        'sadness': [
+                            'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+                            // Música calmante y consoladora
+                        ],
+                        'anger': [
+                            'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+                            // Música relajante para canalizar la energía
+                        ],
+                        'fear': [
+                            'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+                            // Música tranquilizadora
+                        ],
+                        'love': [
+                            'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+                            // Música romántica y cálida
+                        ],
+                        'anxiety': [
+                            'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+                            // Música de meditación y relajación
+                        ],
+                        'gratitude': [
+                            'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+                            // Música inspiradora y elevadora
+                        ],
+                        'hopeful': [
+                            'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+                            // Música optimista y motivadora
+                        ],
+                        'neutral': [
+                            'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+                            // Música ambiente suave
+                        ]
                     }
                 }
             },
@@ -534,7 +768,11 @@
                 needsHelp() {
                     if (!this.result) return false;
                     const negativeEmotions = ['sadness', 'anger', 'fear', 'anxiety'];
-                    return negativeEmotions.includes(this.result.emotion) && this.result.score > 0.7;
+                    const crisisKeywords = ['suicidio', 'suicidar', 'matarme', 'no quiero vivir', 'cáncer', 'enfermo', 'tumor'];
+                    const hasCrisisKeywords = crisisKeywords.some(keyword => 
+                        this.feeling.toLowerCase().includes(keyword)
+                    );
+                    return (negativeEmotions.includes(this.result.emotion) && this.result.score > 0.7) || hasCrisisKeywords;
                 },
                 emotionalTrend() {
                     if (this.userHistory.length < 3) return 'insuficiente';
@@ -678,6 +916,9 @@
                         // Generar insights inteligentes
                         this.generateInsights();
                         
+                        // Cambiar música según la emoción
+                        this.changeMusicByEmotion(finalResult.emotion);
+                        
                     } catch (e) { 
                         console.error(e); 
                         this.result = { emotion: 'neutral', score: 0.5, confidence: 0.3 }; 
@@ -745,6 +986,40 @@
                     const name = this.name || "Amigo/a";
                     text = text.toLowerCase();
                     
+                    // DETECCIÓN DE CRISIS - RESPUESTAS URGENTES Y HUMANAS
+                    const crisisKeywords = {
+                        suicide: ['suicidio', 'suicidar', 'matarme', 'acabar con todo', 'no quiero vivir', 'terminar con mi vida', 'quitarse la vida'],
+                        selfHarm: ['cortarme', 'lastimarme', 'herirme', 'dañarme', 'autolesión', 'dañarme a mí mismo'],
+                        severeDepression: ['no puedo más', 'no aguanto', 'estoy acabado', 'sin esperanza', 'no hay salida', 'todo está perdido'],
+                        crisis: ['crisis', 'emergencia', 'ayuda urgente', 'no sé qué hacer', 'desesperado', 'pánico total']
+                    };
+                    
+                    // Detectar crisis de suicidio
+                    if (crisisKeywords.suicide.some(keyword => text.includes(keyword))) {
+                        return `${name}, mi corazón se detiene al leer tus palabras. Lo que estás sintiendo es real y doloroso, pero también temporal. Por favor, por favor, busca ayuda inmediatamente. Llama al 911 o a la Línea de la Vida (800 911 2000) AHORA MISMO. No estás solo/a en esto. Tu vida tiene valor, aunque ahora no puedas verlo. Hay gente que te ama y profesionales que pueden ayudarte. Por favor, no hagas nada irreversible. Tu dolor es válido, pero hay formas de sanarlo. Te abrazo con todo mi corazón. 💔🤗`;
+                    }
+                    
+                    // Detectar autolesión
+                    if (crisisKeywords.selfHarm.some(keyword => text.includes(keyword))) {
+                        return `${name}, entiendo que el dolor que sientes es insoportable y que buscas formas de aliviarlo. Pero lastimarte no es la respuesta. Por favor, busca ayuda profesional inmediatamente. Puedes llamar al 911 o contactar a un terapeuta. Tu cuerpo y tu mente merecen cuidado y amor, no dolor. Hay formas más seguras de procesar estos sentimientos. No estás solo/a en esto. 💙🤗`;
+                    }
+                    
+                    // Detectar depresión severa
+                    if (crisisKeywords.severeDepression.some(keyword => text.includes(keyword))) {
+                        return `${name}, puedo sentir la profundidad de tu dolor en cada palabra. Cuando todo parece oscuro y sin esperanza, es difícil ver la luz, pero existe. Por favor, considera hablar con un profesional de salud mental. La depresión es una enfermedad real y tratable. No tienes que enfrentarla sola/o. Tu vida importa, tu dolor es válido, y hay ayuda disponible. Por favor, busca apoyo profesional hoy mismo. 💜`;
+                    }
+                    
+                    // Detectar crisis general
+                    if (crisisKeywords.crisis.some(keyword => text.includes(keyword))) {
+                        return `${name}, reconozco que estás en una crisis y que te sientes abrumado/a. Es valiente de tu parte expresarlo. En momentos así, es crucial buscar apoyo inmediato. Por favor, contacta a alguien de confianza, un profesional de salud mental, o llama a una línea de crisis. No tienes que enfrentar esto solo/a. Tu bienestar es prioritario. 🤗💙`;
+                    }
+                    
+                    // Detectar enfermedades graves (cáncer, etc.)
+                    const healthCrisis = ['cáncer', 'tumor', 'quimioterapia', 'enfermedad terminal', 'diagnóstico grave', 'operación mayor'];
+                    if (healthCrisis.some(keyword => text.includes(keyword))) {
+                        return `${name}, mi corazón se llena de compasión al leer sobre la situación de salud que estás enfrentando. Es normal sentir miedo, rabia, tristeza y una mezcla de emociones intensas. No tienes que ser fuerte todo el tiempo. Permítete sentir lo que sientes. Busca apoyo en grupos de apoyo, terapeutas especializados en oncología, o consejeros espirituales. No estás solo/a en este camino. Cada día que luchas es un acto de valentía. Te acompaño con todo mi amor. 💙🕊️`;
+                    }
+                    
                     // Detectar situaciones específicas para respuestas más personalizadas
                     const isLoss = text.includes("murió") || text.includes("falleció") || text.includes("muerte") || text.includes("perdí a");
                     const isAnxiety = text.includes("ansiedad") || text.includes("preocupado") || text.includes("nervioso") || text.includes("estrés");
@@ -753,24 +1028,24 @@
                     const isRelationship = text.includes("pareja") || text.includes("novio") || text.includes("novia") || text.includes("relación");
                     const isWork = text.includes("trabajo") || text.includes("empleo") || text.includes("jefe") || text.includes("oficina");
                     
-                    // Respuestas contextuales más inteligentes
-                    if (isLoss) return `${name}, lamento profundamente tu pérdida. Perder a alguien tan importante deja un vacío imposible de llenar, y está bien que necesites llorar. No te obligues a estar bien aún. El amor que sientes por esa persona no se borra con el tiempo; se transforma en recuerdos que te acompañarán siempre. Permítete sentir, recordar, llorar. No estás solo en esto. 💜`;
+                    // Respuestas contextuales más inteligentes y humanas
+                    if (isLoss) return `${name}, lamento profundamente tu pérdida. Perder a alguien que amamos es uno de los dolores más profundos que podemos experimentar. Es completamente normal sentir que el mundo se ha detenido. No hay un tiempo "correcto" para sanar. Permítete llorar, recordar, y honrar a esa persona especial. El amor que sientes por ella/él nunca desaparecerá, solo se transformará. No estás solo/a en este dolor. Te abrazo con todo mi corazón. 💜🕊️`;
                     
-                    if (isAnxiety) return `${name}, puedo sentir tu ansiedad y preocupación. Respira profundamente conmigo: inhala por 4 segundos, mantén por 4, exhala por 6. No tienes que tener todas las respuestas hoy. Date permiso de ir paso a paso, de cuidarte, de soltar un poco el control. A veces, lo mejor que puedes hacer es simplemente estar aquí, en el presente. Tienes más fortaleza de la que crees. 🌿`;
+                    if (isAnxiety) return `${name}, puedo sentir cómo la ansiedad te está consumiendo. Es como tener una tormenta constante en tu mente, ¿verdad? Respira conmigo ahora: inhala lentamente por la nariz (1,2,3,4), mantén el aire (1,2,3,4), exhala suavemente por la boca (1,2,3,4,5,6). Repite esto tres veces. Recuerda: no tienes que controlar todo. Date permiso de vivir un día a la vez, un momento a la vez. Eres más fuerte de lo que crees, aunque ahora no lo sientas así. 🌿💙`;
                     
-                    if (isLonely) return `${name}, la soledad puede sentirse pesada, pero no significa que estés olvidado. Hay personas que te valoran más de lo que imaginas. Usa este momento para reconectarte contigo mismo, y recuerda que pedir compañía o apoyo no te hace débil. Eres valioso, incluso cuando nadie lo dice en voz alta. 💫`;
+                    if (isLonely) return `${name}, la soledad puede sentirse como un peso que te aplasta el pecho. Pero quiero que sepas algo importante: no estás realmente solo/a. Hay personas que te aman más de lo que imaginas. Usa este momento para reconectarte contigo mismo/a, para recordar quién eres realmente. Y cuando estés listo/a, extiende la mano hacia alguien. Pedir compañía no te hace débil, te hace humano. Eres valioso/a, importante, y mereces amor y conexión. 💫🤗`;
                     
-                    if (isSelfDoubt) return `${name}, entiendo que te sientas así, pero por favor recuerda: tu valor no depende de lo que hagas o logres. Ya eres suficiente solo por ser tú. Tienes una historia, una luz, una esencia que nadie más posee. No te compares, no te castigues. Permítete descansar, sanar, creer en ti otra vez. ❤️`;
+                    if (isSelfDoubt) return `${name}, escucha mi voz con atención: tu valor no se mide por tus logros, tus errores, o lo que otros piensen de ti. Tu valor es intrínseco, es parte de tu esencia. Eres único/a, irrepetible, y tienes algo especial que aportar al mundo que nadie más puede dar. Cuando la voz crítica en tu cabeza te ataque, recuerda: eres suficiente, tal como eres, en este momento exacto. Te amo y creo en ti. ❤️✨`;
                     
-                    if (isRelationship) return `${name}, las relaciones pueden ser complicadas y hermosas al mismo tiempo. Es normal sentir emociones intensas cuando se trata del corazón. Date tiempo para procesar lo que sientes, y recuerda que comunicarte con honestidad y compasión es la base de cualquier relación sana. 🌹`;
+                    if (isRelationship) return `${name}, las relaciones del corazón pueden ser nuestro mayor gozo y también nuestra mayor fuente de dolor. Es completamente normal sentir emociones intensas cuando amamos a alguien. Date tiempo para procesar lo que sientes. La comunicación honesta y compasiva es la base de cualquier relación sana. Recuerda que amar no significa perderte a ti mismo/a. Eres digno/a de amor y respeto. 🌹💕`;
                     
-                    if (isWork) return `${name}, el trabajo puede ser una fuente de estrés y satisfacción. Es importante encontrar el equilibrio entre dedicación y autocuidado. Recuerda que tu valor profesional no define tu valor como persona. 🏢`;
+                    if (isWork) return `${name}, entiendo la presión que puede generar el trabajo. Es fácil que se convierta en nuestra identidad, pero recuerda: tú no eres tu trabajo. Tu valor como persona trasciende cualquier logro profesional. Es importante encontrar equilibrio entre dedicación y autocuidado. Si el trabajo te está consumiendo, tal vez es momento de reevaluar prioridades. Tu bienestar emocional es más importante que cualquier trabajo. 🏢💙`;
                     
                     // Usar historial para personalizar respuesta
                     if (this.userHistory.length > 0) {
                         const lastEmotion = this.userHistory[this.userHistory.length - 1]?.emotion;
                         if (lastEmotion === emotion && this.userHistory.length > 1) {
-                            return `${name}, veo que has estado experimentando ${this.emotionMap[emotion]?.label.toLowerCase()} recientemente. Es valiente de tu parte seguir compartiendo tus sentimientos. Cada vez que expresas lo que sientes, te acercas más a tu bienestar emocional. 💪`;
+                            return `${name}, veo que has estado luchando con ${this.emotionMap[emotion]?.label.toLowerCase()} recientemente. Es increíblemente valiente de tu parte seguir compartiendo tus sentimientos, incluso cuando es difícil. Cada vez que expresas lo que sientes, das un paso más hacia la sanación. No te rindas. Estoy aquí contigo en este viaje. 💪🤗`;
                         }
                     }
                     
@@ -780,8 +1055,45 @@
                 },
                 toggleMusic() {
                     const audio = this.$refs.bgMusic;
-                    if (this.isPlaying) { audio.pause(); } else { audio.play().catch(e => console.log(e)); }
+                    if (this.isPlaying) { 
+                        audio.pause(); 
+                    } else { 
+                        if (!this.currentMusic) {
+                            this.changeMusicByEmotion('neutral');
+                        }
+                        audio.volume = this.musicVolume;
+                        audio.play().catch(e => console.log('Error reproduciendo música:', e)); 
+                    }
                     this.isPlaying = !this.isPlaying;
+                },
+                
+                changeMusicByEmotion(emotion) {
+                    const playlist = this.musicPlaylist[emotion] || this.musicPlaylist['neutral'];
+                    if (playlist && playlist.length > 0) {
+                        const randomTrack = playlist[Math.floor(Math.random() * playlist.length)];
+                        this.currentMusic = randomTrack;
+                        
+                        // Si la música está reproduciéndose, cambiar de inmediato
+                        if (this.isPlaying) {
+                            const audio = this.$refs.bgMusic;
+                            audio.src = randomTrack;
+                            audio.volume = this.musicVolume;
+                            audio.play().catch(e => console.log('Error cambiando música:', e));
+                        }
+                    }
+                },
+                
+                updateVolume() {
+                    const audio = this.$refs.bgMusic;
+                    if (audio) {
+                        audio.volume = this.musicVolume;
+                    }
+                },
+                
+                nextTrack() {
+                    if (this.result && this.result.emotion) {
+                        this.changeMusicByEmotion(this.result.emotion);
+                    }
                 },
                 async saveAsImage() {
                     const element = document.getElementById('captureArea');
