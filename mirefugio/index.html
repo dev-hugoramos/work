@@ -13,7 +13,7 @@
     <meta property="og:type" content="website">
     <title>Espacio Seguro - Apoyo Emocional Inteligente</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/vue@3.3.4/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.3.4/dist/vue.global.prod.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         body {
@@ -253,6 +253,7 @@
             border-radius: 2px;
             outline: none;
             -webkit-appearance: none;
+            appearance: none;
         }
 
         .volume-slider::-webkit-slider-thumb {
@@ -424,6 +425,27 @@
 
         .confidence-fill {
             background: linear-gradient(90deg, #4CAF50, #8BC34A, #FFD700);
+        }
+
+        .music-info {
+            position: absolute;
+            top: -30px;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            white-space: nowrap;
+            opacity: 0;
+            animation: fadeInOut 3s ease-in-out;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
         }
     </style>
 </head>
@@ -608,6 +630,9 @@
                     <input type="range" min="0" max="1" step="0.1" v-model="musicVolume" 
                            @input="updateVolume" class="volume-slider" title="Control de volumen">
                 </div>
+                <div class="music-info" v-if="result">
+                    <small>🎵 Música adaptada a tu emoción</small>
+                </div>
             </div>
         </div>
 
@@ -634,6 +659,8 @@
                     aiInsights: null,
                     currentMusic: null,
                     musicVolume: 0.3,
+                    fadeEffect: false,
+                    quote: null,
                     emotionMap: {
                         'joy': { label: 'Alegría', emoji: '😊', type: 'positive', color: '#FFD93D' },
                         'sadness': { label: 'Tristeza', emoji: '😢', type: 'negative', color: '#6C7CE7' },
@@ -712,40 +739,40 @@
                     },
                     musicPlaylist: {
                         'joy': [
-                            'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
-                            // Música alegre y energética
+                            'https://www.bensound.com/bensound-music/bensound-sunny.mp3',
+                            'https://www.bensound.com/bensound-music/bensound-ukulele.mp3'
                         ],
                         'sadness': [
-                            'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
-                            // Música calmante y consoladora
+                            'https://www.bensound.com/bensound-music/bensound-sadday.mp3',
+                            'https://www.bensound.com/bensound-music/bensound-memories.mp3'
                         ],
                         'anger': [
-                            'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
-                            // Música relajante para canalizar la energía
+                            'https://www.bensound.com/bensound-music/bensound-relaxing.mp3',
+                            'https://www.bensound.com/bensound-music/bensound-slowmotion.mp3'
                         ],
                         'fear': [
-                            'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
-                            // Música tranquilizadora
+                            'https://www.bensound.com/bensound-music/bensound-relaxing.mp3',
+                            'https://www.bensound.com/bensound-music/bensound-tenderness.mp3'
                         ],
                         'love': [
-                            'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
-                            // Música romántica y cálida
+                            'https://www.bensound.com/bensound-music/bensound-love.mp3',
+                            'https://www.bensound.com/bensound-music/bensound-tenderness.mp3'
                         ],
                         'anxiety': [
-                            'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
-                            // Música de meditación y relajación
+                            'https://www.bensound.com/bensound-music/bensound-relaxing.mp3',
+                            'https://www.bensound.com/bensound-music/bensound-slowmotion.mp3'
                         ],
                         'gratitude': [
-                            'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
-                            // Música inspiradora y elevadora
+                            'https://www.bensound.com/bensound-music/bensound-sunny.mp3',
+                            'https://www.bensound.com/bensound-music/bensound-ukulele.mp3'
                         ],
                         'hopeful': [
-                            'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
-                            // Música optimista y motivadora
+                            'https://www.bensound.com/bensound-music/bensound-sunny.mp3',
+                            'https://www.bensound.com/bensound-music/bensound-newdawn.mp3'
                         ],
                         'neutral': [
-                            'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
-                            // Música ambiente suave
+                            'https://www.bensound.com/bensound-music/bensound-relaxing.mp3',
+                            'https://www.bensound.com/bensound-music/bensound-slowmotion.mp3'
                         ]
                     }
                 }
@@ -876,21 +903,29 @@
                             try {
                                 const response = await fetch("https://api-inference.huggingface.co/models/finiteautomata/beto-emotion-analysis", {
                                     method: "POST",
-                                    headers: { "Content-Type": "application/json" },
+                                    headers: { 
+                                        "Content-Type": "application/json",
+                                        "Authorization": "Bearer hf_placeholder" // Token placeholder
+                                    },
                                     body: JSON.stringify({ inputs: this.feeling })
                                 });
+                                
+                                if (response.ok) {
                                 const data = await response.json();
                                 if (data && data[0] && data[0].length > 0) {
                                     const topEmotion = data[0].reduce((prev, curr) => (prev.score > curr.score) ? prev : curr);
-                                    const aiResult = { emotion: topEmotion.label.toLowerCase(), score: topEmotion.score, confidence: topEmotion.score };
-                                    
-                                    // Combinar resultados inteligentemente
-                                    if (aiResult.score > keywordResult.score) {
-                                        finalResult = aiResult;
+                                        const aiResult = { emotion: topEmotion.label.toLowerCase(), score: topEmotion.score, confidence: topEmotion.score };
+                                        
+                                        // Combinar resultados inteligentemente
+                                        if (aiResult.score > keywordResult.score) {
+                                            finalResult = aiResult;
+                                        }
                                     }
+                                } else {
+                                    console.log('API de Hugging Face no disponible, usando análisis local');
                                 }
                             } catch (error) {
-                                console.log('API no disponible, usando análisis local');
+                                console.log('Error con API externa, usando análisis local:', error.message);
                             }
                         }
                         
@@ -1076,10 +1111,71 @@
                         // Si la música está reproduciéndose, cambiar de inmediato
                         if (this.isPlaying) {
                             const audio = this.$refs.bgMusic;
-                            audio.src = randomTrack;
-                            audio.volume = this.musicVolume;
-                            audio.play().catch(e => console.log('Error cambiando música:', e));
+                            if (audio) {
+                                audio.src = randomTrack;
+                                audio.volume = this.musicVolume;
+                                audio.load(); // Recargar el audio
+                                audio.play().catch(e => {
+                                    console.log('Error cambiando música:', e);
+                                    // Si falla, intentar con música alternativa
+                                    this.tryAlternativeMusic(emotion);
+                                });
+                            }
                         }
+                    }
+                },
+                
+                tryAlternativeMusic(emotion) {
+                    // Música de respaldo usando Web Audio API
+                    console.log('Intentando música alternativa para:', emotion);
+                    try {
+                        this.generateAmbientSound(emotion);
+                    } catch (e) {
+                        console.log('No se pudo generar música alternativa:', e);
+                        this.isPlaying = false;
+                    }
+                },
+                
+                generateAmbientSound(emotion) {
+                    // Generar sonidos ambientales simples usando Web Audio API
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    // Configurar frecuencia según emoción
+                    const frequencies = {
+                        'joy': [440, 554, 659], // Notas alegres
+                        'sadness': [220, 277, 330], // Notas graves y melancólicas
+                        'anger': [330, 440], // Notas más intensas
+                        'fear': [220, 330], // Notas bajas y misteriosas
+                        'love': [440, 523, 659], // Notas románticas
+                        'anxiety': [220, 277], // Notas calmantes
+                        'gratitude': [523, 659, 784], // Notas elevadoras
+                        'hopeful': [440, 523], // Notas optimistas
+                        'neutral': [330, 440] // Notas equilibradas
+                    };
+                    
+                    const freq = frequencies[emotion] || frequencies['neutral'];
+                    oscillator.frequency.setValueAtTime(freq[0], audioContext.currentTime);
+                    oscillator.type = 'sine';
+                    
+                    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(this.musicVolume * 0.1, audioContext.currentTime + 1);
+                    gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 10);
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 10);
+                    
+                    // Repetir el sonido cada 10 segundos si está reproduciéndose
+                    if (this.isPlaying) {
+                        setTimeout(() => {
+                            if (this.isPlaying) {
+                                this.generateAmbientSound(emotion);
+                            }
+                        }, 10000);
                     }
                 },
                 
