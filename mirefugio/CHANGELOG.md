@@ -46,7 +46,7 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 - **Protección de privacidad** con almacenamiento local
 - **Control total del usuario** sobre sus datos personales
 
-## [1.0.0] - 2023-XX-XX
+## [1.0.0] - 2025-14-10
 
 ### 🚀 Añadido
 - **Aplicación inicial** de apoyo emocional básico
@@ -129,9 +129,9 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 
 Para reportar bugs, sugerir mejoras o solicitar nuevas funcionalidades:
 
-- **Email**: [tu-email@ejemplo.com]
+- **Email**: [hugoramos.developer2024@gmail.com]
 - **GitHub Issues**:
-- **Ko-fi**: [https://ko-fi.com/hugoramos](https://ko-fi.com/hugoramos)
+- **Ko-fi**: (https://ko-fi.com/hugoramos)
 
 ---
 
