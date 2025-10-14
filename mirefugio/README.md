@@ -95,21 +95,6 @@
 2. Abre el archivo en tu navegador web
 3. ¡Listo! La aplicación está lista para usar
 
-### 💻 Desarrollo Local
-```bash
-# Clona el repositorio
-git clone [URL_DEL_REPOSITORIO]
-
-# Navega al directorio
-cd mi-refugio
-
-# Abre el archivo en tu navegador
-open index.html
-# o
-start index.html
-# o simplemente arrastra el archivo al navegador
-```
-
 ## 📖 Guía de Usuario
 
 ### 🎯 Primer Uso
@@ -138,7 +123,6 @@ La aplicación incluye enlaces a:
 mi-refugio/
 ├── index.html              # Aplicación principal
 ├── README.md              # Documentación
-└── assets/                # Recursos adicionales (si los hay)
 ```
 
 ### 🧩 Componentes Principales
@@ -238,9 +222,9 @@ const complexPatterns = {
 
 ### 👨‍💻 Desarrollador
 **Hugo Ramos Espino**
-- Email: [tu-email@ejemplo.com]
-- GitHub: [tu-usuario-github]
-- LinkedIn: [tu-perfil-linkedin]
+- Email: [hugoramos.developer2024@gmail.com]
+- GitHub: [https://github.com/dev-hugoramos]
+- LinkedIn: [https://www.linkedin.com/in/hugo-david-r-643485123/]
 
 ### ☕ Apoyo al Proyecto
 Si encuentras útil esta aplicación, considera apoyar el desarrollo:
