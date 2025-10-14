@@ -4,7 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Espacio Seguro - Apoyo Emocional</title>
+    <meta name="description" content="Espacio Seguro - Una aplicación inteligente de apoyo emocional que te ayuda a entender y procesar tus sentimientos con IA avanzada">
+    <meta name="keywords" content="salud mental, emociones, bienestar, apoyo emocional, terapia, IA, inteligencia artificial">
+    <meta name="author" content="Hugo Ramos Espino">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Espacio Seguro - Apoyo Emocional Inteligente">
+    <meta property="og:description" content="Una aplicación inteligente que te ayuda a entender y procesar tus emociones con análisis de IA avanzado">
+    <meta property="og:type" content="website">
+    <title>Espacio Seguro - Apoyo Emocional Inteligente</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/vue@3.3.4/dist/vue.global.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -130,6 +137,110 @@
         .fade-leave-active {
             opacity: 0;
         }
+
+        .insights-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .insights-header h5 {
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .insights-content {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+        }
+
+        .insight-item {
+            margin-bottom: 0.8rem;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+
+        .insight-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .emotion-indicator {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .confidence-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            transition: width 0.3s ease;
+        }
+
+        .history-preview {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .emotion-timeline {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .emotion-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .emotion-dot:hover {
+            opacity: 1;
+            transform: scale(1.2);
+        }
+
+        .smart-suggestions {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .suggestion-item {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            transition: transform 0.2s ease;
+        }
+
+        .suggestion-item:hover {
+            transform: translateX(5px);
+        }
+
+        .suggestion-item:last-child {
+            margin-bottom: 0;
+        }
     </style>
 </head>
 
@@ -145,27 +256,31 @@
                         <div class="col-lg-8">
                             <div class="card">
                                 <div class="header-section">
-                                    <h1>🌟 Espacio Seguro 🌟</h1>
+                                    <h1>🌟 Mi Refugio 🌟</h1>
                                     <p class="mb-0">Un lugar donde tus emociones importan</p>
                                 </div>
                                 <div class="card-body p-4">
                                     <!-- Nombre -->
                                     <div v-if="!nameSubmitted">
-                                        <label class="form-label fw-bold">¿Cuál es tu nombre?</label>
-                                        <input v-model="name" type="text" class="form-control"
-                                            placeholder="Escribe tu nombre..." @keyup.enter="submitName">
+                                        <label class="form-label fw-bold" for="nameInput">¿Cuál es tu nombre?</label>
+                                        <input v-model="name" type="text" class="form-control" id="nameInput"
+                                            placeholder="Escribe tu nombre..." @keyup.enter="submitName"
+                                            aria-describedby="nameHelp" autocomplete="name">
+                                        <div id="nameHelp" class="form-text">Tu nombre nos ayuda a personalizar tu experiencia</div>
                                         <button @click="submitName" class="btn btn-primary w-100 mt-3"
-                                            :disabled="!name.trim()">✨ Continuar</button>
+                                            :disabled="!name.trim()" aria-label="Continuar con el nombre ingresado">✨ Continuar</button>
                                     </div>
 
                                     <!-- Sentimientos -->
                                     <div v-if="nameSubmitted && !submitted">
                                         <p class="text-muted">👋 Hola, <strong>{{ name }}</strong></p>
-                                        <label class="form-label fw-bold">¿Cómo te sientes hoy?</label>
-                                        <textarea v-model="feeling" class="form-control" rows="4"
-                                            placeholder="Comparte lo que sientes..." ref="feelingInput"></textarea>
+                                        <label class="form-label fw-bold" for="feelingInput">¿Cómo te sientes hoy?</label>
+                                        <textarea v-model="feeling" class="form-control" rows="4" id="feelingInput"
+                                            placeholder="Comparte lo que sientes..." ref="feelingInput"
+                                            aria-describedby="feelingHelp" autocomplete="off"></textarea>
+                                        <div id="feelingHelp" class="form-text">Describe libremente tus emociones, pensamientos o experiencias</div>
                                         <button @click="analyzeEmotion" class="btn btn-primary w-100 mt-3"
-                                            :disabled="!feeling || loading">
+                                            :disabled="!feeling || loading" aria-label="Analizar mis sentimientos">
                                             <span v-if="!loading">💬 Compartir mis sentimientos</span>
                                             <span v-else>Analizando...</span>
                                         </button>
@@ -180,7 +295,16 @@
                                     <div v-if="result && !loading">
                                         <div id="captureArea" class="result-card">
                                             <div class="text-center mb-3">
-                                                <div class="emotion-badge">{{ emotionEmoji }} {{ emotionLabel }}</div>
+                                                <div class="emotion-badge">
+                                                    <span class="emotion-indicator" :style="{backgroundColor: emotionMap[result.emotion]?.color}"></span>
+                                                    {{ emotionEmoji }} {{ emotionLabel }}
+                                                    <span v-if="result.confidence" class="ms-2">
+                                                        ({{ Math.round(result.confidence * 100) }}% confianza)
+                                                    </span>
+                                                </div>
+                                                <div v-if="result.confidence" class="confidence-bar mt-2">
+                                                    <div class="confidence-fill" :style="{width: (result.confidence * 100) + '%'}"></div>
+                                                </div>
                                             </div>
                                             <div class="empathy-message" v-if="result && !loading"
                                                 v-bind:class="{ fade: fadeEffect }">
@@ -189,6 +313,54 @@
                                             <div class="text-center mt-4">
                                                 <small>💝 Para: {{ name }}</small>
                                                 <div v-if="quote" class="mt-2"><em>"{{ quote }}"</em></div>
+                                                
+                                                <!-- Vista previa del historial emocional -->
+                                                <div v-if="userHistory.length > 1" class="history-preview">
+                                                    <small><strong>📊 Tu viaje emocional reciente:</strong></small>
+                                                    <div class="emotion-timeline">
+                                                        <div v-for="(entry, index) in userHistory.slice(-7)" 
+                                                             :key="index"
+                                                             class="emotion-dot" 
+                                                             :style="{backgroundColor: emotionMap[entry.emotion]?.color}"
+                                                             :title="`${emotionMap[entry.emotion]?.label} - ${new Date(entry.timestamp).toLocaleDateString()}`">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Insights Inteligentes -->
+                                        <div v-if="aiInsights" class="insights-card mt-3">
+                                            <div class="insights-header">
+                                                <h5>🧠 Insights sobre tu bienestar emocional</h5>
+                                            </div>
+                                            <div class="insights-content">
+                                                <div class="insight-item">
+                                                    <strong>Tendencia:</strong> 
+                                                    <span :class="{
+                                                        'text-success': aiInsights.trend === 'positivo',
+                                                        'text-warning': aiInsights.trend === 'neutral',
+                                                        'text-danger': aiInsights.trend === 'negativo'
+                                                    }">
+                                                        {{ aiInsights.trend === 'positivo' ? '📈 Mejorando' : 
+                                                           aiInsights.trend === 'negativo' ? '📉 Necesita atención' : '📊 Estable' }}
+                                                    </span>
+                                                </div>
+                                                <div v-if="aiInsights.pattern" class="insight-item">
+                                                    <strong>Patrón emocional:</strong> 
+                                                    <span :class="{
+                                                        'text-success': aiInsights.pattern === 'mejorando',
+                                                        'text-warning': aiInsights.pattern === 'estable',
+                                                        'text-danger': aiInsights.pattern === 'empeorando'
+                                                    }">
+                                                        {{ aiInsights.pattern === 'mejorando' ? '✨ Progreso positivo' : 
+                                                           aiInsights.pattern === 'empeorando' ? '⚠️ Considera apoyo' : '🔄 Estable' }}
+                                                    </span>
+                                                </div>
+                                                <div class="insight-item">
+                                                    <strong>Recomendación personalizada:</strong>
+                                                    <p class="mb-0">{{ aiInsights.recommendation }}</p>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -198,7 +370,16 @@
                                             <ul>
                                                 <li><strong>Línea de la Vida (México):</strong> 800 911 2000</li>
                                                 <li><strong>SAPTEL:</strong> 55 5259 8121</li>
+                                                <li><strong>Crisis Text Line:</strong> Envía HOME al 741741</li>
                                             </ul>
+                                        </div>
+
+                                        <!-- Sugerencias Inteligentes -->
+                                        <div v-if="result" class="smart-suggestions">
+                                            <h6>💡 Sugerencias personalizadas para ti</h6>
+                                            <div class="suggestion-item" v-for="suggestion in getSmartSuggestions()" :key="suggestion">
+                                                {{ suggestion }}
+                                            </div>
                                         </div>
 
                                         <div class="text-center mt-4">
@@ -206,6 +387,14 @@
                                                 frase</button>
                                             <button @click="reset" class="btn btn-outline-secondary btn-lg">🔄 Nuevo
                                                 sentimiento</button>
+                                            <button v-if="userHistory.length > 0" @click="viewHistory" class="btn btn-info btn-lg ms-2">📈 Ver historial</button>
+                                        </div>
+                                        
+                                        <!-- Opciones adicionales -->
+                                        <div v-if="userHistory.length > 0" class="text-center mt-3">
+                                            <small class="text-muted">Opciones de privacidad:</small><br>
+                                            <button @click="exportData" class="btn btn-sm btn-outline-primary me-2">📁 Exportar datos</button>
+                                            <button @click="clearHistory" class="btn btn-sm btn-outline-danger">🗑️ Limpiar historial</button>
                                         </div>
                                     </div>
                                 </div>
@@ -246,14 +435,22 @@
                     result: null,
                     isPlaying: false,
                     nameSubmitted: false,
+                    userHistory: JSON.parse(localStorage.getItem('emotionHistory') || '[]'),
+                    currentMood: JSON.parse(localStorage.getItem('currentMood') || 'null'),
+                    aiInsights: null,
                     emotionMap: {
-                        'joy': { label: 'Alegría', emoji: '😊', type: 'positive' },
-                        'sadness': { label: 'Tristeza', emoji: '😢', type: 'negative' },
-                        'anger': { label: 'Enojo', emoji: '😠', type: 'negative' },
-                        'fear': { label: 'Miedo', emoji: '😨', type: 'negative' },
-                        'love': { label: 'Amor', emoji: '❤️', type: 'positive' },
-                        'surprise': { label: 'Sorpresa', emoji: '😮', type: 'neutral' },
-                        'neutral': { label: 'Neutral', emoji: '😐', type: 'neutral' }
+                        'joy': { label: 'Alegría', emoji: '😊', type: 'positive', color: '#FFD93D' },
+                        'sadness': { label: 'Tristeza', emoji: '😢', type: 'negative', color: '#6C7CE7' },
+                        'anger': { label: 'Enojo', emoji: '😠', type: 'negative', color: '#FF6B6B' },
+                        'fear': { label: 'Miedo', emoji: '😨', type: 'negative', color: '#8E44AD' },
+                        'love': { label: 'Amor', emoji: '❤️', type: 'positive', color: '#FF69B4' },
+                        'surprise': { label: 'Sorpresa', emoji: '😮', type: 'neutral', color: '#FFA726' },
+                        'neutral': { label: 'Neutral', emoji: '😐', type: 'neutral', color: '#95A5A6' },
+                        'anxiety': { label: 'Ansiedad', emoji: '😰', type: 'negative', color: '#9B59B6' },
+                        'excitement': { label: 'Emoción', emoji: '🤩', type: 'positive', color: '#F39C12' },
+                        'gratitude': { label: 'Gratitud', emoji: '🙏', type: 'positive', color: '#27AE60' },
+                        'confusion': { label: 'Confusión', emoji: '😕', type: 'neutral', color: '#95A5A6' },
+                        'hopeful': { label: 'Esperanza', emoji: '🌟', type: 'positive', color: '#3498DB' }
                     },
                     empathyPhrases: {
                         'joy': [
@@ -290,6 +487,31 @@
                             '{name}, los días tranquilos también tienen su propia belleza y propósito. No todos los días tienen que ser una montaña rusa de emociones, y está perfectamente bien sentirse en equilibrio. Este momento de calma que estás experimentando te permite reflexionar, recargar energías y prepararte para lo que venga. Aprovecha esta serenidad para agradecer lo que tienes, organizar tus pensamientos y conectar contigo mismo/a. La vida no siempre necesita grandes emociones para ser significativa; a veces, la quietud es suficiente para nutrir el alma. 🌿🕊️',
                             'Querido/a {name}, el sentirse neutral o tranquilo es un regalo que muchas veces pasa desapercibido. Estos momentos de equilibrio nos permiten respirar, reorganizar nuestras ideas y disfrutar de la vida sin presión. Aprovecha esta oportunidad para conectar contigo mismo, para hacer algo que te guste y que te nutra internamente. La neutralidad no es ausencia de emoción, es un espacio para la claridad y la introspección. Date permiso de disfrutarlo sin culpa ni expectativas. 💛✨',
                             '{name}, estar en un estado neutral es una forma de equilibrio que la vida nos ofrece. No todos los momentos necesitan ser intensos para ser valiosos. Esta calma te permite observar tu entorno, cuidar de ti mismo/a y planificar tus próximos pasos con claridad. La neutralidad es un momento de pausa, de preparación, de reflexión. Disfruta de este estado, aprecia la tranquilidad y usa este tiempo para fortalecerte y conectar contigo y con los que te rodean. 🌸🕊️'
+                        ],
+                        'anxiety': [
+                            '{name}, puedo sentir la ansiedad que te está acompañando en este momento. Es una sensación intensa y real, y quiero que sepas que no estás solo en esto. La ansiedad es como una tormenta en tu mente, pero como todas las tormentas, pasará. Respira profundamente conmigo: inhala lentamente por la nariz, siente cómo se llena tu pecho, y exhala suavemente por la boca. Repite esto contigo mismo. Eres más fuerte que esta ansiedad, aunque ahora no lo sientas así. Date permiso de ir paso a paso, sin presionarte. 🌊💙',
+                            'Querido/a {name}, la ansiedad puede sentirse como un laberinto sin salida, pero quiero recordarte algo importante: has enfrentado momentos difíciles antes y has salido adelante. Esta ansiedad que sientes ahora es temporal, aunque parezca eterna. Intenta la técnica 5-4-3-2-1: nombra 5 cosas que puedes ver, 4 que puedes tocar, 3 que puedes oír, 2 que puedes oler, 1 que puedes saborear. Esto te ayudará a anclarte en el presente. Eres valiente por reconocer lo que sientes. 🌸💪',
+                            '{name}, siento mucho que estés experimentando ansiedad en este momento. Es una emoción muy intensa y puede sentirse abrumadora. Quiero que sepas que es completamente normal sentirse así, y que no hay nada malo en ti por experimentar ansiedad. Prueba hacer ejercicios de respiración, caminar un poco, o hacer algo que te guste. Si la ansiedad persiste, no dudes en buscar ayuda profesional. Tu bienestar mental es tan importante como tu salud física. Mereces paz y tranquilidad. 🕊️💜'
+                        ],
+                        'excitement': [
+                            '¡{name}, qué maravilloso es sentir esta emoción tan intensa! La emoción es como un fuego que ilumina tu alma y te llena de energía positiva. Aprovecha esta sensación para hacer algo que realmente te apasione. Cuando estamos emocionados, somos capaces de lograr cosas increíbles. Canaliza esta energía hacia tus objetivos, tus sueños, hacia lo que realmente te importa. La vida te está regalando este momento de entusiasmo, ¡disfrútalo al máximo! 🚀✨',
+                            '{name}, la emoción que sientes ahora mismo es pura magia. Es esa sensación que nos recuerda que estamos vivos y que la vida está llena de posibilidades infinitas. No dejes que esta energía se desperdicie. Úsala para crear, para explorar, para atreverte a hacer algo nuevo. La emoción es combustible para el alma, y tú tienes un tanque lleno. ¡Qué hermoso es verte así de radiante! 🌟💫',
+                            '¡Qué hermoso verte tan emocionado/a, {name}! Esta energía positiva que irradias es contagiosa y transformadora. La emoción es uno de los regalos más preciosos de la vida, y cuando la sentimos, todo parece posible. Aprovecha este momento para hacer algo que te haga feliz, para compartir tu alegría con otros, o para dar el siguiente paso hacia algo que realmente deseas. Tu entusiasmo es tu superpoder. ¡Úsalo sabiamente! 🎉💖'
+                        ],
+                        'gratitude': [
+                            '{name}, qué hermoso es sentir gratitud en tu corazón. Esta emoción tan pura y transformadora tiene el poder de cambiar completamente tu perspectiva de la vida. La gratitud no solo es un sentimiento, es una práctica que puede transformar tu mundo. Cada vez que sientes gratitud, estás reconociendo la abundancia que ya existe en tu vida. Sigue cultivando este sentimiento, compártelo con otros, y verás cómo se multiplica la belleza a tu alrededor. Eres un ser lleno de luz y apreciación. 🙏✨',
+                            'Querido/a {name}, la gratitud que sientes ahora mismo es como una semilla que has plantado en tu corazón y que está floreciendo. Es hermoso ver cómo reconoces las bendiciones en tu vida, por pequeñas que parezcan. La gratitud nos conecta con lo esencial, con lo que realmente importa. Escribe sobre lo que agradeces, comparte tu gratitud con quienes amas, y observa cómo esta práctica transforma tu día a día. Eres un ejemplo de cómo vivir con el corazón abierto. 🌸💝',
+                            '{name}, sentir gratitud es uno de los regalos más hermosos que puedes darte a ti mismo/a. Esta emoción te conecta con la abundancia de la vida y te recuerda todo lo bueno que ya tienes. La gratitud es como un imán que atrae más cosas buenas hacia ti. No solo estás agradecido/a, estás practicando una forma de vida que te llena de paz y satisfacción. Sigue reconociendo las pequeñas y grandes bendiciones que te rodean. Eres un ser lleno de sabiduría y amor. 🌺💕'
+                        ],
+                        'confusion': [
+                            '{name}, es completamente normal sentirse confundido/a a veces. La confusión no es un signo de debilidad, sino una señal de que estás procesando información nueva o navegando por una situación compleja. Date permiso de no tener todas las respuestas inmediatamente. A veces, la claridad llega cuando menos la esperamos. Tómate el tiempo que necesites para reflexionar, haz preguntas si puedes, y recuerda que no tienes que resolver todo de una vez. La confusión es solo una parada temporal en tu camino hacia la comprensión. 🌫️💙',
+                            'Querido/a {name}, la confusión puede sentirse como estar perdido en una niebla, pero quiero recordarte que las mejores respuestas a menudo vienen después de momentos de incertidumbre. No te presiones por entender todo de inmediato. A veces, la vida nos presenta situaciones que requieren tiempo para procesar. Habla con alguien de confianza, escribe tus pensamientos, o simplemente date espacio para sentir sin necesidad de entender. La claridad llegará cuando estés listo/a para recibirla. 🌅🤔',
+                            '{name}, sentir confusión es parte natural del proceso de aprendizaje y crecimiento. No significa que hayas hecho algo mal o que no seas lo suficientemente inteligente. De hecho, reconocer que estás confundido/a muestra que eres consciente y que te importa encontrar la respuesta correcta. Date tiempo, sé paciente contigo mismo/a, y no tengas miedo de pedir ayuda si la necesitas. Cada momento de confusión es una oportunidad para aprender algo nuevo sobre ti y el mundo que te rodea. 🧭💫'
+                        ],
+                        'hopeful': [
+                            '¡{name}, qué hermoso es sentir esperanza en tu corazón! La esperanza es como una estrella que brilla incluso en la noche más oscura. Es esa chispa de luz que nos recuerda que siempre hay posibilidades, que siempre hay algo por lo que luchar. Tu esperanza no es ingenua, es valiente. Es la decisión consciente de creer en un futuro mejor, incluso cuando el presente es difícil. Mantén esa esperanza viva, aliméntala con acciones pequeñas cada día, y verás cómo se convierte en realidad. 🌟💫',
+                            'Querido/a {name}, la esperanza que sientes es uno de los regalos más preciosos que puedes tener. No es solo un sentimiento, es una fuerza que puede mover montañas. Cuando tienes esperanza, tienes poder para crear el cambio que deseas ver en tu vida. La esperanza te da la fuerza para seguir adelante cuando las cosas se ponen difíciles. Comparte tu esperanza con otros, porque es contagiosa y puede iluminar el camino de quienes te rodean. Eres un faro de luz en este mundo. 🕯️✨',
+                            '{name}, sentir esperanza es como tener un jardín secreto en tu corazón donde las flores más hermosas pueden florecer. Es esa certeza interna de que las cosas pueden mejorar, de que hay un mañana lleno de posibilidades. Tu esperanza no es fantasía, es fe en tu propia capacidad de crear y atraer cosas buenas a tu vida. Cada día que eliges la esperanza sobre el miedo, estás eligiendo la vida. Sigue creyendo, sigue esperando, porque tu esperanza es el primer paso hacia la realización de tus sueños. 🌈💖'
                         ]
                     }
                 }
@@ -311,26 +533,78 @@
                 },
                 needsHelp() {
                     if (!this.result) return false;
-                    const negativeEmotions = ['sadness', 'anger', 'fear'];
+                    const negativeEmotions = ['sadness', 'anger', 'fear', 'anxiety'];
                     return negativeEmotions.includes(this.result.emotion) && this.result.score > 0.7;
+                },
+                emotionalTrend() {
+                    if (this.userHistory.length < 3) return 'insuficiente';
+                    const recent = this.userHistory.slice(-5);
+                    const positiveCount = recent.filter(e => ['joy', 'love', 'gratitude', 'excitement', 'hopeful'].includes(e.emotion)).length;
+                    const negativeCount = recent.filter(e => ['sadness', 'anger', 'fear', 'anxiety'].includes(e.emotion)).length;
+                    
+                    if (positiveCount > negativeCount + 1) return 'mejorando';
+                    if (negativeCount > positiveCount + 1) return 'empeorando';
+                    return 'estable';
                 }
             },
             methods: {
                 detectEmotionFromKeywords(text) {
                     const lowerText = text.toLowerCase();
                     const keywords = {
-                        'sadness': ['triste', 'tristeza', 'deprimido', 'depresión', 'lloro', 'llorar', 'llorando', 'dolor', 'pérdida', 'muerte', 'murió', 'falleció', 'duelo', 'solo', 'sola', 'soledad', 'vacío', 'desesperado', 'desesperanza', 'melancolía', 'nostalgia', 'perdí', 'extraño', 'falta', 'abandonado', 'desanimado'],
-                        'anger': ['enojado', 'enojo', 'rabia', 'furioso', 'furia', 'molesto', 'irritado', 'frustrado', 'frustración', 'odio', 'coraje', 'enfadado', 'ira', 'injusto', 'injusticia', 'harto', 'cansado de', 'indignado', 'maldito', 'cabrón', 'no puedo más', 'me da rabia'],
-                        'fear': ['miedo', 'temor', 'asustado', 'aterrado', 'pánico', 'ansiedad', 'ansioso', 'nervioso', 'preocupado', 'preocupación', 'terror', 'angustia', 'angustiado', 'inseguro', 'inseguridad', 'amenaza', 'peligro', 'tengo miedo', 'me asusta', 'vulnerable'],
-                        'joy': ['feliz', 'felicidad', 'alegre', 'alegría', 'contento', 'emocionado', 'emoción', 'dichoso', 'eufórico', 'radiante', 'maravilloso', 'genial', 'increíble', 'fantástico', 'excelente', 'bendecido', 'afortunado', 'agradecido', 'celebrar', 'logré', 'conseguí'],
-                        'love': ['amor', 'amo', 'quiero', 'cariño', 'te amo', 'enamorado', 'enamorada', 'adorar', 'adoro', 'pasión', 'afecto', 'romántico', 'corazón', 'beso', 'abrazo', 'pareja', 'novio', 'novia', 'esposo', 'esposa', 'familia']
+                        'sadness': ['triste', 'tristeza', 'deprimido', 'depresión', 'lloro', 'llorar', 'llorando', 'dolor', 'pérdida', 'muerte', 'murió', 'falleció', 'duelo', 'solo', 'sola', 'soledad', 'vacío', 'desesperado', 'desesperanza', 'melancolía', 'nostalgia', 'perdí', 'extraño', 'falta', 'abandonado', 'desanimado', 'sufro', 'sufrimiento'],
+                        'anger': ['enojado', 'enojo', 'rabia', 'furioso', 'furia', 'molesto', 'irritado', 'frustrado', 'frustración', 'odio', 'coraje', 'enfadado', 'ira', 'injusto', 'injusticia', 'harto', 'cansado de', 'indignado', 'maldito', 'cabrón', 'no puedo más', 'me da rabia', 'estúpido', 'idiota'],
+                        'fear': ['miedo', 'temor', 'asustado', 'aterrado', 'pánico', 'terror', 'angustia', 'angustiado', 'inseguro', 'inseguridad', 'amenaza', 'peligro', 'tengo miedo', 'me asusta', 'vulnerable'],
+                        'anxiety': ['ansiedad', 'ansioso', 'nervioso', 'preocupado', 'preocupación', 'estrés', 'estresado', 'agobiado', 'agobio', 'presión', 'presionado', 'tensión', 'tenso'],
+                        'joy': ['feliz', 'felicidad', 'alegre', 'alegría', 'contento', 'emocionado', 'emoción', 'dichoso', 'eufórico', 'radiante', 'maravilloso', 'genial', 'increíble', 'fantástico', 'excelente', 'bendecido', 'afortunado', 'celebrar', 'logré', 'conseguí', 'éxito', 'victoria'],
+                        'love': ['amor', 'amo', 'quiero', 'cariño', 'te amo', 'enamorado', 'enamorada', 'adorar', 'adoro', 'pasión', 'afecto', 'romántico', 'corazón', 'beso', 'abrazo', 'pareja', 'novio', 'novia', 'esposo', 'esposa', 'familia'],
+                        'gratitude': ['agradecido', 'agradecida', 'gracias', 'bendecido', 'bendecida', 'afortunado', 'afortunada', 'suerte', 'fortuna', 'agradezco', 'reconocimiento'],
+                        'excitement': ['emocionado', 'emocionada', 'excitado', 'excitada', 'expectativa', 'anticipación', 'esperando', 'anhelando', 'deseando'],
+                        'confusion': ['confundido', 'confundida', 'confusión', 'perdido', 'perdida', 'no entiendo', 'no sé', 'duda', 'dudoso', 'incierto'],
+                        'hopeful': ['esperanza', 'esperanzado', 'esperanzada', 'optimista', 'positivo', 'positiva', 'fe', 'creer', 'confío']
                     };
-                    let scores = { 'sadness': 0, 'anger': 0, 'fear': 0, 'joy': 0, 'love': 0, 'neutral': 0 };
+                    
+                    let scores = {};
+                    for (let emotion in keywords) {
+                        scores[emotion] = 0;
+                    }
+                    
+                    // Análisis más inteligente con pesos
                     for (let emotion in keywords) {
                         keywords[emotion].forEach(keyword => {
-                            if (lowerText.includes(keyword)) scores[emotion] += 1;
+                            const count = (lowerText.match(new RegExp(keyword, 'g')) || []).length;
+                            scores[emotion] += count;
                         });
                     }
+                    
+                    // Detectar emociones complejas
+                    const complexPatterns = {
+                        'anxiety': /(?:muy|mucho|demasiado)\s+(?:ansioso|nervioso|preocupado)/,
+                        'excitement': /(?:muy|mucho)\s+(?:emocionado|excitado)/,
+                        'hopeful': /(?:tengo|siento)\s+(?:esperanza|fe)/
+                    };
+                    
+                    for (let emotion in complexPatterns) {
+                        if (complexPatterns[emotion].test(lowerText)) {
+                            scores[emotion] += 2;
+                        }
+                    }
+                    
+                    // Analizar contexto emocional del historial
+                    if (this.userHistory.length > 0) {
+                        const recentEmotions = this.userHistory.slice(-3).map(entry => entry.emotion);
+                        const emotionCounts = recentEmotions.reduce((acc, emotion) => {
+                            acc[emotion] = (acc[emotion] || 0) + 1;
+                            return acc;
+                        }, {});
+                        
+                        // Dar peso a emociones recientes
+                        for (let emotion in emotionCounts) {
+                            if (scores[emotion]) {
+                                scores[emotion] += emotionCounts[emotion] * 0.5;
+                            }
+                        }
+                    }
+                    
                     let maxScore = 0;
                     let detectedEmotion = 'neutral';
                     for (let emotion in scores) {
@@ -339,7 +613,12 @@
                             detectedEmotion = emotion;
                         }
                     }
-                    return { emotion: detectedEmotion, score: maxScore > 0 ? 0.8 : 0.3 };
+                    
+                    return { 
+                        emotion: detectedEmotion, 
+                        score: maxScore > 0 ? Math.min(0.9, 0.3 + (maxScore * 0.1)) : 0.3,
+                        confidence: maxScore > 0 ? Math.min(1, maxScore / 3) : 0.3
+                    };
                 },
                 submitName() {
                     if (!this.name.trim()) { alert('Por favor ingresa tu nombre'); return; }
@@ -352,9 +631,10 @@
                     this.submitted = true;
                     try {
                         const keywordResult = this.detectEmotionFromKeywords(this.feeling);
-                        if (keywordResult.score >= 0.8) {
-                            this.result = keywordResult;
-                        } else {
+                        let finalResult = keywordResult;
+                        
+                        // Intentar con API de IA si el análisis local no es muy confiable
+                        if (keywordResult.confidence < 0.7) {
                             try {
                                 const response = await fetch("https://api-inference.huggingface.co/models/finiteautomata/beto-emotion-analysis", {
                                     method: "POST",
@@ -364,24 +644,137 @@
                                 const data = await response.json();
                                 if (data && data[0] && data[0].length > 0) {
                                     const topEmotion = data[0].reduce((prev, curr) => (prev.score > curr.score) ? prev : curr);
-                                    this.result = (keywordResult.score > topEmotion.score * 0.5) ? keywordResult : { emotion: topEmotion.label.toLowerCase(), score: topEmotion.score };
-                                } else { this.result = keywordResult.score > 0 ? keywordResult : { emotion: 'neutral', score: 0.5 }; }
-                            } catch { this.result = keywordResult.score > 0 ? keywordResult : { emotion: 'neutral', score: 0.5 }; }
+                                    const aiResult = { emotion: topEmotion.label.toLowerCase(), score: topEmotion.score, confidence: topEmotion.score };
+                                    
+                                    // Combinar resultados inteligentemente
+                                    if (aiResult.score > keywordResult.score) {
+                                        finalResult = aiResult;
+                                    }
+                                }
+                            } catch (error) {
+                                console.log('API no disponible, usando análisis local');
+                            }
                         }
-                    } catch (e) { console.error(e); this.result = { emotion: 'neutral', score: 0.5 }; }
+                        
+                        this.result = finalResult;
+                        
+                        // Guardar en historial
+                        const historyEntry = {
+                            timestamp: new Date().toISOString(),
+                            emotion: finalResult.emotion,
+                            score: finalResult.score,
+                            text: this.feeling,
+                            name: this.name
+                        };
+                        
+                        this.userHistory.push(historyEntry);
+                        if (this.userHistory.length > 50) {
+                            this.userHistory = this.userHistory.slice(-50); // Mantener solo los últimos 50
+                        }
+                        
+                        localStorage.setItem('emotionHistory', JSON.stringify(this.userHistory));
+                        localStorage.setItem('currentMood', JSON.stringify(finalResult));
+                        
+                        // Generar insights inteligentes
+                        this.generateInsights();
+                        
+                    } catch (e) { 
+                        console.error(e); 
+                        this.result = { emotion: 'neutral', score: 0.5, confidence: 0.3 }; 
+                    }
                     finally { this.loading = false; }
                 },
+                generateInsights() {
+                    if (this.userHistory.length < 3) return;
+                    
+                    const recentEntries = this.userHistory.slice(-7); // Últimos 7 días
+                    const emotionCounts = {};
+                    let totalScore = 0;
+                    
+                    recentEntries.forEach(entry => {
+                        emotionCounts[entry.emotion] = (emotionCounts[entry.emotion] || 0) + 1;
+                        totalScore += entry.score;
+                    });
+                    
+                    const avgScore = totalScore / recentEntries.length;
+                    const dominantEmotion = Object.keys(emotionCounts).reduce((a, b) => 
+                        emotionCounts[a] > emotionCounts[b] ? a : b
+                    );
+                    
+                    const insights = {
+                        trend: avgScore > 0.6 ? 'positivo' : avgScore < 0.4 ? 'negativo' : 'neutral',
+                        dominantEmotion: dominantEmotion,
+                        pattern: this.detectEmotionalPattern(),
+                        recommendation: this.getPersonalizedRecommendation(dominantEmotion, avgScore)
+                    };
+                    
+                    this.aiInsights = insights;
+                },
+                
+                detectEmotionalPattern() {
+                    if (this.userHistory.length < 5) return null;
+                    
+                    const recent = this.userHistory.slice(-5).map(e => e.emotion);
+                    const positiveEmotions = ['joy', 'love', 'gratitude', 'excitement', 'hopeful'];
+                    const negativeEmotions = ['sadness', 'anger', 'fear', 'anxiety'];
+                    
+                    const positiveCount = recent.filter(e => positiveEmotions.includes(e)).length;
+                    const negativeCount = recent.filter(e => negativeEmotions.includes(e)).length;
+                    
+                    if (positiveCount > negativeCount + 1) return 'mejorando';
+                    if (negativeCount > positiveCount + 1) return 'empeorando';
+                    return 'estable';
+                },
+                
+                getPersonalizedRecommendation(dominantEmotion, avgScore) {
+                    const recommendations = {
+                        'sadness': 'Considera hablar con un profesional de salud mental. La terapia puede ayudarte a procesar estos sentimientos.',
+                        'anxiety': 'Prueba técnicas de respiración profunda o meditación. El ejercicio regular también puede reducir la ansiedad.',
+                        'anger': 'Encuentra formas saludables de expresar tu frustración, como ejercicio o arte.',
+                        'fear': 'Recuerda que has superado desafíos antes. Eres más fuerte de lo que crees.',
+                        'joy': '¡Qué maravilloso! Sigue cultivando estas emociones positivas.',
+                        'love': 'El amor es una fuerza poderosa. Comparte estos sentimientos con quienes amas.',
+                        'gratitude': 'La gratitud es una práctica transformadora. Mantén este hábito positivo.',
+                        'hopeful': 'La esperanza es tu superpoder. Confía en el proceso de la vida.'
+                    };
+                    
+                    return recommendations[dominantEmotion] || 'Continúa siendo consciente de tus emociones y busca apoyo cuando lo necesites.';
+                },
+
                 generateEmpathyResponse(emotion, text) {
                     const name = this.name || "Amigo/a";
                     text = text.toLowerCase();
-                    const isLoss = text.includes("murió") || text.includes("falleció") || text.includes("muerte");
-                    const isAnxiety = text.includes("ansiedad") || text.includes("preocupado") || text.includes("nervioso");
-                    const isLonely = text.includes("solo") || text.includes("sola") || text.includes("soledad");
-                    const isSelfDoubt = text.includes("inútil") || text.includes("no sirvo") || text.includes("no valgo");
+                    
+                    // Detectar situaciones específicas para respuestas más personalizadas
+                    const isLoss = text.includes("murió") || text.includes("falleció") || text.includes("muerte") || text.includes("perdí a");
+                    const isAnxiety = text.includes("ansiedad") || text.includes("preocupado") || text.includes("nervioso") || text.includes("estrés");
+                    const isLonely = text.includes("solo") || text.includes("sola") || text.includes("soledad") || text.includes("aislado");
+                    const isSelfDoubt = text.includes("inútil") || text.includes("no sirvo") || text.includes("no valgo") || text.includes("fracaso");
+                    const isRelationship = text.includes("pareja") || text.includes("novio") || text.includes("novia") || text.includes("relación");
+                    const isWork = text.includes("trabajo") || text.includes("empleo") || text.includes("jefe") || text.includes("oficina");
+                    
+                    // Respuestas contextuales más inteligentes
                     if (isLoss) return `${name}, lamento profundamente tu pérdida. Perder a alguien tan importante deja un vacío imposible de llenar, y está bien que necesites llorar. No te obligues a estar bien aún. El amor que sientes por esa persona no se borra con el tiempo; se transforma en recuerdos que te acompañarán siempre. Permítete sentir, recordar, llorar. No estás solo en esto. 💜`;
-                    if (isAnxiety) return `${name}, puedo sentir tu ansiedad y preocupación. Respira. No tienes que tener todas las respuestas hoy. Date permiso de ir paso a paso, de cuidarte, de soltar un poco el control. A veces, lo mejor que puedes hacer es simplemente estar aquí, en el presente. Tienes más fortaleza de la que crees. 🌿`;
+                    
+                    if (isAnxiety) return `${name}, puedo sentir tu ansiedad y preocupación. Respira profundamente conmigo: inhala por 4 segundos, mantén por 4, exhala por 6. No tienes que tener todas las respuestas hoy. Date permiso de ir paso a paso, de cuidarte, de soltar un poco el control. A veces, lo mejor que puedes hacer es simplemente estar aquí, en el presente. Tienes más fortaleza de la que crees. 🌿`;
+                    
                     if (isLonely) return `${name}, la soledad puede sentirse pesada, pero no significa que estés olvidado. Hay personas que te valoran más de lo que imaginas. Usa este momento para reconectarte contigo mismo, y recuerda que pedir compañía o apoyo no te hace débil. Eres valioso, incluso cuando nadie lo dice en voz alta. 💫`;
+                    
                     if (isSelfDoubt) return `${name}, entiendo que te sientas así, pero por favor recuerda: tu valor no depende de lo que hagas o logres. Ya eres suficiente solo por ser tú. Tienes una historia, una luz, una esencia que nadie más posee. No te compares, no te castigues. Permítete descansar, sanar, creer en ti otra vez. ❤️`;
+                    
+                    if (isRelationship) return `${name}, las relaciones pueden ser complicadas y hermosas al mismo tiempo. Es normal sentir emociones intensas cuando se trata del corazón. Date tiempo para procesar lo que sientes, y recuerda que comunicarte con honestidad y compasión es la base de cualquier relación sana. 🌹`;
+                    
+                    if (isWork) return `${name}, el trabajo puede ser una fuente de estrés y satisfacción. Es importante encontrar el equilibrio entre dedicación y autocuidado. Recuerda que tu valor profesional no define tu valor como persona. 🏢`;
+                    
+                    // Usar historial para personalizar respuesta
+                    if (this.userHistory.length > 0) {
+                        const lastEmotion = this.userHistory[this.userHistory.length - 1]?.emotion;
+                        if (lastEmotion === emotion && this.userHistory.length > 1) {
+                            return `${name}, veo que has estado experimentando ${this.emotionMap[emotion]?.label.toLowerCase()} recientemente. Es valiente de tu parte seguir compartiendo tus sentimientos. Cada vez que expresas lo que sientes, te acercas más a tu bienestar emocional. 💪`;
+                        }
+                    }
+                    
+                    // Respuesta estándar personalizada
                     const phrases = this.empathyPhrases[emotion] || this.empathyPhrases['neutral'];
                     return phrases[Math.floor(Math.random() * phrases.length)].replace('{name}', name);
                 },
@@ -412,6 +805,150 @@
                     utterance.lang = 'es-ES';
                     window.speechSynthesis.cancel();
                     window.speechSynthesis.speak(utterance);
+                },
+                
+                getSmartSuggestions() {
+                    if (!this.result) return [];
+                    
+                    const emotion = this.result.emotion;
+                    const suggestions = {
+                        'sadness': [
+                            '🎵 Escucha música que te haga sentir acompañado/a',
+                            '📖 Lee algo inspirador o que te guste',
+                            '🌱 Sal a caminar al aire libre, aunque sea por 10 minutos',
+                            '📞 Llama a alguien en quien confíes para hablar',
+                            '💧 Toma un baño relajante o una ducha caliente'
+                        ],
+                        'anxiety': [
+                            '🫁 Practica la respiración 4-7-8: inhala 4, mantén 7, exhala 8',
+                            '🧘 Prueba meditación guiada de 5 minutos',
+                            '🏃‍♀️ Haz ejercicio ligero para liberar endorfinas',
+                            '📝 Escribe tus preocupaciones para organizar tus pensamientos',
+                            '🎨 Colorea o dibuja para calmar tu mente'
+                        ],
+                        'anger': [
+                            '👊 Golpea una almohada de forma segura',
+                            '🏃‍♂️ Sal a correr o haz ejercicio intenso',
+                            '🎵 Escucha música que te relaje',
+                            '🌊 Ve a un lugar con agua (playa, lago, río)',
+                            '💬 Habla con alguien de confianza sobre lo que sientes'
+                        ],
+                        'fear': [
+                            '📝 Escribe lo que te asusta y por qué',
+                            '🫂 Abraza a alguien cercano o abraza una almohada',
+                            '🎬 Mira algo divertido que te distraiga',
+                            '🏠 Crea un espacio seguro y cómodo para ti',
+                            '💪 Recuerda momentos difíciles que ya superaste'
+                        ],
+                        'joy': [
+                            '🎉 Comparte tu felicidad con alguien más',
+                            '📸 Toma una foto para recordar este momento',
+                            '🎵 Baila con tu música favorita',
+                            '🌟 Haz algo bueno por otra persona',
+                            '📝 Escribe en un diario de gratitud'
+                        ],
+                        'love': [
+                            '💌 Expresa tu amor a quien amas',
+                            '🌹 Haz algo especial para tu ser querido',
+                            '📸 Crea recuerdos juntos',
+                            '💝 Escribe una carta de amor',
+                            '🎨 Crea algo hermoso que represente tu amor'
+                        ],
+                        'gratitude': [
+                            '📝 Escribe 3 cosas por las que estás agradecido hoy',
+                            '📞 Llama a alguien para agradecerle',
+                            '🎁 Haz algo bueno por otra persona',
+                            '🌱 Practica la gratitud hacia ti mismo/a',
+                            '🌟 Comparte tu gratitud en redes sociales'
+                        ]
+                    };
+                    
+                    return suggestions[emotion] || [
+                        '🌱 Cuida de ti mismo/a hoy',
+                        '💧 Mantente hidratado/a',
+                        '😴 Asegúrate de dormir bien',
+                        '🍎 Come algo nutritivo',
+                        '🧘 Tómate 5 minutos para respirar'
+                    ];
+                },
+                
+                viewHistory() {
+                    // Crear modal o nueva vista para mostrar historial detallado
+                    const historyWindow = window.open('', '_blank', 'width=800,height=600');
+                    const historyData = this.userHistory.map(entry => ({
+                        fecha: new Date(entry.timestamp).toLocaleString(),
+                        emoción: this.emotionMap[entry.emotion]?.label || entry.emotion,
+                        puntuación: Math.round(entry.score * 100) + '%',
+                        texto: entry.text.substring(0, 100) + (entry.text.length > 100 ? '...' : '')
+                    }));
+                    
+                    const html = `
+                        <html>
+                            <head>
+                                <title>Historial Emocional - ${this.name}</title>
+                                <style>
+                                    body { font-family: Arial, sans-serif; margin: 20px; }
+                                    table { width: 100%; border-collapse: collapse; }
+                                    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                                    th { background-color: #f2f2f2; }
+                                    .positive { background-color: #d4edda; }
+                                    .negative { background-color: #f8d7da; }
+                                    .neutral { background-color: #fff3cd; }
+                                </style>
+                            </head>
+                            <body>
+                                <h1>📊 Tu Historial Emocional</h1>
+                                <p>Hola ${this.name}, aquí tienes un resumen de tus emociones registradas:</p>
+                                <table>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Emoción</th>
+                                        <th>Intensidad</th>
+                                        <th>Texto</th>
+                                    </tr>
+                                    ${historyData.map(entry => `
+                                        <tr class="${this.emotionMap[entry.emoción.toLowerCase()]?.type || 'neutral'}">
+                                            <td>${entry.fecha}</td>
+                                            <td>${entry.emoción}</td>
+                                            <td>${entry.puntuación}</td>
+                                            <td>${entry.texto}</td>
+                                        </tr>
+                                    `).join('')}
+                                </table>
+                            </body>
+                        </html>
+                    `;
+                    
+                    historyWindow.document.write(html);
+                    historyWindow.document.close();
+                },
+                
+                clearHistory() {
+                    if (confirm('¿Estás seguro/a de que quieres eliminar todo tu historial emocional? Esta acción no se puede deshacer.')) {
+                        this.userHistory = [];
+                        localStorage.removeItem('emotionHistory');
+                        localStorage.removeItem('currentMood');
+                        alert('Historial eliminado. Tus datos están seguros y privados.');
+                    }
+                },
+                
+                exportData() {
+                    const data = {
+                        name: this.name,
+                        history: this.userHistory,
+                        exportDate: new Date().toISOString(),
+                        version: '2.0'
+                    };
+                    
+                    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `historial-emocional-${this.name}-${new Date().toISOString().split('T')[0]}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
                 }
             }
         }).mount('#app');
