@@ -447,6 +447,367 @@
             80% { opacity: 1; }
             100% { opacity: 0; }
         }
+
+        /* Estilos del Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 2rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-header h3 {
+            color: white;
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 2rem;
+            color: white;
+        }
+
+        .empty-history {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-history h4 {
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .empty-history p {
+            color: rgba(255, 255, 255, 0.8);
+            margin: 0;
+        }
+
+        .history-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .summary-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .summary-card h5 {
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+
+        .stat {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #FFD93D;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .history-timeline h5,
+        .history-insights h5 {
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .timeline-container {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .timeline-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .timeline-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .timeline-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        .timeline-item {
+            display: flex;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .timeline-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 40px;
+            bottom: -20px;
+            width: 2px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .timeline-marker {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            flex-shrink: 0;
+            font-size: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .timeline-content {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .emotion-name {
+            font-weight: 600;
+            color: white;
+        }
+
+        .timeline-date {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .timeline-text {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .timeline-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .insight-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .insight-icon {
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .insight-content h6 {
+            margin: 0 0 0.25rem 0;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .insight-content p {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.8rem;
+        }
+
+        .modal-footer {
+            padding: 1rem 2rem 2rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .modal-footer .btn {
+            min-width: 140px;
+        }
+
+        /* Responsive para móviles */
+        @media (max-width: 768px) {
+            .modal-overlay {
+                padding: 10px;
+            }
+
+            .modal-content {
+                max-height: 95vh;
+                border-radius: 15px;
+            }
+
+            .modal-header {
+                padding: 1.5rem 1.5rem 1rem;
+            }
+
+            .modal-header h3 {
+                font-size: 1.5rem;
+            }
+
+            .modal-body {
+                padding: 1.5rem;
+            }
+
+            .summary-stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .stat-number {
+                font-size: 1.5rem;
+            }
+
+            .timeline-container {
+                max-height: 300px;
+            }
+
+            .timeline-content {
+                padding: 0.8rem;
+            }
+
+            .timeline-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.25rem;
+            }
+
+            .insights-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-footer {
+                padding: 1rem 1.5rem 1.5rem;
+                flex-direction: column;
+            }
+
+            .modal-footer .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .modal-header h3 {
+                font-size: 1.3rem;
+            }
+
+            .summary-stats {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .stat {
+                padding: 0.8rem;
+            }
+
+            .timeline-item {
+                margin-bottom: 1rem;
+            }
+
+            .timeline-content {
+                padding: 0.7rem;
+            }
+        }
     </style>
 </head>
 
@@ -639,6 +1000,98 @@
         <!-- Audio dinámico -->
         <audio ref="bgMusic" :src="currentMusic" loop preload="auto" @ended="nextTrack"></audio>
 
+        <!-- Modal del Historial -->
+        <div v-if="showHistoryModal" class="modal-overlay" @click="closeHistoryModal">
+            <div class="modal-content" @click.stop>
+                <div class="modal-header">
+                    <h3>📊 Tu Historial Emocional</h3>
+                    <button @click="closeHistoryModal" class="close-btn" aria-label="Cerrar historial">×</button>
+                </div>
+                <div class="modal-body">
+                    <div v-if="userHistory.length === 0" class="empty-history">
+                        <div class="empty-icon">📝</div>
+                        <h4>Tu historial está vacío</h4>
+                        <p>Comienza a compartir tus emociones para ver tu progreso aquí</p>
+                    </div>
+                    <div v-else class="history-content">
+                        <div class="history-summary">
+                            <div class="summary-card">
+                                <h5>📈 Resumen General</h5>
+                                <div class="summary-stats">
+                                    <div class="stat">
+                                        <span class="stat-number">{{ userHistory.length }}</span>
+                                        <span class="stat-label">Registros</span>
+                                    </div>
+                                    <div class="stat">
+                                        <span class="stat-number">{{ getUniqueEmotions().length }}</span>
+                                        <span class="stat-label">Emociones</span>
+                                    </div>
+                                    <div class="stat">
+                                        <span class="stat-number">{{ getDaysActive() }}</span>
+                                        <span class="stat-label">Días activos</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="history-timeline">
+                            <h5>📅 Timeline de Emociones</h5>
+                            <div class="timeline-container">
+                                <div v-for="(entry, index) in userHistory" :key="index" class="timeline-item">
+                                    <div class="timeline-marker" :style="{backgroundColor: emotionMap[entry.emotion]?.color}">
+                                        {{ emotionMap[entry.emotion]?.emoji }}
+                                    </div>
+                                    <div class="timeline-content">
+                                        <div class="timeline-header">
+                                            <span class="emotion-name">{{ emotionMap[entry.emotion]?.label }}</span>
+                                            <span class="timeline-date">{{ formatDate(entry.timestamp) }}</span>
+                                        </div>
+                                        <div class="timeline-text">{{ entry.text.substring(0, 100) }}{{ entry.text.length > 100 ? '...' : '' }}</div>
+                                        <div class="timeline-meta">
+                                            <span class="intensity">Intensidad: {{ Math.round(entry.score * 100) }}%</span>
+                                            <span class="confidence" v-if="entry.confidence">Confianza: {{ Math.round(entry.confidence * 100) }}%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="history-insights">
+                            <h5>🧠 Insights de tu Bienestar</h5>
+                            <div class="insights-grid">
+                                <div class="insight-card">
+                                    <div class="insight-icon">🎯</div>
+                                    <div class="insight-content">
+                                        <h6>Emoción más frecuente</h6>
+                                        <p>{{ getMostFrequentEmotion() }}</p>
+                                    </div>
+                                </div>
+                                <div class="insight-card">
+                                    <div class="insight-icon">📊</div>
+                                    <div class="insight-content">
+                                        <h6>Tendencia general</h6>
+                                        <p>{{ getOverallTrend() }}</p>
+                                    </div>
+                                </div>
+                                <div class="insight-card">
+                                    <div class="insight-icon">💪</div>
+                                    <div class="insight-content">
+                                        <h6>Progreso</h6>
+                                        <p>{{ getProgressMessage() }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button @click="exportData" class="btn btn-outline-primary">📁 Exportar datos</button>
+                    <button @click="clearHistory" class="btn btn-outline-danger">🗑️ Limpiar historial</button>
+                    <button @click="closeHistoryModal" class="btn btn-primary">✅ Cerrar</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -661,6 +1114,7 @@
                     musicVolume: 0.3,
                     fadeEffect: false,
                     quote: null,
+                    showHistoryModal: false,
                     emotionMap: {
                         'joy': { label: 'Alegría', emoji: '😊', type: 'positive', color: '#FFD93D' },
                         'sadness': { label: 'Tristeza', emoji: '😢', type: 'negative', color: '#6C7CE7' },
@@ -1281,54 +1735,11 @@
                 },
                 
                 viewHistory() {
-                    // Crear modal o nueva vista para mostrar historial detallado
-                    const historyWindow = window.open('', '_blank', 'width=800,height=600');
-                    const historyData = this.userHistory.map(entry => ({
-                        fecha: new Date(entry.timestamp).toLocaleString(),
-                        emoción: this.emotionMap[entry.emotion]?.label || entry.emotion,
-                        puntuación: Math.round(entry.score * 100) + '%',
-                        texto: entry.text.substring(0, 100) + (entry.text.length > 100 ? '...' : '')
-                    }));
-                    
-                    const html = `
-                        <html>
-                            <head>
-                                <title>Historial Emocional - ${this.name}</title>
-                                <style>
-                                    body { font-family: Arial, sans-serif; margin: 20px; }
-                                    table { width: 100%; border-collapse: collapse; }
-                                    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                                    th { background-color: #f2f2f2; }
-                                    .positive { background-color: #d4edda; }
-                                    .negative { background-color: #f8d7da; }
-                                    .neutral { background-color: #fff3cd; }
-                                </style>
-                            </head>
-                            <body>
-                                <h1>📊 Tu Historial Emocional</h1>
-                                <p>Hola ${this.name}, aquí tienes un resumen de tus emociones registradas:</p>
-                                <table>
-                                    <tr>
-                                        <th>Fecha</th>
-                                        <th>Emoción</th>
-                                        <th>Intensidad</th>
-                                        <th>Texto</th>
-                                    </tr>
-                                    ${historyData.map(entry => `
-                                        <tr class="${this.emotionMap[entry.emoción.toLowerCase()]?.type || 'neutral'}">
-                                            <td>${entry.fecha}</td>
-                                            <td>${entry.emoción}</td>
-                                            <td>${entry.puntuación}</td>
-                                            <td>${entry.texto}</td>
-                                        </tr>
-                                    `).join('')}
-                                </table>
-                            </body>
-                        </html>
-                    `;
-                    
-                    historyWindow.document.write(html);
-                    historyWindow.document.close();
+                    this.showHistoryModal = true;
+                },
+                
+                closeHistoryModal() {
+                    this.showHistoryModal = false;
                 },
                 
                 clearHistory() {
@@ -1357,6 +1768,74 @@
                     a.click();
                     document.body.removeChild(a);
                     URL.revokeObjectURL(url);
+                },
+                
+                formatDate(timestamp) {
+                    const date = new Date(timestamp);
+                    return date.toLocaleDateString('es-ES', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                },
+                
+                getUniqueEmotions() {
+                    const emotions = [...new Set(this.userHistory.map(entry => entry.emotion))];
+                    return emotions;
+                },
+                
+                getDaysActive() {
+                    const dates = [...new Set(this.userHistory.map(entry => 
+                        new Date(entry.timestamp).toDateString()
+                    ))];
+                    return dates.length;
+                },
+                
+                getMostFrequentEmotion() {
+                    if (this.userHistory.length === 0) return 'No hay datos';
+                    
+                    const emotionCounts = {};
+                    this.userHistory.forEach(entry => {
+                        emotionCounts[entry.emotion] = (emotionCounts[entry.emotion] || 0) + 1;
+                    });
+                    
+                    const mostFrequent = Object.keys(emotionCounts).reduce((a, b) => 
+                        emotionCounts[a] > emotionCounts[b] ? a : b
+                    );
+                    
+                    return `${this.emotionMap[mostFrequent]?.emoji} ${this.emotionMap[mostFrequent]?.label}`;
+                },
+                
+                getOverallTrend() {
+                    if (this.userHistory.length < 3) return 'Necesitas más datos';
+                    
+                    const recent = this.userHistory.slice(-5);
+                    const positiveCount = recent.filter(e => 
+                        ['joy', 'love', 'gratitude', 'excitement', 'hopeful'].includes(e.emotion)
+                    ).length;
+                    const negativeCount = recent.filter(e => 
+                        ['sadness', 'anger', 'fear', 'anxiety'].includes(e.emotion)
+                    ).length;
+                    
+                    if (positiveCount > negativeCount + 1) return '📈 Mejorando';
+                    if (negativeCount > positiveCount + 1) return '📉 Necesita atención';
+                    return '📊 Estable';
+                },
+                
+                getProgressMessage() {
+                    if (this.userHistory.length < 2) return 'Comienza tu viaje';
+                    
+                    const firstEntry = this.userHistory[0];
+                    const lastEntry = this.userHistory[this.userHistory.length - 1];
+                    
+                    const firstScore = firstEntry.score;
+                    const lastScore = lastEntry.score;
+                    
+                    if (lastScore > firstScore + 0.2) return '🎉 ¡Excelente progreso!';
+                    if (lastScore < firstScore - 0.2) return '💪 Sigue trabajando en ti';
+                    return '🌟 Mantén la constancia';
                 }
             }
         }).mount('#app');
