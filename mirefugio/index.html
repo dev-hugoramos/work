@@ -1182,9 +1182,7 @@
                                                         'text-warning': aiInsights.pattern === 'estable',
                                                         'text-danger': aiInsights.pattern === 'empeorando'
                                                     }">
-                                                        {{ aiInsights.pattern === 'mejorando' ? '✨ Progreso positivo' :
-                                                        aiInsights.pattern === 'empeorando' ? '⚠️ Considera apoyo' : '🔄
-                                                        Estable' }}
+                                                        {{ aiInsights.pattern === 'mejorando' ? '✨ Progreso positivo' : aiInsights.pattern === 'empeorando' ? '⚠️ Considera apoyo' : '🔄 Estable' }}
                                                     </span>
                                                 </div>
                                                 <div class="insight-item">
