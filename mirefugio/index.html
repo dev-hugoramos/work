@@ -1165,17 +1165,16 @@
                                             </div>
                                             <div class="insights-content">
                                                 <div class="insight-item">
-                                                    <strong>Tendencia:</strong>
-                                                    <span :class="{
-                                                        'text-success': aiInsights.trend === 'positivo',
-                                                        'text-warning': aiInsights.trend === 'neutral',
-                                                        'text-danger': aiInsights.trend === 'negativo'
-                                                    }">
-                                                        {{ aiInsights.trend === 'positivo' ? '📈 Mejorando' :
-                                                        aiInsights.trend === 'negativo' ? '📉 Necesita atención' : '📊
-                                                        Estable' }}
-                                                    </span>
+                                                  <strong>Tendencia:</strong>
+                                                  <span :class="{
+                                                      'text-success': aiInsights.trend === 'positivo',
+                                                      'text-warning': aiInsights.trend === 'neutral',
+                                                      'text-danger': aiInsights.trend === 'negativo'
+                                                  }">
+                                                    {{ aiInsights.trend === 'positivo' ? '📈 Mejorando' : aiInsights.trend === 'negativo' ? '📉 Necesita atención' : '📊 Estable' }}
+                                                  </span>
                                                 </div>
+
                                                 <div v-if="aiInsights.pattern" class="insight-item">
                                                     <strong>Patrón emocional:</strong>
                                                     <span :class="{
