@@ -1,22 +1,32 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de Currículums Profesional</title>
+    <title>CV Builder Pro - Generador de Currículums Profesional</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
-
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.7.32/sweetalert2.min.css"
-        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.7.32/sweetalert2.min.css" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap');
+
         :root {
-            --primary-color: #000000;
-            --secondary-color: #333333;
-            --accent-color: #666666;
-            --light-gray: #f5f5f5;
+            --primary: #1a365d;
+            --primary-dark: #0f2744;
+            --primary-light: #2d4a73;
+            --secondary: #2c5282;
+            --accent: #d69e2e;
+            --success: #2f855a;
+            --warning: #c05621;
+            --danger: #c53030;
+            --dark: #1a202c;
+            --gray-50: #f7fafc;
+            --gray-100: #edf2f7;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-700: #2d3748;
+            --gray-800: #1a202c;
+            --gray-900: #171923;
         }
 
         * {
@@ -26,36 +36,60 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             min-height: 100vh;
-            padding: 20px 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 89, 149, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(138, 43, 226, 0.3) 0%, transparent 50%);
+            animation: gradientShift 15s ease infinite;
+            z-index: -1;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
 
         .main-container {
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border-radius: 30px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.15);
             overflow: hidden;
-            animation: fadeIn 0.6s ease-in;
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            margin: 30px auto;
+            max-width: 1600px;
         }
 
-        @keyframes fadeIn {
+        @keyframes slideUp {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(60px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
+        /* Header Styles */
         .header {
-            background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--secondary) 100%);
             color: white;
-            padding: 30px;
+            padding: 50px 30px;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -68,216 +102,586 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-            animation: pulse 4s infinite;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                transform: scale(1);
-                opacity: 0.5;
-            }
-
-            50% {
-                transform: scale(1.1);
-                opacity: 0.8;
-            }
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+            animation: pulse 6s infinite;
         }
 
         .header h1 {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 10px;
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
             position: relative;
             z-index: 1;
         }
 
         .language-switch {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 25px;
+            right: 30px;
             z-index: 2;
         }
 
-        @media (max-width: 768px) {
-            .language-switch {
-                position: relative;
-                top: 0;
-                right: 0;
-                margin-bottom: 15px;
-                text-align: center;
-            }
-
-            .header h1 {
-                margin-top: 10px;
-            }
-        }
-
         .language-switch button {
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid white;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.4);
             color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
+            padding: 10px 20px;
+            border-radius: 25px;
             cursor: pointer;
-            transition: all 0.3s;
-            font-weight: bold;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+            font-size: 0.95rem;
         }
 
         .language-switch button:hover {
             background: white;
-            color: #000;
-            transform: scale(1.05);
+            color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
 
-        .content-area {
-            display: flex;
-            min-height: 600px;
+        /* Credits Section */
+        .credits-section {
+            background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+            padding: 35px;
+            text-align: center;
+            border-bottom: 1px solid var(--gray-200);
         }
 
-        .editor-panel {
-            flex: 1;
-            padding: 30px;
-            background: #f8f9fa;
-            overflow-y: auto;
-            max-height: 800px;
-        }
-
-        .preview-panel {
-            flex: 1;
-            padding: 30px;
-            background: #e9ecef;
-            overflow-y: auto;
-            max-height: 800px;
-        }
-
-        .section-title {
-            color: #000;
+        .credits-section h3 {
             font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #000;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--dark);
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
         }
 
-        .form-group {
-            margin-bottom: 20px;
-            animation: slideIn 0.4s ease-out;
+        .credits-section p {
+            color: var(--gray-700);
+            margin-bottom: 25px;
+            font-size: 1rem;
         }
 
-        @keyframes slideIn {
+        .social-links {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .social-links a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .social-linkedin {
+            background: #0077b5;
+            color: white;
+        }
+
+        .social-instagram {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            color: white;
+        }
+
+        .social-kofi {
+            background: #FF5E5B;
+            color: white;
+        }
+
+        /* Content Area */
+        .content-area {
+            display: flex;
+            min-height: 700px;
+        }
+
+        /* Editor Panel */
+        .editor-panel {
+            flex: 1;
+            padding: 40px;
+            background: var(--gray-50);
+            overflow-y: auto;
+            max-height: 900px;
+        }
+
+        .editor-panel::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .editor-panel::-webkit-scrollbar-track {
+            background: var(--gray-100);
+        }
+
+        .editor-panel::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        /* Preview Panel */
+        .preview-panel {
+            flex: 1;
+            padding: 40px;
+            background: var(--gray-100);
+            overflow-y: auto;
+            max-height: 900px;
+        }
+
+        .preview-panel::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .preview-panel::-webkit-scrollbar-track {
+            background: var(--gray-200);
+        }
+
+        .preview-panel::-webkit-scrollbar-thumb {
+            background: var(--secondary);
+            border-radius: 4px;
+        }
+
+        /* Section Titles */
+        .section-title {
+            color: var(--dark);
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .section-title i {
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 25px;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateX(-20px);
+                transform: translateY(20px);
             }
-
             to {
                 opacity: 1;
-                transform: translateX(0);
+                transform: translateY(0);
             }
         }
 
-        .form-control,
-        .form-select {
-            border-radius: 10px;
-            border: 2px solid #dee2e6;
-            padding: 12px;
+        .form-control, .form-select {
+            border-radius: 12px;
+            border: 2px solid var(--gray-200);
+            padding: 14px 18px;
             transition: all 0.3s;
-            font-family: Arial, sans-serif;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            background: white;
         }
 
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #000;
-            box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.25);
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+            outline: none;
         }
 
+        label {
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+
+        label i {
+            color: var(--primary);
+        }
+
+        .input-group-text {
+            background: var(--gray-100);
+            border: 2px solid var(--gray-200);
+            border-right: none;
+            border-radius: 12px 0 0 12px;
+            color: var(--primary);
+        }
+
+        .input-group .form-control {
+            border-left: none;
+            border-radius: 0 12px 12px 0;
+        }
+
+        /* Buttons */
         .btn-primary {
-            background: linear-gradient(135deg, #000 0%, #333 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             border: none;
-            border-radius: 10px;
-            padding: 12px 30px;
-            font-weight: bold;
-            transition: all 0.3s;
+            border-radius: 12px;
+            padding: 14px 32px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
             color: white;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
         }
 
         .btn-primary::before {
             content: '';
             position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
         }
 
         .btn-primary:hover::before {
-            width: 300px;
-            height: 300px;
+            left: 100%;
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
         }
 
         .btn-danger {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
             border: none;
-            border-radius: 10px;
-            padding: 8px 16px;
+            border-radius: 12px;
+            padding: 10px 20px;
             transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
         }
 
         .btn-danger:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
         }
 
+        .btn-success {
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 14px 32px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning) 0%, #d97706 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 14px 32px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        /* Template Selector */
+        .template-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .template-option {
+            padding: 25px 20px;
+            border: 3px solid var(--gray-200);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            background: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .template-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .template-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border-color: var(--primary);
+        }
+
+        .template-option.active {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+        }
+
+        .template-option i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .template-option span {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        /* Item List */
+        .item-list {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 15px;
+            border-left: 5px solid var(--primary);
+            animation: slideIn 0.4s ease-out;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+        }
+
+        .item-list:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transform: translateX(5px);
+        }
+
+        /* Photo Upload */
+        .photo-upload {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .photo-preview {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--primary);
+            margin: 20px auto;
+            display: none;
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+        }
+
+        .photo-preview.active {
+            display: block;
+        }
+
+        /* CV Preview Styles */
         .cv-preview {
             background: white;
-            border-radius: 10px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            padding: 50px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
             font-size: 11px;
             min-height: 500px;
-            font-family: Arial, sans-serif;
-            line-height: 1.5;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
             max-width: 210mm;
             margin: 0 auto;
         }
 
-        .cv-header-section {
+        /* Template: Modern */
+        .cv-preview.template-modern .cv-header-section {
             display: flex;
             align-items: flex-start;
-            gap: 25px;
-            padding-bottom: 20px;
-            border-bottom: 3px solid #000;
-            margin-bottom: 25px;
+            gap: 30px;
+            padding-bottom: 25px;
+            border-bottom: 4px solid var(--primary);
+            margin-bottom: 30px;
+            position: relative;
         }
 
+        .cv-preview.template-modern .cv-header-section::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100px;
+            height: 4px;
+            background: var(--accent);
+        }
+
+        /* Template: Executive (nueva) */
+        .cv-preview.template-executive .cv-header-section {
+            background: linear-gradient(135deg, var(--gray-900) 0%, var(--gray-800) 100%);
+            color: white;
+            padding: 40px;
+            margin: -50px -50px 30px -50px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .cv-preview.template-executive .cv-name {
+            color: white;
+        }
+
+        .cv-preview.template-executive .cv-title {
+            color: var(--gray-300);
+        }
+
+        .cv-preview.template-executive .cv-contact-item {
+            color: var(--gray-300);
+        }
+
+        .cv-preview.template-executive .cv-section-title {
+            background: var(--gray-900);
+            color: white;
+            padding: 10px 20px;
+            margin-left: -15px;
+            margin-right: -15px;
+            border-radius: 8px;
+        }
+
+        /* Template: Minimalist (nueva) */
+        .cv-preview.template-minimalist .cv-header-section {
+            border-bottom: 1px solid var(--gray-300);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .cv-preview.template-minimalist .cv-section-title {
+            border-bottom: none;
+            border-left: 4px solid var(--primary);
+            padding-left: 15px;
+            font-size: 14px;
+        }
+
+        .cv-preview.template-minimalist .cv-item {
+            border-left: 2px solid var(--gray-200);
+            padding-left: 20px;
+            margin-left: 10px;
+        }
+
+        /* Template: Creative */
+        .cv-preview.template-creative .cv-header-section {
+            border-bottom: none;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: 30px;
+            margin: -50px -50px 30px -50px;
+            border-radius: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cv-preview.template-creative .cv-header-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .cv-preview.template-creative .cv-section-title {
+            border-bottom: none;
+            border-left: 6px solid var(--accent);
+            padding-left: 15px;
+            color: var(--primary);
+        }
+
+        /* Template: Classic */
+        .cv-preview.template-classic .cv-header-section {
+            border-bottom: 2px solid var(--gray-800);
+            padding-bottom: 20px;
+        }
+
+        .cv-preview.template-classic .cv-section-title {
+            background: var(--gray-900);
+            color: white;
+            padding: 8px 15px;
+            margin-left: -10px;
+            margin-right: -10px;
+            border-bottom: none;
+            border-radius: 4px;
+        }
+
+        /* Template: Elegant (nueva) */
+        .cv-preview.template-elegant .cv-header-section {
+            text-align: center;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 25px;
+            margin-bottom: 30px;
+        }
+
+        .cv-preview.template-elegant .cv-photo {
+            margin: 0 auto 20px;
+        }
+
+        .cv-preview.template-elegant .cv-contact {
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .cv-preview.template-elegant .cv-section-title {
+            text-align: center;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 10px;
+            border-left: none;
+        }
+
+        /* CV Components */
         .cv-photo {
             flex-shrink: 0;
         }
 
         .cv-photo img {
-            width: 100px;
-            height: 100px;
+            width: 110px;
+            height: 110px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid #000;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            border: 4px solid var(--primary);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
         }
 
         .cv-header-info {
@@ -285,66 +689,62 @@
         }
 
         .cv-name {
-            font-size: 26px;
-            font-weight: bold;
-            margin-bottom: 6px;
-            color: #000;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: var(--dark);
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
 
         .cv-title {
-            font-size: 15px;
-            color: #333;
-            margin-bottom: 12px;
+            font-size: 16px;
+            color: var(--primary);
+            margin-bottom: 15px;
             font-weight: 600;
         }
 
         .cv-contact {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
+            gap: 10px;
             font-size: 10px;
         }
 
         .cv-contact-item {
             display: flex;
             align-items: center;
-            gap: 6px;
-            color: #333;
+            gap: 8px;
+            color: var(--gray-700);
         }
 
         .cv-contact-item i {
-            width: 16px;
-            color: #000;
+            width: 18px;
+            color: var(--primary);
             font-size: 11px;
         }
 
         .cv-section {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             page-break-inside: avoid;
         }
 
         .cv-section-title {
             font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #000;
-            color: #000;
+            font-weight: 700;
+            margin-bottom: 18px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+            color: var(--dark);
             text-transform: uppercase;
             letter-spacing: 1px;
             display: flex;
             align-items: center;
-            gap: 8px;
-        }
-
-        .cv-section-title i {
-            font-size: 14px;
+            gap: 10px;
         }
 
         .cv-item {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
             page-break-inside: avoid;
         }
 
@@ -352,205 +752,97 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
 
         .cv-item-title {
-            font-weight: bold;
+            font-weight: 700;
             font-size: 12px;
-            color: #000;
+            color: var(--dark);
         }
 
         .cv-item-date {
-            color: #666;
+            color: var(--gray-700);
             font-size: 10px;
             font-weight: 600;
             white-space: nowrap;
-            background: #f5f5f5;
-            padding: 3px 8px;
-            border-radius: 4px;
+            background: var(--gray-100);
+            padding: 4px 10px;
+            border-radius: 6px;
         }
 
         .cv-item-subtitle {
-            color: #333;
-            margin-bottom: 6px;
+            color: var(--primary);
+            margin-bottom: 8px;
             font-size: 11px;
-            font-style: italic;
+            font-weight: 600;
         }
 
         .cv-item-description {
-            color: #444;
+            color: var(--gray-700);
             font-size: 10px;
-            line-height: 1.6;
+            line-height: 1.7;
             text-align: justify;
         }
 
         .cv-skills-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+            gap: 10px;
         }
 
         .cv-skill-item {
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 6px 10px;
-            background: #f5f5f5;
-            border-radius: 5px;
-            border-left: 3px solid #000;
+            gap: 8px;
+            padding: 8px 12px;
+            background: var(--gray-50);
+            border-radius: 8px;
+            border-left: 3px solid var(--primary);
             font-size: 10px;
-            font-weight: 500;
+            font-weight: 600;
+            transition: all 0.3s;
         }
 
         .cv-skill-item i {
-            color: #000;
-            font-size: 8px;
+            color: var(--success);
+            font-size: 9px;
         }
 
-        .template-selector {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .template-option {
-            padding: 15px 25px;
-            border: 3px solid #dee2e6;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-            flex: 1;
-            min-width: 120px;
-            background: white;
-        }
-
-        .template-option:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .template-option.active {
-            border-color: #000;
-            background: #000;
-            color: white;
-        }
-
-        .item-list {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            border-left: 4px solid #000;
-            animation: slideIn 0.4s ease-out;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
+        /* Action Buttons */
         .action-buttons {
             position: sticky;
             bottom: 0;
             background: white;
-            padding: 20px;
-            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
             display: flex;
-            gap: 10px;
+            gap: 15px;
             justify-content: center;
             flex-wrap: wrap;
+            border-top: 1px solid var(--gray-200);
         }
 
-        .photo-upload {
-            margin-bottom: 20px;
-        }
-
-        .photo-preview {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid #000;
-            margin-top: 10px;
-            display: none;
-        }
-
-        .photo-preview.active {
-            display: block;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-        }
-
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #000;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        .cv-preview.template-modern .cv-header-section {
-            border-bottom: 3px solid #000;
-        }
-
-        .cv-preview.template-classic .cv-header-section {
-            border-bottom: 1px solid #000;
-            padding-bottom: 18px;
-        }
-
-        .cv-preview.template-classic .cv-section-title {
-            background: #000;
-            color: white;
-            padding: 6px 12px;
-            margin-left: -8px;
-            margin-right: -8px;
-            border-bottom: none;
-        }
-
-        .cv-preview.template-creative .cv-header-section {
-            border-bottom: none;
-            background: linear-gradient(135deg, #f5f5f5 0%, #e9e9e9 100%);
-            padding: 20px;
-            margin-left: -8px;
-            margin-right: -8px;
-            margin-bottom: 25px;
-            border-radius: 8px;
-        }
-
-        .cv-preview.template-creative .cv-section-title {
-            border-bottom: none;
-            border-left: 5px solid #000;
-            padding-left: 12px;
-        }
-
+        /* Mobile Styles */
         .mobile-preview-btn {
             display: none;
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 25px;
+            right: 25px;
             z-index: 1000;
-            width: 60px;
-            height: 60px;
+            width: 65px;
+            height: 65px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #000 0%, #333 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
             border: none;
-            font-size: 24px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            font-size: 26px;
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+            transition: all 0.3s;
+        }
+
+        .mobile-preview-btn:hover {
+            transform: scale(1.1);
         }
 
         .preview-modal {
@@ -560,7 +852,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.95);
             z-index: 2000;
             overflow-y: auto;
             padding: 20px;
@@ -571,45 +863,73 @@
         }
 
         .preview-modal-content {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             position: relative;
         }
 
         .close-modal {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 25px;
+            right: 25px;
             background: white;
-            color: #000;
+            color: var(--dark);
             border: none;
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             font-size: 24px;
             cursor: pointer;
             z-index: 2001;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s;
         }
 
-        .credits-section a:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        .close-modal:hover {
+            transform: rotate(90deg);
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Loading Spinner */
+        .loading {
+            text-align: center;
+            padding: 50px;
+        }
+
+        .spinner {
+            border: 4px solid var(--gray-200);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 25px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .cv-skills-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         @media (max-width: 768px) {
-
-            .credits-section h3 {
-                font-size: 1.1rem;
+            .header h1 {
+                font-size: 2rem;
             }
 
-            .credits-section p {
-                font-size: 0.85rem;
-            }
-
-            .credits-section a {
-                font-size: 0.9rem;
-                padding: 8px 15px;
+            .language-switch {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin-bottom: 20px;
+                text-align: center;
             }
 
             .content-area {
@@ -627,16 +947,12 @@
             }
 
             .cv-preview {
-                padding: 20px;
+                padding: 30px;
                 font-size: 10px;
             }
 
-            .header h1 {
-                font-size: 1.8rem;
-            }
-
             .cv-name {
-                font-size: 20px;
+                font-size: 22px;
             }
 
             .cv-header-section {
@@ -650,75 +966,72 @@
             }
 
             .cv-skills-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: 1fr;
             }
 
             .editor-panel {
                 max-height: none;
             }
-        }
 
-        label {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 8px;
-            display: block;
-        }
+            .template-selector {
+                grid-template-columns: repeat(2, 1fr);
+            }
 
-        label i {
-            margin-right: 5px;
-            color: #000;
+            .social-links {
+                flex-direction: column;
+            }
+
+            .social-links a {
+                width: 100%;
+            }
         }
     </style>
 </head>
-
 <body>
-    <div class="container">
+    <div class="container-fluid px-0">
         <div class="main-container">
+            <!-- Header -->
             <div class="header">
                 <div class="language-switch">
                     <button id="langBtn" onclick="toggleLanguage()">
                         <i class="fas fa-globe"></i> <span id="langBtnText">English</span>
                     </button>
                 </div>
-                <h1><i class="fas fa-file-alt"></i> <span data-translate="mainTitle">Generador de Currículums</span>
-                </h1>
-                <p data-translate="subtitle">Crea tu currículum profesional en minutos</p>
+                <h1><i class="fas fa-graduation-cap"></i> <span data-translate="mainTitle">Curriculum Ya</span></h1>
+                <p data-translate="subtitle">Crea tu currículum profesional en minutos con plantillas premium</p>
             </div>
 
-            <div class="credits-section"
-                style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; text-align: center; border-bottom: 3px solid #000;">
-                <div style="max-width: 800px; margin: 0 auto;">
-                    <h3 style="font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; color: #000;">
+            <!-- Credits Section -->
+            <div class="credits-section">
+                <div style="max-width: 900px; margin: 0 auto;">
+                    <h3>
                         <i class="fas fa-code"></i> Creado por Hugo Ramos Espino
                     </h3>
-                    <p style="color: #666; margin-bottom: 20px; font-size: 0.95rem;">
-                        <i class="fas fa-heart" style="color: #e74c3c;"></i> Desarrollador Full Stack apasionado por
-                        crear herramientas útiles
+                    <p>
+                        <i class="fas fa-heart" style="color: #e74c3c;"></i> Desarrollador Full Stack apasionado por crear herramientas útiles
                     </p>
-                    <div
-                        style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; align-items: center;">
-                        <a href="https://www.linkedin.com/in/hugo-david-r-643485123/" target="_blank"
-                            style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: #0077b5; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; transition: all 0.3s;">
-                            <i class="fab fa-linkedin" style="font-size: 1.2rem;"></i>
+                    <div class="social-links">
+                        <a href="https://www.linkedin.com/in/hugo-david-r-643485123/" target="_blank" class="social-linkedin">
+                            <i class="fab fa-linkedin"></i>
                             LinkedIn
                         </a>
-                        <a href="https://www.instagram.com/sickgeek_?igsh=YnY1MWxhaHJmMHF6" target="_blank"
-                            style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: white; text-decoration: none; border-radius: 8px; font-weight: bold; transition: all 0.3s;">
-                            <i class="fab fa-instagram" style="font-size: 1.2rem;"></i>
+                        <a href="https://www.instagram.com/sickgeek_?igsh=YnY1MWxhaHJmMHF6" target="_blank" class="social-instagram">
+                            <i class="fab fa-instagram"></i>
                             Instagram
                         </a>
-                        <a href="https://ko-fi.com/hugoramos" target="_blank"
-                            style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: #FF5E5B; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; transition: all 0.3s; box-shadow: 0 4px 10px rgba(255, 94, 91, 0.3);">
-                            <i class="fas fa-coffee" style="font-size: 1.2rem;"></i>
+                        <a href="https://ko-fi.com/hugoramos" target="_blank" class="social-kofi">
+                            <i class="fas fa-coffee"></i>
                             Apóyame en Ko-fi
                         </a>
                     </div>
                 </div>
             </div>
 
+            <!-- Main Content Area -->
             <div class="content-area">
+                <!-- Editor Panel -->
                 <div class="editor-panel">
+                    <!-- Template Selection -->
                     <div class="section-title">
                         <i class="fas fa-palette"></i>
                         <span data-translate="templateTitle">Seleccionar Plantilla</span>
@@ -726,61 +1039,64 @@
 
                     <div class="template-selector">
                         <div class="template-option active" data-template="modern" onclick="changeTemplate('modern')">
-                            <i class="fas fa-star"></i><br>
+                            <i class="fas fa-rocket"></i>
                             <span data-translate="temp1">Moderno</span>
                         </div>
-                        <div class="template-option" data-template="classic" onclick="changeTemplate('classic')">
-                            <i class="fas fa-briefcase"></i><br>
-                            <span data-translate="temp2">Clásico</span>
+                        <div class="template-option" data-template="executive" onclick="changeTemplate('executive')">
+                            <i class="fas fa-crown"></i>
+                            <span data-translate="temp2">Ejecutivo</span>
+                        </div>
+                        <div class="template-option" data-template="minimalist" onclick="changeTemplate('minimalist')">
+                            <i class="fas fa-minus"></i>
+                            <span data-translate="temp3">Minimalista</span>
                         </div>
                         <div class="template-option" data-template="creative" onclick="changeTemplate('creative')">
-                            <i class="fas fa-lightbulb"></i><br>
-                            <span data-translate="temp3">Creativo</span>
+                            <i class="fas fa-lightbulb"></i>
+                            <span data-translate="temp4">Creativo</span>
+                        </div>
+                        <div class="template-option" data-template="classic" onclick="changeTemplate('classic')">
+                            <i class="fas fa-briefcase"></i>
+                            <span data-translate="temp5">Clásico</span>
+                        </div>
+                        <div class="template-option" data-template="elegant" onclick="changeTemplate('elegant')">
+                            <i class="fas fa-gem"></i>
+                            <span data-translate="temp6">Elegante</span>
                         </div>
                     </div>
 
+                    <!-- Personal Information -->
                     <div class="section-title">
-                        <i class="fas fa-user"></i>
+                        <i class="fas fa-user-circle"></i>
                         <span data-translate="personalTitle">Información Personal</span>
                     </div>
 
                     <div class="form-group photo-upload">
-                        <label><i class="fas fa-camera"></i> <span data-translate="photoLabel">Foto de
-                                Perfil</span>:</label>
-                        <input type="file" class="form-control" id="photoInput" accept="image/*"
-                            onchange="handlePhotoUpload(event)">
+                        <label><i class="fas fa-camera"></i> <span data-translate="photoLabel">Foto de Perfil</span>:</label>
+                        <input type="file" class="form-control" id="photoInput" accept="image/*" onchange="handlePhotoUpload(event)">
                         <img id="photoPreview" class="photo-preview" alt="Vista previa">
                     </div>
 
                     <div class="form-group">
-                        <label><i class="fas fa-user-circle"></i> <span data-translate="nameLabel">Nombre
-                                Completo</span>:</label>
-                        <input type="text" class="form-control" id="fullName"
-                            data-translate-placeholder="namePlaceholder" placeholder="Ingresa tu nombre completo"
-                            oninput="updatePreview()">
+                        <label><i class="fas fa-user"></i> <span data-translate="nameLabel">Nombre Completo</span>:</label>
+                        <input type="text" class="form-control" id="fullName" data-translate-placeholder="namePlaceholder" placeholder="Ej: Juan Pérez García" oninput="updatePreview()">
                     </div>
 
                     <div class="form-group">
-                        <label><i class="fas fa-briefcase"></i> <span data-translate="jobTitleLabel">Título
-                                Profesional</span>:</label>
-                        <input type="text" class="form-control" id="jobTitle"
-                            data-translate-placeholder="jobTitlePlaceholder" placeholder="Ingresa tu título o puesto"
-                            oninput="updatePreview()">
+                        <label><i class="fas fa-briefcase"></i> <span data-translate="jobTitleLabel">Título Profesional</span>:</label>
+                        <input type="text" class="form-control" id="jobTitle" data-translate-placeholder="jobTitlePlaceholder" placeholder="Ej: Desarrollador Full Stack" oninput="updatePreview()">
                     </div>
 
+                    <!-- Contact Information -->
                     <div class="section-title">
                         <i class="fas fa-address-book"></i>
                         <span data-translate="contactTitle">Información de Contacto</span>
                     </div>
 
                     <div class="form-group">
-                        <label><i class="fas fa-envelope"></i> <span data-translate="emailLabel">Correo
-                                Electrónico</span>:</label>
+                        <label><i class="fas fa-envelope"></i> <span data-translate="emailLabel">Correo Electrónico</span>:</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                            <input type="email" class="form-control" id="email"
-                                data-translate-placeholder="emailPlaceholder"
-                                placeholder="Ingresa tu correo electrónico" oninput="updatePreview()">
+                            <input type="email" class="form-control" id="email" data-translate-placeholder="emailPlaceholder" placeholder="ejemplo@correo.com" oninput="updatePreview()">
                         </div>
                     </div>
 
@@ -788,34 +1104,27 @@
                         <label><i class="fas fa-phone"></i> <span data-translate="phoneLabel">Teléfono</span>:</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                            <input type="tel" class="form-control" id="phone"
-                                data-translate-placeholder="phonePlaceholder"
-                                placeholder="Ingresa tu número de teléfono" oninput="updatePreview()">
+                            <input type="tel" class="form-control" id="phone" data-translate-placeholder="phonePlaceholder" placeholder="+52 123 456 7890" oninput="updatePreview()">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label><i class="fab fa-linkedin"></i> <span
-                                data-translate="linkedinLabel">LinkedIn</span>:</label>
+                        <label><i class="fab fa-linkedin"></i> <span data-translate="linkedinLabel">LinkedIn</span>:</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fab fa-linkedin"></i></span>
-                            <input type="url" class="form-control" id="linkedin"
-                                data-translate-placeholder="linkedinPlaceholder"
-                                placeholder="Ingresa tu perfil de LinkedIn" oninput="updatePreview()">
+                            <input type="url" class="form-control" id="linkedin" data-translate-placeholder="linkedinPlaceholder" placeholder="linkedin.com/in/tu-perfil" oninput="updatePreview()">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label><i class="fas fa-map-marker-alt"></i> <span
-                                data-translate="locationLabel">Ubicación</span>:</label>
+                        <label><i class="fas fa-map-marker-alt"></i> <span data-translate="locationLabel">Ubicación</span>:</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
-                            <input type="text" class="form-control" id="location"
-                                data-translate-placeholder="locationPlaceholder" placeholder="Ingresa tu ciudad y país"
-                                oninput="updatePreview()">
+                            <input type="text" class="form-control" id="location" data-translate-placeholder="locationPlaceholder" placeholder="Ciudad, País" oninput="updatePreview()">
                         </div>
                     </div>
 
+                    <!-- Work Experience -->
                     <div class="section-title">
                         <i class="fas fa-briefcase"></i>
                         <span data-translate="experienceTitle">Experiencia Laboral</span>
@@ -824,50 +1133,40 @@
                     <div id="experienceList"></div>
 
                     <div class="form-group">
-                        <label><i class="fas fa-user-tie"></i> <span
-                                data-translate="positionLabel">Puesto</span>:</label>
-                        <input type="text" class="form-control" id="expPosition"
-                            data-translate-placeholder="positionPlaceholder" placeholder="Ingresa el puesto">
+                        <label><i class="fas fa-user-tie"></i> <span data-translate="positionLabel">Puesto</span>:</label>
+                        <input type="text" class="form-control" id="expPosition" data-translate-placeholder="positionPlaceholder" placeholder="Ej: Gerente de Proyectos">
                     </div>
 
                     <div class="form-group">
-                        <label><i class="fas fa-building"></i> <span
-                                data-translate="companyLabel">Empresa</span>:</label>
-                        <input type="text" class="form-control" id="expCompany"
-                            data-translate-placeholder="companyPlaceholder"
-                            placeholder="Ingresa el nombre de la empresa">
+                        <label><i class="fas fa-building"></i> <span data-translate="companyLabel">Empresa</span>:</label>
+                        <input type="text" class="form-control" id="expCompany" data-translate-placeholder="companyPlaceholder" placeholder="Ej: TechCorp S.A.">
                     </div>
 
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label><i class="fas fa-calendar-alt"></i> <span data-translate="startYearLabel">Año
-                                        Inicio</span>:</label>
+                                <label><i class="fas fa-calendar-alt"></i> <span data-translate="startYearLabel">Año Inicio</span>:</label>
                                 <input type="text" class="form-control" id="expStartYear" placeholder="2020">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label><i class="fas fa-calendar-check"></i> <span data-translate="endYearLabel">Año
-                                        Fin</span>:</label>
-                                <input type="text" class="form-control" id="expEndYear"
-                                    data-translate-placeholder="endYearPlaceholder" placeholder="2023 o Actual">
+                                <label><i class="fas fa-calendar-check"></i> <span data-translate="endYearLabel">Año Fin</span>:</label>
+                                <input type="text" class="form-control" id="expEndYear" data-translate-placeholder="endYearPlaceholder" placeholder="2023 o Actual">
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label><i class="fas fa-align-left"></i> <span
-                                data-translate="descriptionLabel">Descripción</span>:</label>
-                        <textarea class="form-control" id="expDescription" rows="3"
-                            data-translate-placeholder="descriptionPlaceholder"
-                            placeholder="Describe tus responsabilidades y logros"></textarea>
+                        <label><i class="fas fa-align-left"></i> <span data-translate="descriptionLabel">Descripción</span>:</label>
+                        <textarea class="form-control" id="expDescription" rows="4" data-translate-placeholder="descriptionPlaceholder" placeholder="Describe tus responsabilidades, logros y resultados obtenidos..."></textarea>
                     </div>
 
-                    <button class="btn btn-primary w-100 mb-3" onclick="addExperience()">
+                    <button class="btn btn-primary w-100 mb-4" onclick="addExperience()">
                         <i class="fas fa-plus-circle"></i> <span data-translate="addExpBtn">Agregar Experiencia</span>
                     </button>
 
+                    <!-- Education -->
                     <div class="section-title">
                         <i class="fas fa-graduation-cap"></i>
                         <span data-translate="educationTitle">Educación</span>
@@ -876,41 +1175,35 @@
                     <div id="educationList"></div>
 
                     <div class="form-group">
-                        <label><i class="fas fa-certificate"></i> <span
-                                data-translate="degreeLabel">Título/Grado</span>:</label>
-                        <input type="text" class="form-control" id="eduDegree"
-                            data-translate-placeholder="degreePlaceholder" placeholder="Ingresa tu nivel de estudios">
+                        <label><i class="fas fa-certificate"></i> <span data-translate="degreeLabel">Título/Grado</span>:</label>
+                        <input type="text" class="form-control" id="eduDegree" data-translate-placeholder="degreePlaceholder" placeholder="Ej: Ingeniería en Sistemas">
                     </div>
 
                     <div class="form-group">
-                        <label><i class="fas fa-university"></i> <span
-                                data-translate="institutionLabel">Institución</span>:</label>
-                        <input type="text" class="form-control" id="eduInstitution"
-                            data-translate-placeholder="institutionPlaceholder"
-                            placeholder="Ingresa el nombre de la institución">
+                        <label><i class="fas fa-university"></i> <span data-translate="institutionLabel">Institución</span>:</label>
+                        <input type="text" class="form-control" id="eduInstitution" data-translate-placeholder="institutionPlaceholder" placeholder="Ej: Universidad Nacional">
                     </div>
 
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label><i class="fas fa-calendar-alt"></i> <span data-translate="eduStartLabel">Año
-                                        Inicio</span>:</label>
+                                <label><i class="fas fa-calendar-alt"></i> <span data-translate="eduStartLabel">Año Inicio</span>:</label>
                                 <input type="text" class="form-control" id="eduStartYear" placeholder="2015">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label><i class="fas fa-calendar-check"></i> <span data-translate="eduEndLabel">Año
-                                        Fin</span>:</label>
+                                <label><i class="fas fa-calendar-check"></i> <span data-translate="eduEndLabel">Año Fin</span>:</label>
                                 <input type="text" class="form-control" id="eduEndYear" placeholder="2019">
                             </div>
                         </div>
                     </div>
 
-                    <button class="btn btn-primary w-100 mb-3" onclick="addEducation()">
+                    <button class="btn btn-primary w-100 mb-4" onclick="addEducation()">
                         <i class="fas fa-plus-circle"></i> <span data-translate="addEduBtn">Agregar Educación</span>
                     </button>
 
+                    <!-- Skills -->
                     <div class="section-title">
                         <i class="fas fa-cogs"></i>
                         <span data-translate="skillsTitle">Habilidades</span>
@@ -920,15 +1213,15 @@
 
                     <div class="form-group">
                         <label><i class="fas fa-star"></i> <span data-translate="skillLabel">Habilidad</span>:</label>
-                        <input type="text" class="form-control" id="skillInput"
-                            data-translate-placeholder="skillPlaceholder" placeholder="Ingresa una habilidad">
+                        <input type="text" class="form-control" id="skillInput" data-translate-placeholder="skillPlaceholder" placeholder="Ej: JavaScript, Python, Liderazgo...">
                     </div>
 
-                    <button class="btn btn-primary w-100 mb-3" onclick="addSkill()">
+                    <button class="btn btn-primary w-100 mb-4" onclick="addSkill()">
                         <i class="fas fa-plus-circle"></i> <span data-translate="addSkillBtn">Agregar Habilidad</span>
                     </button>
                 </div>
 
+                <!-- Preview Panel -->
                 <div class="preview-panel">
                     <div class="section-title">
                         <i class="fas fa-eye"></i>
@@ -938,27 +1231,30 @@
                 </div>
             </div>
 
+            <!-- Action Buttons -->
             <div class="action-buttons">
-                <button class="btn btn-primary" onclick="saveData()">
-                    <i class="fas fa-save"></i> <span data-translate="saveBtn">Guardar Progreso</span>
+                <button class="btn btn-success" onclick="saveData()">
+                    <i class="fas fa-save"></i> <span data-translate="saveBtn">Guardar</span>
                 </button>
-                <button class="btn btn-primary" onclick="loadData()">
-                    <i class="fas fa-folder-open"></i> <span data-translate="loadBtn">Cargar Guardado</span>
+                <button class="btn btn-warning" onclick="loadData()">
+                    <i class="fas fa-folder-open"></i> <span data-translate="loadBtn">Cargar</span>
                 </button>
                 <button class="btn btn-primary" onclick="exportPDF()">
-                    <i class="fas fa-file-pdf"></i> <span data-translate="exportBtn">Exportar a PDF</span>
+                    <i class="fas fa-file-pdf"></i> <span data-translate="exportBtn">Exportar PDF</span>
                 </button>
                 <button class="btn btn-danger" onclick="clearAll()">
-                    <i class="fas fa-trash-alt"></i> <span data-translate="clearBtn">Limpiar Todo</span>
+                    <i class="fas fa-trash-alt"></i> <span data-translate="clearBtn">Limpiar</span>
                 </button>
             </div>
         </div>
     </div>
 
+    <!-- Mobile Preview Button -->
     <button class="mobile-preview-btn" onclick="openPreviewModal()">
         <i class="fas fa-eye"></i>
     </button>
 
+    <!-- Preview Modal -->
     <div class="preview-modal" id="previewModal">
         <button class="close-modal" onclick="closePreviewModal()">
             <i class="fas fa-times"></i>
@@ -968,10 +1264,10 @@
         </div>
     </div>
 
+    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.7.32/sweetalert2.all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.7.32/sweetalert2.all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
@@ -985,55 +1281,58 @@
 
         const translations = {
             es: {
-                mainTitle: 'Generador de Currículums',
-                subtitle: 'Crea tu currículum profesional en minutos',
+                mainTitle: 'CV Builder Pro',
+                subtitle: 'Crea tu currículum profesional en minutos con plantillas premium',
                 templateTitle: 'Seleccionar Plantilla',
                 temp1: 'Moderno',
-                temp2: 'Clásico',
-                temp3: 'Creativo',
+                temp2: 'Ejecutivo',
+                temp3: 'Minimalista',
+                temp4: 'Creativo',
+                temp5: 'Clásico',
+                temp6: 'Elegante',
                 personalTitle: 'Información Personal',
                 photoLabel: 'Foto de Perfil',
                 nameLabel: 'Nombre Completo',
-                namePlaceholder: 'Ingresa tu nombre completo',
+                namePlaceholder: 'Ej: Juan Pérez García',
                 jobTitleLabel: 'Título Profesional',
-                jobTitlePlaceholder: 'Ingresa tu título o puesto',
+                jobTitlePlaceholder: 'Ej: Desarrollador Full Stack',
                 contactTitle: 'Información de Contacto',
                 emailLabel: 'Correo Electrónico',
-                emailPlaceholder: 'Ingresa tu correo electrónico',
+                emailPlaceholder: 'ejemplo@correo.com',
                 phoneLabel: 'Teléfono',
-                phonePlaceholder: 'Ingresa tu número de teléfono',
+                phonePlaceholder: '+52 123 456 7890',
                 linkedinLabel: 'LinkedIn',
-                linkedinPlaceholder: 'Ingresa tu perfil de LinkedIn',
+                linkedinPlaceholder: 'linkedin.com/in/tu-perfil',
                 locationLabel: 'Ubicación',
-                locationPlaceholder: 'Ingresa tu ciudad y país',
+                locationPlaceholder: 'Ciudad, País',
                 experienceTitle: 'Experiencia Laboral',
                 positionLabel: 'Puesto',
-                positionPlaceholder: 'Ingresa el puesto',
+                positionPlaceholder: 'Ej: Gerente de Proyectos',
                 companyLabel: 'Empresa',
-                companyPlaceholder: 'Ingresa el nombre de la empresa',
+                companyPlaceholder: 'Ej: TechCorp S.A.',
                 startYearLabel: 'Año Inicio',
                 endYearLabel: 'Año Fin',
                 endYearPlaceholder: '2023 o Actual',
                 descriptionLabel: 'Descripción',
-                descriptionPlaceholder: 'Describe tus responsabilidades y logros',
+                descriptionPlaceholder: 'Describe tus responsabilidades, logros y resultados obtenidos...',
                 addExpBtn: 'Agregar Experiencia',
                 educationTitle: 'Educación',
                 degreeLabel: 'Título/Grado',
-                degreePlaceholder: 'Ingresa tu nivel de estudios',
+                degreePlaceholder: 'Ej: Ingeniería en Sistemas',
                 institutionLabel: 'Institución',
-                institutionPlaceholder: 'Ingresa el nombre de la institución',
+                institutionPlaceholder: 'Ej: Universidad Nacional',
                 eduStartLabel: 'Año Inicio',
                 eduEndLabel: 'Año Fin',
                 addEduBtn: 'Agregar Educación',
                 skillsTitle: 'Habilidades',
                 skillLabel: 'Habilidad',
-                skillPlaceholder: 'Ingresa una habilidad',
+                skillPlaceholder: 'Ej: JavaScript, Python, Liderazgo...',
                 addSkillBtn: 'Agregar Habilidad',
                 previewTitle: 'Vista Previa',
-                saveBtn: 'Guardar Progreso',
-                loadBtn: 'Cargar Guardado',
-                exportBtn: 'Exportar a PDF',
-                clearBtn: 'Limpiar Todo',
+                saveBtn: 'Guardar',
+                loadBtn: 'Cargar',
+                exportBtn: 'Exportar PDF',
+                clearBtn: 'Limpiar',
                 expTitle: 'EXPERIENCIA LABORAL',
                 eduTitle: 'EDUCACIÓN',
                 skillsPreview: 'HABILIDADES',
@@ -1042,55 +1341,58 @@
                 defaultTitle: 'Título Profesional'
             },
             en: {
-                mainTitle: 'Resume Builder',
-                subtitle: 'Create your professional resume in minutes',
+                mainTitle: 'CV Builder Pro',
+                subtitle: 'Create your professional resume in minutes with premium templates',
                 templateTitle: 'Select Template',
                 temp1: 'Modern',
-                temp2: 'Classic',
-                temp3: 'Creative',
+                temp2: 'Executive',
+                temp3: 'Minimalist',
+                temp4: 'Creative',
+                temp5: 'Classic',
+                temp6: 'Elegant',
                 personalTitle: 'Personal Information',
                 photoLabel: 'Profile Photo',
                 nameLabel: 'Full Name',
-                namePlaceholder: 'Enter your full name',
+                namePlaceholder: 'Ex: John Doe',
                 jobTitleLabel: 'Job Title',
-                jobTitlePlaceholder: 'Enter your title or position',
+                jobTitlePlaceholder: 'Ex: Full Stack Developer',
                 contactTitle: 'Contact Information',
                 emailLabel: 'Email',
-                emailPlaceholder: 'Enter your email address',
+                emailPlaceholder: 'example@email.com',
                 phoneLabel: 'Phone',
-                phonePlaceholder: 'Enter your phone number',
+                phonePlaceholder: '+1 123 456 7890',
                 linkedinLabel: 'LinkedIn',
-                linkedinPlaceholder: 'Enter your LinkedIn profile',
+                linkedinPlaceholder: 'linkedin.com/in/your-profile',
                 locationLabel: 'Location',
-                locationPlaceholder: 'Enter your city and country',
+                locationPlaceholder: 'City, Country',
                 experienceTitle: 'Work Experience',
                 positionLabel: 'Position',
-                positionPlaceholder: 'Enter the position',
+                positionPlaceholder: 'Ex: Project Manager',
                 companyLabel: 'Company',
-                companyPlaceholder: 'Enter the company name',
+                companyPlaceholder: 'Ex: TechCorp Inc.',
                 startYearLabel: 'Start Year',
                 endYearLabel: 'End Year',
                 endYearPlaceholder: '2023 or Current',
                 descriptionLabel: 'Description',
-                descriptionPlaceholder: 'Describe your responsibilities and achievements',
+                descriptionPlaceholder: 'Describe your responsibilities, achievements and results...',
                 addExpBtn: 'Add Experience',
                 educationTitle: 'Education',
                 degreeLabel: 'Degree',
-                degreePlaceholder: 'Enter your education level',
+                degreePlaceholder: 'Ex: Computer Science',
                 institutionLabel: 'Institution',
-                institutionPlaceholder: 'Enter the institution name',
+                institutionPlaceholder: 'Ex: State University',
                 eduStartLabel: 'Start Year',
                 eduEndLabel: 'End Year',
                 addEduBtn: 'Add Education',
                 skillsTitle: 'Skills',
                 skillLabel: 'Skill',
-                skillPlaceholder: 'Enter a skill',
+                skillPlaceholder: 'Ex: JavaScript, Python, Leadership...',
                 addSkillBtn: 'Add Skill',
                 previewTitle: 'Preview',
-                saveBtn: 'Save Progress',
-                loadBtn: 'Load Saved',
-                exportBtn: 'Export to PDF',
-                clearBtn: 'Clear All',
+                saveBtn: 'Save',
+                loadBtn: 'Load',
+                exportBtn: 'Export PDF',
+                clearBtn: 'Clear',
                 expTitle: 'WORK EXPERIENCE',
                 eduTitle: 'EDUCATION',
                 skillsPreview: 'SKILLS',
@@ -1102,73 +1404,13 @@
 
         function toggleLanguage() {
             currentLang = currentLang === 'es' ? 'en' : 'es';
-            translateUserContent();
             updateLanguage();
-        }
-
-        async function translateUserContent() {
-            // Simular traducción básica de títulos comunes
-            const commonTranslations = {
-                es: {
-                    'Desarrollador': 'Developer',
-                    'Ingeniero': 'Engineer',
-                    'Gerente': 'Manager',
-                    'Diseñador': 'Designer',
-                    'Analista': 'Analyst',
-                    'Coordinador': 'Coordinator',
-                    'Director': 'Director',
-                    'Asistente': 'Assistant',
-                    'Experiencia': 'Experience',
-                    'Educación': 'Education',
-                    'Habilidades': 'Skills',
-                    'Actual': 'Current',
-                    'Presente': 'Present'
-                },
-                en: {
-                    'Developer': 'Desarrollador',
-                    'Engineer': 'Ingeniero',
-                    'Manager': 'Gerente',
-                    'Designer': 'Diseñador',
-                    'Analyst': 'Analista',
-                    'Coordinator': 'Coordinador',
-                    'Director': 'Director',
-                    'Assistant': 'Asistente',
-                    'Experience': 'Experiencia',
-                    'Education': 'Educación',
-                    'Skills': 'Habilidades',
-                    'Current': 'Actual',
-                    'Present': 'Presente'
-                }
-            };
-
-            const dict = commonTranslations[currentLang === 'es' ? 'en' : 'es'];
-
-            // Traducir título profesional
-            let jobTitle = $('#jobTitle').val();
-            Object.keys(dict).forEach(key => {
-                const regex = new RegExp(key, 'gi');
-                jobTitle = jobTitle.replace(regex, dict[key]);
-            });
-            $('#jobTitle').val(jobTitle);
-
-            // Traducir experiencias
-            experiences.forEach(exp => {
-                Object.keys(dict).forEach(key => {
-                    const regex = new RegExp(key, 'gi');
-                    exp.position = exp.position.replace(regex, dict[key]);
-                    exp.endYear = exp.endYear.replace(regex, dict[key]);
-                });
-            });
-            renderExperienceList();
         }
 
         function updateLanguage() {
             const t = translations[currentLang];
-            
-            // Actualizar el texto del botón de idioma
             $('#langBtnText').text(t.langBtnText);
             
-            // Actualizar todos los textos
             $('[data-translate]').each(function() {
                 const key = $(this).data('translate');
                 if (t[key]) {
@@ -1176,7 +1418,6 @@
                 }
             });
         
-            // Actualizar placeholders
             $('[data-translate-placeholder]').each(function() {
                 const key = $(this).data('translate-placeholder');
                 if (t[key]) {
@@ -1204,7 +1445,7 @@
             currentTemplate = template;
             $('.template-option').removeClass('active');
             $(`.template-option[data-template="${template}"]`).addClass('active');
-            $('#cvPreview, #cvPreviewModal').removeClass('template-modern template-classic template-creative');
+            $('#cvPreview, #cvPreviewModal').removeClass('template-modern template-executive template-minimalist template-creative template-classic template-elegant');
             $('#cvPreview, #cvPreviewModal').addClass(`template-${template}`);
             updatePreview();
         }
@@ -1223,6 +1464,20 @@
                 $('#expPosition, #expCompany, #expStartYear, #expEndYear, #expDescription').val('');
                 renderExperienceList();
                 updatePreview();
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: currentLang === 'es' ? '¡Agregado!' : 'Added!',
+                    text: currentLang === 'es' ? 'Experiencia agregada correctamente' : 'Experience added successfully',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: currentLang === 'es' ? 'Atención' : 'Warning',
+                    text: currentLang === 'es' ? 'Por favor completa al menos el puesto y la empresa' : 'Please fill at least position and company'
+                });
             }
         }
 
@@ -1231,11 +1486,18 @@
             experiences.forEach((exp, index) => {
                 html += `
                     <div class="item-list">
-                        <strong><i class="fas fa-briefcase"></i> ${exp.position}</strong> - ${exp.company}
-                        <br><small><i class="fas fa-calendar"></i> ${exp.startYear} - ${exp.endYear}</small>
-                        <button class="btn btn-danger btn-sm float-end" onclick="removeExperience(${index})">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <strong><i class="fas fa-briefcase me-2"></i>${exp.position}</strong>
+                                <div class="text-muted small mt-1">
+                                    <i class="fas fa-building me-1"></i>${exp.company} 
+                                    ${exp.startYear ? `<span class="ms-2"><i class="fas fa-calendar me-1"></i>${exp.startYear} - ${exp.endYear}</span>` : ''}
+                                </div>
+                            </div>
+                            <button class="btn btn-danger btn-sm" onclick="removeExperience(${index})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
                     </div>
                 `;
             });
@@ -1243,9 +1505,20 @@
         }
 
         function removeExperience(index) {
-            experiences.splice(index, 1);
-            renderExperienceList();
-            updatePreview();
+            Swal.fire({
+                title: currentLang === 'es' ? '¿Eliminar?' : 'Delete?',
+                text: currentLang === 'es' ? '¿Deseas eliminar esta experiencia?' : 'Do you want to delete this experience?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: currentLang === 'es' ? 'Sí, eliminar' : 'Yes, delete',
+                cancelButtonText: currentLang === 'es' ? 'Cancelar' : 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    experiences.splice(index, 1);
+                    renderExperienceList();
+                    updatePreview();
+                }
+            });
         }
 
         function addEducation() {
@@ -1261,6 +1534,20 @@
                 $('#eduDegree, #eduInstitution, #eduStartYear, #eduEndYear').val('');
                 renderEducationList();
                 updatePreview();
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: currentLang === 'es' ? '¡Agregado!' : 'Added!',
+                    text: currentLang === 'es' ? 'Educación agregada correctamente' : 'Education added successfully',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: currentLang === 'es' ? 'Atención' : 'Warning',
+                    text: currentLang === 'es' ? 'Por favor completa al menos el título y la institución' : 'Please fill at least degree and institution'
+                });
             }
         }
 
@@ -1269,11 +1556,18 @@
             education.forEach((edu, index) => {
                 html += `
                     <div class="item-list">
-                        <strong><i class="fas fa-graduation-cap"></i> ${edu.degree}</strong> - ${edu.institution}
-                        <br><small><i class="fas fa-calendar"></i> ${edu.startYear} - ${edu.endYear}</small>
-                        <button class="btn btn-danger btn-sm float-end" onclick="removeEducation(${index})">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <strong><i class="fas fa-graduation-cap me-2"></i>${edu.degree}</strong>
+                                <div class="text-muted small mt-1">
+                                    <i class="fas fa-university me-1"></i>${edu.institution}
+                                    ${edu.startYear ? `<span class="ms-2"><i class="fas fa-calendar me-1"></i>${edu.startYear} - ${edu.endYear}</span>` : ''}
+                                </div>
+                            </div>
+                            <button class="btn btn-danger btn-sm" onclick="removeEducation(${index})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
                     </div>
                 `;
             });
@@ -1281,18 +1575,43 @@
         }
 
         function removeEducation(index) {
-            education.splice(index, 1);
-            renderEducationList();
-            updatePreview();
+            Swal.fire({
+                title: currentLang === 'es' ? '¿Eliminar?' : 'Delete?',
+                text: currentLang === 'es' ? '¿Deseas eliminar esta educación?' : 'Do you want to delete this education?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: currentLang === 'es' ? 'Sí, eliminar' : 'Yes, delete',
+                cancelButtonText: currentLang === 'es' ? 'Cancelar' : 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    education.splice(index, 1);
+                    renderEducationList();
+                    updatePreview();
+                }
+            });
         }
 
         function addSkill() {
-            const skill = $('#skillInput').val();
+            const skill = $('#skillInput').val().trim();
             if (skill) {
                 skills.push(skill);
                 $('#skillInput').val('');
                 renderSkillsList();
                 updatePreview();
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: currentLang === 'es' ? '¡Agregada!' : 'Added!',
+                    text: currentLang === 'es' ? 'Habilidad agregada correctamente' : 'Skill added successfully',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: currentLang === 'es' ? 'Atención' : 'Warning',
+                    text: currentLang === 'es' ? 'Por favor ingresa una habilidad' : 'Please enter a skill'
+                });
             }
         }
 
@@ -1301,10 +1620,12 @@
             skills.forEach((skill, index) => {
                 html += `
                     <div class="item-list">
-                        <i class="fas fa-check-circle"></i> ${skill}
-                        <button class="btn btn-danger btn-sm float-end" onclick="removeSkill(${index})">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-check-circle me-2 text-success"></i>${skill}</span>
+                            <button class="btn btn-danger btn-sm" onclick="removeSkill(${index})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
                     </div>
                 `;
             });
@@ -1312,9 +1633,20 @@
         }
 
         function removeSkill(index) {
-            skills.splice(index, 1);
-            renderSkillsList();
-            updatePreview();
+            Swal.fire({
+                title: currentLang === 'es' ? '¿Eliminar?' : 'Delete?',
+                text: currentLang === 'es' ? '¿Deseas eliminar esta habilidad?' : 'Do you want to delete this skill?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: currentLang === 'es' ? 'Sí, eliminar' : 'Yes, delete',
+                cancelButtonText: currentLang === 'es' ? 'Cancelar' : 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    skills.splice(index, 1);
+                    renderSkillsList();
+                    updatePreview();
+                }
+            });
         }
 
         function updatePreview() {
@@ -1427,42 +1759,25 @@
                 language: currentLang
             };
         
-            // Guardar en memoria Y en localStorage
             window.cvData = data;
-            try {
-                localStorage.setItem('cvData', JSON.stringify(data));
-            } catch (e) {
-                console.log('localStorage no disponible');
-            }
             
             Swal.fire({
                 icon: 'success',
-                title: currentLang === 'es' ? '¡Éxito!' : 'Success!',
+                title: currentLang === 'es' ? '¡Guardado!' : 'Saved!',
                 text: currentLang === 'es' ? 'Datos guardados exitosamente' : 'Data saved successfully',
-                confirmButtonColor: '#000',
-                timer: 2000
+                timer: 2000,
+                showConfirmButton: false
             });
         }
 
         function loadData() {
-            // Intentar cargar desde localStorage primero, luego desde memoria
-            let data = window.cvData;
-            
-            try {
-                const savedData = localStorage.getItem('cvData');
-                if (savedData) {
-                    data = JSON.parse(savedData);
-                }
-            } catch (e) {
-                console.log('localStorage no disponible');
-            }
+            const data = window.cvData;
             
             if (!data) {
                 Swal.fire({
                     icon: 'warning',
                     title: currentLang === 'es' ? 'Atención' : 'Warning',
-                    text: currentLang === 'es' ? 'No hay datos guardados' : 'No saved data found',
-                    confirmButtonColor: '#000'
+                    text: currentLang === 'es' ? 'No hay datos guardados' : 'No saved data found'
                 });
                 return;
             }
@@ -1496,10 +1811,10 @@
         
             Swal.fire({
                 icon: 'success',
-                title: currentLang === 'es' ? '¡Éxito!' : 'Success!',
+                title: currentLang === 'es' ? '¡Cargado!' : 'Loaded!',
                 text: currentLang === 'es' ? 'Datos cargados exitosamente' : 'Data loaded successfully',
-                confirmButtonColor: '#000',
-                timer: 2000
+                timer: 2000,
+                showConfirmButton: false
             });
         }
 
@@ -1509,8 +1824,8 @@
                 text: currentLang === 'es' ? '¿Deseas limpiar todos los datos?' : 'Do you want to clear all data?',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#000',
-                cancelButtonColor: '#d33',
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
                 confirmButtonText: currentLang === 'es' ? 'Sí, limpiar' : 'Yes, clear',
                 cancelButtonText: currentLang === 'es' ? 'Cancelar' : 'Cancel'
             }).then((result) => {
@@ -1535,7 +1850,6 @@
                         icon: 'success',
                         title: currentLang === 'es' ? '¡Limpiado!' : 'Cleared!',
                         text: currentLang === 'es' ? 'Todos los datos han sido eliminados' : 'All data has been cleared',
-                        confirmButtonColor: '#000',
                         timer: 2000,
                         showConfirmButton: false
                     });
@@ -1556,14 +1870,12 @@
             const name = $('#fullName').val() || 'curriculum';
             const filename = name.replace(/\s+/g, '_') + '_CV.pdf';
             
-            // En móvil usar el modal, en desktop usar el preview normal
             const isMobile = window.innerWidth <= 768;
             const element = isMobile ? document.getElementById('cvPreviewModal') : document.getElementById('cvPreview');
             
-            // Si es móvil, abrir el modal primero
             if (isMobile && !$('#previewModal').hasClass('active')) {
                 openPreviewModal();
-                await new Promise(resolve => setTimeout(resolve, 500)); // Esperar a que se renderice
+                await new Promise(resolve => setTimeout(resolve, 500));
             }
             
             const buttons = document.querySelectorAll('.action-buttons');
@@ -1573,7 +1885,7 @@
             loadingMsg.className = 'loading';
             loadingMsg.innerHTML = `
                 <div class="spinner"></div>
-                <p>${currentLang === 'es' ? 'Generando PDF...' : 'Generating PDF...'}</p>
+                <p style="font-size: 1.1rem; color: var(--primary); font-weight: 600;">${currentLang === 'es' ? 'Generando PDF...' : 'Generating PDF...'}</p>
             `;
             
             const container = isMobile ? document.querySelector('.preview-modal-content') : document.querySelector('.preview-panel');
@@ -1592,7 +1904,6 @@
                 });
         
                 const { jsPDF } = window.jspdf;
-                
                 const pdf = new jsPDF('p', 'mm', 'a4');
                 const pageWidth = 210;
                 const pageHeight = 297;
@@ -1601,10 +1912,8 @@
                 
                 const imgWidth = contentWidth;
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                
                 const imgData = canvas.toDataURL('image/jpeg', 1.0);
                 
-                // Escalar para que todo quepa en una página
                 if (imgHeight > pageHeight - (2 * margin)) {
                     const scale = (pageHeight - (2 * margin)) / imgHeight;
                     const scaledWidth = imgWidth * scale;
@@ -1628,7 +1937,6 @@
                     icon: 'success',
                     title: currentLang === 'es' ? '¡Éxito!' : 'Success!',
                     text: currentLang === 'es' ? 'PDF generado exitosamente' : 'PDF generated successfully',
-                    confirmButtonColor: '#000',
                     timer: 2000,
                     showConfirmButton: false
                 });
@@ -1641,8 +1949,7 @@
                 Swal.fire({
                     icon: 'error',
                     title: currentLang === 'es' ? 'Error' : 'Error',
-                    text: currentLang === 'es' ? 'Error al generar PDF. Por favor intenta de nuevo.' : 'Error generating PDF. Please try again.',
-                    confirmButtonColor: '#000'
+                    text: currentLang === 'es' ? 'Error al generar PDF. Por favor intenta de nuevo.' : 'Error generating PDF. Please try again.'
                 });
             }
         }
@@ -1652,17 +1959,56 @@
 
             $('#skillInput').keypress(function (e) {
                 if (e.which === 13) {
+                    e.preventDefault();
                     addSkill();
                 }
             });
 
             $('#expDescription').keypress(function (e) {
                 if (e.which === 13 && e.ctrlKey) {
+                    e.preventDefault();
                     addExperience();
                 }
             });
+
+            $('#expPosition, #expCompany, #expStartYear, #expEndYear').keypress(function (e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    const next = $(this).closest('.form-group').next().find('.form-control');
+                    if (next.length) {
+                        next.focus();
+                    }
+                }
+            });
+
+            $('#eduDegree, #eduInstitution, #eduStartYear, #eduEndYear').keypress(function (e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    const next = $(this).closest('.form-group').next().find('.form-control');
+                    if (next.length) {
+                        next.focus();
+                    }
+                }
+            });
+
+            const style = document.createElement('style');
+            style.textContent = `
+                @media print {
+                    body * {
+                        visibility: hidden;
+                    }
+                    .cv-preview, .cv-preview * {
+                        visibility: visible;
+                    }
+                    .cv-preview {
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
         });
     </script>
 </body>
-
 </html>
