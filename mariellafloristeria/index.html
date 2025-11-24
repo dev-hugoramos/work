@@ -348,9 +348,20 @@
           </div>
 
           <div class="gallery-grid" id="gallery-grid">
-            <div class="gallery-empty">
+            <div
+              class="gallery-loader"
+              id="gallery-loader"
+              role="status"
+              aria-live="polite"
+            >
+              <div class="loader-ring">
+                <span class="loader-petal"></span>
+              </div>
+              <p class="loader-text">Cargando galería de nuestras flores</p>
+            </div>
+            <div class="gallery-empty d-none">
               <i class="bi bi-images"></i>
-              
+              <p>Pendiente por mostrar nuevas capturas de nuestros arreglos.</p>
             </div>
           </div>
         </div>
