@@ -25,6 +25,7 @@ $(document).ready(function () {
   // Galería dinámica basada en convención gallery-X.ext
   const galleryContainer = $("#gallery-grid");
   const galleryEmptyState = galleryContainer.find(".gallery-empty");
+  const galleryLoader = $("#gallery-loader");
   const lightboxImage = $("#lightbox-image");
   const lightboxElement = document.getElementById("lightboxModal");
   const prevButton = $("#lightbox-prev");
@@ -33,6 +34,8 @@ $(document).ready(function () {
   let currentImageIndex = 0;
   const supportedExtensions = ["jpg", "jpeg", "png", "webp"];
   const maxImages = 30;
+
+  const loaderHideDelay = 1200; // mantiene el loader visible un instante
 
   const loadImage = (src) =>
     new Promise((resolve, reject) => {
@@ -64,10 +67,22 @@ $(document).ready(function () {
     return found;
   };
 
+  let loaderTimeoutId = null;
+  const hideGalleryLoader = () => {
+    if (!galleryLoader.length || loaderTimeoutId) {
+      return;
+    }
+    loaderTimeoutId = setTimeout(() => {
+      galleryLoader.addClass("d-none");
+    }, loaderHideDelay);
+  };
+
   const renderGallery = (images) => {
     if (!galleryContainer.length) {
       return;
     }
+
+    hideGalleryLoader();
 
     if (!images.length) {
       galleryEmptyState.removeClass("d-none");
@@ -89,6 +104,7 @@ $(document).ready(function () {
   findImages()
     .then(renderGallery)
     .catch(() => {
+      hideGalleryLoader();
       galleryEmptyState.removeClass("d-none");
     });
 
@@ -154,4 +170,5 @@ $(document).ready(function () {
   $(window).on("scroll resize", revealOnScroll);
   revealOnScroll();
 });
+
 
