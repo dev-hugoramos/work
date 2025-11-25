@@ -42,7 +42,8 @@ a:hover {
 }
 
 .btn-outline-whatsapp,
-.btn-outline-facebook {
+.btn-outline-facebook,
+.btn-outline-instagram {
   border-radius: 999px;
   border-width: 2px;
   font-weight: 600;
@@ -65,6 +66,25 @@ a:hover {
 
 .btn-outline-facebook:hover {
   background: #1877f2;
+  color: #fff;
+}
+
+.btn-outline-instagram {
+  border-color: transparent;
+  color: #fff;
+  background-image: linear-gradient(
+    120deg,
+    #f09433,
+    #e6683c,
+    #dc2743,
+    #cc2366,
+    #bc1888
+  );
+  box-shadow: 0 15px 35px rgba(220, 39, 67, 0.3);
+}
+
+.btn-outline-instagram:hover {
+  filter: brightness(1.08);
   color: #fff;
 }
 
@@ -624,5 +644,6 @@ footer a {
     max-height: 320px;
   }
 }
+
 
 
