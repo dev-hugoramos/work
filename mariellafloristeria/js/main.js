@@ -30,6 +30,10 @@ $(document).ready(function () {
   const lightboxElement = document.getElementById("lightboxModal");
   const prevButton = $("#lightbox-prev");
   const nextButton = $("#lightbox-next");
+  const galleryToggle = $("#gallery-toggle");
+  const mobileGalleryPreview = $("#gallery-mobile-preview");
+  const galleryCloseButton = $("#gallery-close");
+  const gallerySection = $("#galeria");
   let galleryImages = [];
   let currentImageIndex = 0;
   const supportedExtensions = ["jpg", "jpeg", "png", "webp"];
@@ -108,6 +112,62 @@ $(document).ready(function () {
       galleryEmptyState.removeClass("d-none");
     });
 
+  const isMobileView = () => window.matchMedia("(max-width: 575px)").matches;
+  const scrollToGallery = (element) => {
+    $("html, body").animate(
+      {
+        scrollTop: element.offset().top - 70,
+      },
+      500
+    );
+  };
+
+  const shouldShowFab = () =>
+    isMobileView() && galleryContainer.hasClass("is-expanded");
+
+  const updateGalleryFab = () => {
+    if (!galleryCloseButton.length) return;
+    if (!shouldShowFab() || !gallerySection.length) {
+      galleryCloseButton.removeClass("is-visible");
+      return;
+    }
+    const rect = gallerySection[0].getBoundingClientRect();
+    const viewportHeight =
+      window.innerHeight || document.documentElement.clientHeight;
+    const isInView = rect.top < viewportHeight && rect.bottom > 0;
+    galleryCloseButton.toggleClass("is-visible", isInView);
+  };
+
+  const openMobileGallery = () => {
+    if (!galleryContainer.length) return;
+    galleryContainer.addClass("is-expanded");
+    if (isMobileView()) {
+      mobileGalleryPreview.addClass("d-none");
+      galleryCloseButton.removeClass("d-none");
+      updateGalleryFab();
+      setTimeout(() => {
+        scrollToGallery(galleryContainer);
+        updateGalleryFab();
+      }, 120);
+    }
+  };
+
+  const closeMobileGallery = () => {
+    if (!galleryContainer.length || !isMobileView()) return;
+    galleryContainer.removeClass("is-expanded");
+    mobileGalleryPreview.removeClass("d-none");
+    galleryCloseButton.addClass("d-none").removeClass("is-visible");
+    setTimeout(() => scrollToGallery(mobileGalleryPreview), 100);
+  };
+
+  if (galleryToggle.length) {
+    galleryToggle.on("click", openMobileGallery);
+  }
+
+  if (galleryCloseButton.length) {
+    galleryCloseButton.on("click", closeMobileGallery);
+  }
+
   const showImage = (index) => {
     if (!galleryImages.length || !lightboxImage.length) {
       return;
@@ -167,8 +227,12 @@ $(document).ready(function () {
     });
   };
 
-  $(window).on("scroll resize", revealOnScroll);
+  $(window).on("scroll resize", () => {
+    revealOnScroll();
+    updateGalleryFab();
+  });
   revealOnScroll();
+  updateGalleryFab();
 });
 
 
