@@ -1,0 +1,9 @@
+{
+  "name": "skillmachin-studio",
+  "version": "1.0.0",
+  "description": "Skill Machin Studio - Tattoo Artist Portfolio",
+  "scripts": {
+    "build:gallery": "node scripts/generate-gallery.js",
+    "build": "npm run build:gallery"
+  }
+}
