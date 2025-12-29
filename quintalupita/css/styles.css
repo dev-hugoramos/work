@@ -2397,6 +2397,504 @@ img {
     }
 }
 
+/* ========================================
+   MOBILE RESPONSIVE - MEJORAS COMPLETAS
+======================================== */
+
+/* Móviles pequeños (hasta 480px) */
+@media (max-width: 480px) {
+    /* Base */
+    html {
+        scroll-padding-top: 70px;
+    }
+
+    .container {
+        padding: 0 15px;
+    }
+
+    /* Preloader móvil */
+    .preloader-logo-wrapper {
+        width: 140px;
+        height: 140px;
+        margin-bottom: 30px;
+    }
+
+    .preloader-logo {
+        width: 90px;
+    }
+
+    .preloader-ring-1 {
+        width: 140px;
+        height: 140px;
+    }
+
+    .preloader-ring-2 {
+        width: 120px;
+        height: 120px;
+    }
+
+    .preloader-ring-3 {
+        width: 100px;
+        height: 100px;
+    }
+
+    .preloader-text {
+        font-size: 20px;
+        letter-spacing: 4px;
+    }
+
+    .preloader-subtext {
+        font-size: 22px;
+    }
+
+    .preloader-progress {
+        width: 200px;
+        margin-top: 30px;
+    }
+
+    /* Navbar móvil */
+    .nav-container {
+        padding: 0 15px;
+    }
+
+    .nav-logo img {
+        height: 45px;
+    }
+
+    .navbar.scrolled .nav-logo img {
+        height: 40px;
+    }
+
+    /* Hero móvil */
+    .hero-content {
+        padding: 0 15px;
+    }
+
+    .hero-badge {
+        padding: 8px 16px;
+        font-size: 11px;
+        gap: 6px;
+        margin-bottom: 20px;
+    }
+
+    .hero-title-line {
+        font-size: 36px;
+        letter-spacing: 2px;
+    }
+
+    .hero-title-accent {
+        font-size: 50px;
+        margin-top: -10px;
+    }
+
+    .hero-subtitle {
+        font-size: 14px;
+        margin-bottom: 25px;
+        padding: 0 10px;
+    }
+
+    .hero-features {
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .hero-feature i {
+        font-size: 24px;
+    }
+
+    .hero-feature span {
+        font-size: 11px;
+    }
+
+    .hero-scroll {
+        bottom: 20px;
+        font-size: 12px;
+    }
+
+    /* About móvil */
+    .about-content h3 {
+        font-size: 24px;
+    }
+
+    .about-content p {
+        font-size: 15px;
+    }
+
+    .about-image-badge {
+        padding: 15px 20px;
+        right: 10px;
+        bottom: -20px;
+    }
+
+    .about-image-badge .years {
+        font-size: 32px;
+    }
+
+    .about-image-badge .text {
+        font-size: 10px;
+    }
+
+    /* Amenities móvil */
+    .amenity-icon {
+        width: 50px;
+        height: 50px;
+        top: 15px;
+        right: 15px;
+    }
+
+    .amenity-icon i {
+        font-size: 20px;
+    }
+
+    .amenity-card h3 {
+        font-size: 18px;
+        padding: 15px 20px 8px;
+    }
+
+    .amenity-card p {
+        font-size: 14px;
+        padding: 0 20px 20px;
+    }
+
+    /* Features móvil */
+    .feature-card {
+        padding: 30px 20px;
+    }
+
+    .feature-icon-wrap {
+        width: 65px;
+        height: 65px;
+        margin-bottom: 20px;
+    }
+
+    .feature-icon-wrap i {
+        font-size: 26px;
+    }
+
+    .feature-card h3 {
+        font-size: 18px;
+    }
+
+    .feature-card p {
+        font-size: 14px;
+    }
+
+    /* Pricing móvil */
+    .pricing-header {
+        padding: 30px 20px;
+    }
+
+    .pricing-icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .pricing-icon i {
+        font-size: 24px;
+    }
+
+    .pricing-header h3 {
+        font-size: 20px;
+    }
+
+    .pricing-body {
+        padding: 30px 20px;
+    }
+
+    .pricing-amount .price {
+        font-size: 48px;
+    }
+
+    .pricing-amount .currency {
+        font-size: 20px;
+    }
+
+    .pricing-badge {
+        font-size: 10px;
+        padding: 6px 35px;
+        top: 15px;
+        right: -30px;
+    }
+
+    .pricing-note {
+        padding: 20px;
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+
+    .pricing-note i {
+        font-size: 20px;
+    }
+
+    .pricing-note p {
+        font-size: 14px;
+    }
+
+    /* CTA móvil */
+    .cta {
+        padding: 80px 0;
+    }
+
+    .cta-content p {
+        font-size: 16px;
+        padding: 0 10px;
+    }
+
+    /* Location móvil */
+    .location-card {
+        padding: 20px;
+        gap: 15px;
+    }
+
+    .location-icon {
+        width: 45px;
+        height: 45px;
+    }
+
+    .location-icon i {
+        font-size: 18px;
+    }
+
+    .location-details h3 {
+        font-size: 16px;
+    }
+
+    .location-details p {
+        font-size: 14px;
+    }
+
+    .location-map iframe {
+        height: 280px;
+    }
+
+    /* Contact móvil */
+    .contact-info h3 {
+        font-size: 26px;
+    }
+
+    .contact-info > p {
+        font-size: 15px;
+    }
+
+    .contact-method {
+        padding: 15px 20px;
+        gap: 15px;
+    }
+
+    .contact-method i {
+        font-size: 24px;
+    }
+
+    .method-value {
+        font-size: 16px;
+    }
+
+    .contact-cta-card {
+        padding: 35px 25px;
+    }
+
+    .contact-logo {
+        width: 100px;
+    }
+
+    .contact-cta-card h3 {
+        font-size: 22px;
+    }
+
+    /* Footer móvil */
+    .footer-wave svg {
+        height: 50px;
+    }
+
+    .footer-grid {
+        padding: 40px 0 30px;
+        gap: 30px;
+    }
+
+    .footer-logo {
+        width: 80px;
+        margin: 0 auto 15px;
+    }
+
+    .footer-brand p {
+        font-size: 14px;
+    }
+
+    .footer-links h4,
+    .footer-contact h4,
+    .footer-hours h4 {
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+
+    .footer-social a {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+
+    .footer-bottom {
+        padding: 20px 0;
+        font-size: 12px;
+    }
+
+    /* Buttons móvil */
+    .btn {
+        padding: 12px 20px;
+        font-size: 13px;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-lg {
+        padding: 14px 25px;
+        font-size: 14px;
+    }
+
+    .btn i {
+        font-size: 16px;
+    }
+}
+
+/* Tablets pequeñas y móviles grandes (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+    .container {
+        padding: 0 20px;
+    }
+
+    .hero-badge {
+        font-size: 12px;
+    }
+
+    .hero-title-line {
+        font-size: 48px;
+    }
+
+    .hero-title-accent {
+        font-size: 70px;
+    }
+
+    .hero-features {
+        gap: 30px;
+    }
+
+    .pricing-badge {
+        font-size: 11px;
+        top: 18px;
+        right: -32px;
+    }
+
+    .about-content h3 {
+        font-size: 28px;
+    }
+
+    .contact-info h3 {
+        font-size: 28px;
+    }
+}
+
+/* Ajustes para landscape en móviles */
+@media (max-height: 500px) and (orientation: landscape) {
+    .hero {
+        min-height: auto;
+        padding: 100px 0 60px;
+    }
+
+    .hero-badge {
+        margin-bottom: 15px;
+    }
+
+    .hero-title {
+        margin-bottom: 15px;
+    }
+
+    .hero-subtitle {
+        margin-bottom: 20px;
+    }
+
+    .hero-features {
+        margin-bottom: 20px;
+    }
+
+    .hero-scroll {
+        display: none;
+    }
+
+    #preloader {
+        padding: 20px;
+    }
+
+    .preloader-logo-wrapper {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 20px;
+    }
+
+    .preloader-logo {
+        width: 60px;
+    }
+
+    .preloader-ring-1 {
+        width: 100px;
+        height: 100px;
+    }
+
+    .preloader-ring-2 {
+        width: 85px;
+        height: 85px;
+    }
+
+    .preloader-ring-3 {
+        width: 70px;
+        height: 70px;
+    }
+
+    .preloader-text {
+        font-size: 18px;
+        letter-spacing: 3px;
+        margin-bottom: 10px;
+    }
+
+    .preloader-subtext {
+        font-size: 18px;
+    }
+
+    .preloader-progress {
+        width: 150px;
+        margin-top: 20px;
+    }
+}
+
+/* Evitar overflow horizontal */
+@media (max-width: 768px) {
+    body {
+        overflow-x: hidden;
+    }
+
+    .hero-bg,
+    .hero-overlay,
+    .hero-particles,
+    .cta-bg {
+        width: 100%;
+        max-width: 100vw;
+    }
+
+    /* Fix para el pricing badge que puede causar overflow */
+    .pricing-card {
+        overflow: hidden;
+    }
+
+    /* Section titles más pequeños */
+    .section-title {
+        font-size: clamp(26px, 6vw, 36px);
+    }
+
+    .section-description {
+        font-size: 16px;
+        padding: 0 10px;
+    }
+}
+
 /* Print Styles */
 @media print {
     .navbar,
