@@ -584,8 +584,9 @@ section{ padding-block: var(--section-pad); position:relative; }
 .grade-panel ul{ list-style:none; margin:1rem 0 0; padding:0; display:grid; gap:.8rem; }
 .grade-panel ul li{ display:flex; gap:.7rem; font-size:.98rem; align-items:flex-start; }
 .grade-panel ul li::before{ content:"✓"; color:#fff; background: var(--blue); border-radius:50%; width:20px; height:20px; flex:none; display:flex; align-items:center; justify-content:center; font-size:.68rem; margin-top:.1rem; }
-.brand-strip{ display:flex; flex-wrap:wrap; gap: 2.2rem; align-items:center; margin-top: 3rem; opacity:.7; }
+.brand-strip{ display:flex; flex-wrap:wrap; gap: 2.2rem; align-items:center; justify-content:center; margin-top: 3rem; opacity:.7; }
 .brand-strip span{ font-family: var(--font-head); font-weight:800; font-size:1.1rem; color: var(--gray); }
+.brand-strip img{ height: 72px; width:auto; max-width:220px; object-fit:contain; }
 
 /* =========================================================
    LISTADO DE EQUIPOS EMPRESARIALES EN VENTA
