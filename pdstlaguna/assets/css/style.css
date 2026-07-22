@@ -49,7 +49,7 @@
 }
 
 *,*::before,*::after{ box-sizing: border-box; }
-html{ scroll-behavior: smooth; scroll-padding-top: 90px; }
+html{ scroll-behavior: smooth; scroll-padding-top: 90px; scrollbar-gutter: stable; }
 @media (prefers-reduced-motion: reduce){
   html{ scroll-behavior: auto; }
   *,*::before,*::after{ animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
@@ -100,7 +100,7 @@ html{ scrollbar-width: thin; scrollbar-color: var(--blue-light) transparent; }
 .has-custom-cursor, .has-custom-cursor *{ cursor: none !important; }
 #cursor-dot, #cursor-ring, #cursor-aura{
   position: fixed; left:0; top:0; pointer-events:none; z-index: 9999;
-  border-radius: 50%; transform: translate(-50%,-50%);
+  border-radius: 50%; transform: translate(var(--cx,0px), var(--cy,0px)) translate(-50%,-50%);
   will-change: transform;
 }
 #cursor-aura{
@@ -132,7 +132,7 @@ html{ scrollbar-width: thin; scrollbar-color: var(--blue-light) transparent; }
   border-color: var(--blue-light); border-style: solid;
 }
 #cursor-ring.is-active::before{ animation-duration: 2.2s; border-color: rgba(30,127,224,.6); }
-#cursor-dot.is-active{ transform: translate(-50%,-50%) scale(0); }
+#cursor-dot.is-active{ transform: translate(var(--cx,0px), var(--cy,0px)) translate(-50%,-50%) scale(0); }
 #cursor-ring.is-hidden, #cursor-dot.is-hidden, #cursor-aura.is-hidden{ opacity:0; }
 
 /* =========================================================
@@ -459,9 +459,20 @@ section{ padding-block: var(--section-pad); position:relative; }
 .bento-card:hover .more svg{ transform: translateX(3px); }
 
 .service-tiles{ grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
-.service-tiles .bento-card{ text-align:center; }
+.service-tiles .bento-card{ text-align:center; padding-top:0; }
+.service-tiles .bento-card .card-photo{
+  aspect-ratio: 4/3; margin: 0 -2.2rem 1.5rem; overflow:hidden; position:relative;
+}
+.service-tiles .bento-card .card-photo img{
+  width:100%; height:100%; object-fit:cover; display:block; transition: transform .6s var(--ease);
+}
+.service-tiles .bento-card:hover .card-photo img{ transform: scale(1.08); }
 .service-tiles .bento-card .ic{ margin-inline:auto; }
 .service-tiles .bento-card h3{ margin-bottom:0; }
+.service-tiles .bento-card .more{
+  opacity:1; transform:none; margin-inline:auto; border:0; background:none; padding:0; cursor:pointer; font-family: var(--font-head);
+}
+.service-tiles .bento-card:hover .more{ color: var(--blue-light); }
 
 /* Valores: tarjetas fotográficas (recortes de assets/img/valores) */
 .valores-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; }
@@ -620,8 +631,9 @@ section{ padding-block: var(--section-pad); position:relative; }
 /* ---- Modal de características (premium) ---- */
 .equipo-modal-backdrop, .lightbox-backdrop{
   position:fixed; inset:0; z-index:2000; background: rgba(7,15,28,.78);
-  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
   opacity:0; visibility:hidden; transition: opacity .35s var(--ease), visibility .35s;
+  will-change: opacity;
 }
 .equipo-modal-backdrop.is-open, .lightbox-backdrop.is-open{ opacity:1; visibility:visible; }
 .equipo-modal{
@@ -630,6 +642,7 @@ section{ padding-block: var(--section-pad); position:relative; }
   display:grid; grid-template-columns: .9fr 1.1fr;
   transform: translate(-50%,-46%) scale(.96); opacity:0; visibility:hidden;
   transition: transform .45s var(--ease), opacity .4s var(--ease), visibility .45s;
+  will-change: transform, opacity;
 }
 .equipo-modal::before{
   content:""; position:absolute; top:0; left:0; right:0; height:5px;
@@ -660,10 +673,51 @@ section{ padding-block: var(--section-pad); position:relative; }
 .equipo-modal-wa{ display:inline-flex; align-items:center; gap:.55rem; white-space:nowrap; padding:.75rem 1.4rem; font-size:.78rem; }
 .equipo-modal-wa svg{ width:16px; height:16px; fill:currentColor; }
 
+/* ---- Modal de detalle de servicio ---- */
+.servicio-modal-backdrop{
+  position:fixed; inset:0; z-index:2000; background: rgba(7,15,28,.78);
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+  opacity:0; visibility:hidden; transition: opacity .35s var(--ease), visibility .35s;
+  will-change: opacity;
+}
+.servicio-modal-backdrop.is-open{ opacity:1; visibility:visible; }
+.servicio-modal{
+  position:fixed; top:50%; left:50%; z-index:2001; width:min(480px, 92vw); max-height:88vh; overflow-y:auto;
+  background:#fff; border-radius: var(--radius); padding: 2.4rem 2.2rem 2.2rem;
+  box-shadow: 0 60px 120px -40px rgba(0,0,0,.55);
+  transform: translate(-50%,-46%) scale(.96); opacity:0; visibility:hidden;
+  transition: transform .45s var(--ease), opacity .4s var(--ease), visibility .45s;
+  will-change: transform, opacity;
+}
+.servicio-modal::before{
+  content:""; position:absolute; top:0; left:0; right:0; height:5px; border-radius: var(--radius) var(--radius) 0 0;
+  background: linear-gradient(90deg, var(--blue), var(--blue-light));
+}
+.servicio-modal.is-open{ transform: translate(-50%,-50%) scale(1); opacity:1; visibility:visible; }
+.servicio-modal-close{
+  position:absolute; top:1rem; right:1rem; z-index:2; width:38px; height:38px; border-radius:50%;
+  border:1px solid var(--border); background:#fff; display:flex; align-items:center; justify-content:center;
+  cursor:pointer; transition: background .3s, transform .3s; color: var(--navy);
+}
+.servicio-modal-close:hover{ background: var(--bg-alt); transform: rotate(90deg); }
+.servicio-modal-close svg{ width:16px; height:16px; }
+.servicio-modal-ic{
+  width:56px; height:56px; border-radius:16px; display:flex; align-items:center; justify-content:center;
+  background: linear-gradient(135deg, var(--blue-light), var(--blue)); color:#fff; margin-bottom:1.4rem;
+  box-shadow: 0 12px 24px -10px rgba(3,84,160,.55);
+}
+.servicio-modal-ic svg{ width:27px; height:27px; }
+.servicio-modal-title{ font-size:1.3rem; line-height:1.3; margin:0 0 .9rem; color: var(--navy); }
+.servicio-modal-desc{ font-size:.95rem; line-height:1.6; color: var(--text-muted); margin:0 0 1.6rem; }
+.servicio-modal-footer{ padding-top:1.4rem; border-top:1px solid var(--border); }
+.servicio-modal-wa{ display:inline-flex; align-items:center; gap:.55rem; white-space:nowrap; padding:.75rem 1.4rem; font-size:.78rem; }
+.servicio-modal-wa svg{ width:16px; height:16px; fill:currentColor; }
+
 /* ---- Lightbox de imagen ---- */
 .lightbox{
   position:fixed; top:50%; left:50%; z-index:2001; transform: translate(-50%,-50%) scale(.94); opacity:0; visibility:hidden;
   transition: transform .4s var(--ease), opacity .35s var(--ease), visibility .4s; max-width:92vw; max-height:88vh;
+  will-change: transform, opacity;
 }
 .lightbox.is-open{ transform: translate(-50%,-50%) scale(1); opacity:1; visibility:visible; }
 .lightbox-img{ max-width:92vw; max-height:88vh; object-fit:contain; border-radius: var(--radius-sm); box-shadow: 0 40px 100px -30px rgba(0,0,0,.6); }
