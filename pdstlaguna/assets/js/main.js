@@ -44,27 +44,55 @@
   })();
 
   /* ---------- Cursor custom (solo desktop) ---------- */
+  var pauseCustomCursor = function () {};
+  var resumeCustomCursor = function () {};
+
   if (!isTouch) {
     $("html").addClass("has-custom-cursor");
     var $dot = $("#cursor-dot");
     var $ring = $("#cursor-ring");
     var $aura = $("#cursor-aura");
     var ringX = 0, ringY = 0, auraX = 0, auraY = 0, mx = 0, my = 0;
+    var cursorRAF = null;
+    var cursorSuspended = false;
 
     $(document).on("mousemove", function (e) {
       mx = e.clientX; my = e.clientY;
-      $dot.css({ left: mx, top: my });
+      if (cursorSuspended) return;
+      $dot[0].style.setProperty("--cx", mx + "px");
+      $dot[0].style.setProperty("--cy", my + "px");
     });
 
-    (function loop() {
+    function cursorLoop() {
       ringX += (mx - ringX) * 0.18;
       ringY += (my - ringY) * 0.18;
       auraX += (mx - auraX) * 0.08;
       auraY += (my - auraY) * 0.08;
-      $ring.css({ left: ringX, top: ringY });
-      $aura.css({ left: auraX, top: auraY });
-      requestAnimationFrame(loop);
-    })();
+      $ring[0].style.setProperty("--cx", ringX + "px");
+      $ring[0].style.setProperty("--cy", ringY + "px");
+      $aura[0].style.setProperty("--cx", auraX + "px");
+      $aura[0].style.setProperty("--cy", auraY + "px");
+      cursorRAF = requestAnimationFrame(cursorLoop);
+    }
+    cursorRAF = requestAnimationFrame(cursorLoop);
+
+    /* Se pausa por completo (loop + composición) mientras hay un modal/backdrop con
+       blur abierto encima: mover el cursor sobre un backdrop-filter en vivo es lo que
+       generaba el jank al abrir Servicios/Inventario. */
+    pauseCustomCursor = function () {
+      if (cursorSuspended) return;
+      cursorSuspended = true;
+      if (cursorRAF) { cancelAnimationFrame(cursorRAF); cursorRAF = null; }
+      $dot.add($ring).add($aura).addClass("is-hidden");
+      $("html").removeClass("has-custom-cursor"); // restaura el puntero nativo del SO
+    };
+    resumeCustomCursor = function () {
+      if (!cursorSuspended) return;
+      cursorSuspended = false;
+      $dot.add($ring).add($aura).removeClass("is-hidden");
+      $("html").addClass("has-custom-cursor");
+      cursorRAF = requestAnimationFrame(cursorLoop);
+    };
 
     $(document).on("mouseenter", "a, button, .bento-card, .grade-tabs button, .faq-q, input, textarea, select", function () {
       $ring.addClass("is-active");
@@ -128,11 +156,13 @@
     $(".nav-toggle").addClass("is-open");
     $(".mobile-drawer, .drawer-backdrop").addClass("is-open");
     $("body").addClass("no-scroll");
+    pauseCustomCursor();
   }
   function closeDrawer() {
     $(".nav-toggle").removeClass("is-open");
     $(".mobile-drawer, .drawer-backdrop").removeClass("is-open");
     $("body").removeClass("no-scroll");
+    resumeCustomCursor();
   }
   $(".nav-toggle").on("click", function () {
     $(".mobile-drawer").hasClass("is-open") ? closeDrawer() : openDrawer();
@@ -424,10 +454,12 @@
     $equipoModal.find(".equipo-modal-wa").attr("href", "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(waText));
     $equipoModal.add($equipoModalBackdrop).addClass("is-open");
     $("body").addClass("no-scroll");
+    pauseCustomCursor();
   }
   function closeEquipoModal() {
     $equipoModal.add($equipoModalBackdrop).removeClass("is-open");
     $("body").removeClass("no-scroll");
+    resumeCustomCursor();
   }
   $(document).on("click", ".equipo-open-specs", function () { openEquipoModal($(this).data("id")); });
   $(".equipo-modal-close, #equipo-modal-backdrop").on("click", closeEquipoModal);
@@ -438,10 +470,12 @@
     $lightbox.find(".lightbox-img").attr({ src: src, alt: alt || "" });
     $lightbox.add($lightboxBackdrop).addClass("is-open");
     $("body").addClass("no-scroll");
+    pauseCustomCursor();
   }
   function closeLightbox() {
     $lightbox.add($lightboxBackdrop).removeClass("is-open");
     $("body").removeClass("no-scroll");
+    resumeCustomCursor();
   }
   $(document).on("click", ".equipo-photo", function () {
     var eq = equipoById($(this).data("id"));
@@ -449,10 +483,34 @@
   });
   $(".lightbox-close, #lightbox-backdrop").on("click", closeLightbox);
 
+  /* ---------- Servicios: modal de detalle ---------- */
+  var $servicioModal = $("#servicio-modal");
+  var $servicioModalBackdrop = $("#servicio-modal-backdrop");
+  function openServicioModal($btn) {
+    var $card = $btn.closest(".bento-card");
+    var titulo = $card.find("h3").text();
+    $servicioModal.find(".servicio-modal-ic").html($card.find(".ic").html());
+    $servicioModal.find(".servicio-modal-title").text(titulo);
+    $servicioModal.find(".servicio-modal-desc").text($btn.data("desc"));
+    var waText = "Hola PDST Laguna, quiero más información sobre el servicio de " + titulo + ".";
+    $servicioModal.find(".servicio-modal-wa").attr("href", "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(waText));
+    $servicioModal.add($servicioModalBackdrop).addClass("is-open");
+    $("body").addClass("no-scroll");
+    pauseCustomCursor();
+  }
+  function closeServicioModal() {
+    $servicioModal.add($servicioModalBackdrop).removeClass("is-open");
+    resumeCustomCursor();
+    $("body").removeClass("no-scroll");
+  }
+  $(document).on("click", ".servicio-open-more", function () { openServicioModal($(this)); });
+  $(".servicio-modal-close, #servicio-modal-backdrop").on("click", closeServicioModal);
+
   $(document).on("keydown", function (e) {
     if (e.key !== "Escape") return;
     closeLightbox();
     closeEquipoModal();
+    closeServicioModal();
   });
 
   /* ---------- Formulario de cotización Microsip → WhatsApp ---------- */
