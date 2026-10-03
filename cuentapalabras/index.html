@@ -263,26 +263,26 @@ details[open] .caret{transform:rotate(90deg)}
   // ---------- reconocimiento de voz ----------
   function buildRec(){
     const r = new SR();
+    sessionLast = 0;
     r.lang = LANG;
     r.continuous = true;
     r.interimResults = true;
     r.maxAlternatives = 1;
 
     r.onresult = e => {
-      let interim = '';
-      for (let i = e.resultIndex; i < e.results.length; i++){
-        const res = e.results[i];
-        const txt = res[0].transcript;
-        if (res.isFinal){
-          const n = countWords(txt);
-          finalWords += n;
-          addToMinute(n);
-        } else {
-          interim += txt + ' ';
-        }
+      // Se recalcula el total de la sesión de reconocimiento completa en cada evento
+      // y solo se suma la diferencia. Así las repeticiones/acumulados de Android no inflan el conteo.
+      const total = sessionCount(e.results);
+      const delta = total - sessionLast;
+      sessionLast = total;
+      if (delta !== 0){
+        const idx = Math.min(Math.floor(elapsedMs/60000), MAXMIN-1);
+        perMinute[idx] = Math.max(0, (perMinute[idx]||0) + delta);
+        finalWords = perMinute.reduce((a,b)=>a+(b||0), 0);
       }
-      interimWords = countWords(interim);
-      $('live').textContent = interim.trim() || '…';
+      interimWords = 0;
+      const lastRes = e.results[e.results.length-1];
+      $('live').textContent = (lastRes && lastRes[0].transcript.trim()) || '…';
       updateStats();
     };
 
@@ -302,15 +302,28 @@ details[open] .caret{transform:rotate(90deg)}
 
     r.onend = () => {
       if (wantRec && running){
+        sessionLast = 0; // nueva sesión: los resultados empiezan de cero
         try { r.start(); } catch(e){ setTimeout(()=>{ try{ r.start(); }catch(_){} }, 300); }
       }
     };
     return r;
   }
 
-  function addToMinute(n){
-    const idx = Math.min(Math.floor(elapsedMs/60000), MAXMIN-1);
-    perMinute[idx] = (perMinute[idx]||0) + n;
+  let sessionLast = 0;
+  const wordsOf = t => t.trim().split(/\s+/).filter(Boolean).map(w => w.toLowerCase());
+  // Cuenta las palabras de todos los resultados de la sesión. Si un resultado repite
+  // completo el anterior y agrega más texto (comportamiento acumulado de Android),
+  // solo se cuenta la parte nueva.
+  function sessionCount(results){
+    let total = 0, prev = [];
+    for (let i = 0; i < results.length; i++){
+      const w = wordsOf(results[i][0].transcript);
+      let n = w.length;
+      if (prev.length && w.length >= prev.length && prev.every((x,j) => x === w[j])) n = w.length - prev.length;
+      total += n;
+      prev = w;
+    }
+    return total;
   }
   const currentWords = () => finalWords + interimWords;
   function updateStats(){
