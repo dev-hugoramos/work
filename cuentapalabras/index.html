@@ -1,1 +1,560 @@
-hola
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lectura diaria · Palabras por minuto</title>
+<meta name="theme-color" content="#EAF4FA">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📖</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EAF4FA; --card:#FFFFFF; --ink:#14304A; --muted:#5B7389;
+  --teal:#0E8C86; --teal-d:#0A6C67; --sun:#FFC93C; --coral:#E4572E; --line:#D3E3EE;
+  --ring-track:#D8EAF4; --soft:#F2F8FC; --grass:#7BC96F; --unread:#E3EDF4;
+  --head:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#0F2233;--card:#16324A;--ink:#EAF4FA;--muted:#9FB8CC;--line:#264A66;--ring-track:#21425C;--teal:#35C4BC;--teal-d:#6ADAD3;--soft:#12293D;--unread:#21425C;}
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5}
+.wrap{max-width:560px;margin:0 auto;padding:18px 16px 50px}
+.hero{text-align:center;padding:8px 0 14px}
+.hero .big-emoji{font-size:3rem;line-height:1}
+h1{font-family:var(--head);font-weight:800;font-size:2rem;line-height:1.1;margin:6px 0 4px}
+.sub{color:var(--muted);margin:0}
+.card{background:var(--card);border-radius:26px;padding:18px;margin-bottom:16px;border:2px solid var(--line)}
+h2{font-family:var(--head);font-size:1.35rem;margin:0 0 10px;line-height:1.2}
+.hint{color:var(--muted);font-size:.92rem;margin:0 0 8px}
+
+input{font:inherit;color:var(--ink);background:var(--soft);border:2px solid var(--line);border-radius:14px;padding:12px 14px;width:100%}
+label{font-weight:800;font-size:.95rem;display:block;margin-bottom:4px}
+input:focus-visible,button:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+
+/* timer */
+.timer{position:relative;width:min(78vw,290px);aspect-ratio:1;margin:12px auto 14px}
+.timer svg{width:100%;height:100%;transform:rotate(-90deg)}
+.track{fill:none;stroke:var(--ring-track);stroke-width:14}
+.prog{fill:none;stroke:var(--teal);stroke-width:14;stroke-linecap:round;transition:stroke-dashoffset .4s linear}
+.center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.time{font-family:var(--head);font-weight:800;font-size:clamp(2.8rem,15vw,3.9rem);line-height:1;font-variant-numeric:tabular-nums}
+.state{color:var(--muted);font-weight:800;margin-top:4px;min-height:1.5em}
+
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat{background:var(--soft);border-radius:18px;padding:12px;text-align:center}
+.stat b{display:block;font-family:var(--head);font-size:2.2rem;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat span{color:var(--muted);font-size:.9rem;font-weight:700}
+.stat.big{background:var(--sun);color:#14304A}
+.stat.big span{color:#4a3a00}
+
+.btns{display:flex;gap:10px}
+button{font:inherit;font-weight:800;border:0;border-radius:18px;padding:14px 18px;cursor:pointer;min-height:56px}
+.play{flex:2;background:var(--teal);color:#fff;font-size:1.2rem}
+.play:hover{background:var(--teal-d)}
+.stop{flex:1;background:transparent;color:var(--coral);border:2px solid var(--coral)}
+.stop:disabled{opacity:.4;cursor:not-allowed}
+.ghost{background:transparent;color:var(--teal-d);border:2px solid var(--line);padding:10px 14px;min-height:46px}
+
+.live{margin-top:14px;background:var(--soft);border-radius:16px;padding:12px;min-height:60px;color:var(--muted);font-size:.95rem;max-height:110px;overflow:auto}
+.msg{margin-top:12px;padding:12px;border-radius:16px;background:#FFF1D6;color:#5a3d00;font-weight:700;display:none}
+.msg.show{display:block}
+.msg.err{background:#FFE0D8;color:#7a1f08}
+
+/* per-minute chart (15 slots) */
+.mgrid{display:grid;grid-template-columns:repeat(15,1fr);gap:3px;align-items:end;height:130px;margin:10px 0 0}
+.mcol{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;min-width:0}
+.mval{font-size:.62rem;font-weight:800;color:var(--ink);line-height:1.1;margin-bottom:2px}
+.mbar{width:100%;background:var(--grass);border-radius:6px 6px 2px 2px;min-height:4px}
+.mcol.unread .mbar{background:var(--unread)}
+.mcol.unread .mval{color:var(--muted);opacity:.0}
+.mcol.partial .mbar{background:repeating-linear-gradient(45deg,var(--grass),var(--grass) 4px,#a8dd9f 4px,#a8dd9f 8px)}
+.mlab{display:grid;grid-template-columns:repeat(15,1fr);gap:3px;margin-top:3px}
+.mlab span{text-align:center;font-size:.65rem;font-weight:700;color:var(--muted)}
+.mcap{color:var(--muted);font-size:.82rem;margin:6px 0 0}
+
+#result{display:none;border-color:var(--sun)}
+#result.show{display:block}
+.celebrate{font-family:var(--head);font-weight:800;font-size:1.5rem;line-height:1.2;margin:0 0 6px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.chip{background:var(--soft);border-radius:999px;padding:6px 12px;font-weight:700;font-size:.9rem}
+
+/* daily progress */
+.dgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;align-items:end;height:170px;margin-top:8px}
+.dcol{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;min-width:0}
+.dval{font-family:var(--head);font-weight:800;font-size:.95rem;line-height:1}
+.dbar{width:78%;background:var(--teal);border-radius:10px 10px 4px 4px;min-height:5px;margin-top:3px}
+.dcol.today .dbar{background:var(--sun)}
+.dcol.none .dbar{background:var(--unread)}
+.dcol.none .dval{opacity:0}
+.dlab{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:4px;text-align:center}
+.dlab b{display:block;font-size:.8rem;text-transform:capitalize}
+.dlab span{display:block;font-size:.72rem;color:var(--muted);font-weight:700}
+.streak{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.streak .chip{flex:1;text-align:center;min-width:120px}
+.streak b{font-family:var(--head);font-size:1.3rem;display:block;line-height:1.1}
+
+/* history */
+.hist-top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.avg{color:var(--muted);font-weight:700;font-size:.92rem}
+details.item{border-top:2px solid var(--line);padding:6px 0}
+details.item:first-of-type{border-top:0}
+summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:8px 0;min-height:56px}
+summary::-webkit-details-marker{display:none}
+.wpm{font-family:var(--head);font-weight:800;font-size:1.6rem;min-width:76px;text-align:center;background:var(--sun);color:#14304A;border-radius:16px;padding:4px 8px;line-height:1.2}
+.wpm small{display:block;font-size:.7rem;font-weight:700;font-family:var(--body)}
+.meta{flex:1;min-width:0}
+.meta b{display:block}
+.meta span{color:var(--muted);font-size:.88rem;display:block}
+.caret{color:var(--muted);transition:transform .2s}
+details[open] .caret{transform:rotate(90deg)}
+.detail{padding:4px 0 12px}
+.times{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px}
+.times div{background:var(--soft);border-radius:14px;padding:8px 10px;font-size:.9rem}
+.times b{display:block}
+.del{margin-top:10px;background:transparent;color:var(--coral);border:2px solid var(--coral);padding:8px 14px;min-height:42px;font-size:.9rem}
+.empty{color:var(--muted);text-align:center;padding:14px 0}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+
+.credit{text-align:center;color:var(--muted);font-size:.92rem;margin-top:24px}
+.credit b{color:var(--ink)}
+.credit .links{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.credit a{display:inline-block;text-decoration:none;color:var(--teal-d);font-weight:800;background:var(--card);border:2px solid var(--line);border-radius:999px;padding:8px 16px}
+.credit a:hover{border-color:var(--teal)}
+.note{color:var(--muted);font-size:.82rem;text-align:center;margin-top:14px}
+@media (prefers-reduced-motion:reduce){.prog,.caret{transition:none}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="hero">
+    <div class="big-emoji" aria-hidden="true">📚</div>
+    <h1>Lectura diaria</h1>
+    <p class="sub">Lee en voz alta 15 minutos y la app cuenta tus palabras.</p>
+  </header>
+
+  <section class="card" aria-label="Lector">
+    <label for="name">¿Quién va a leer hoy?</label>
+    <input id="name" type="text" placeholder="Escribe un nombre" autocomplete="off">
+  </section>
+
+  <section class="card" aria-label="Cronómetro">
+    <div class="timer">
+      <svg viewBox="0 0 120 120" aria-hidden="true">
+        <circle class="track" cx="60" cy="60" r="52"/>
+        <circle class="prog" id="prog" cx="60" cy="60" r="52"/>
+      </svg>
+      <div class="center">
+        <div class="time" id="time" role="timer" aria-live="off">15:00</div>
+        <div class="state" id="state">Listo para empezar</div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><b id="words">0</b><span>palabras leídas</span></div>
+      <div class="stat big"><b id="wpm">0</b><span>palabras por minuto</span></div>
+    </div>
+
+    <div class="btns">
+      <button class="play" id="play">▶ Empezar a leer</button>
+      <button class="stop" id="stop" disabled>Terminar</button>
+    </div>
+    <p class="hint" style="margin-top:10px">¿Te cansaste antes? Pulsa “Terminar” y se guardan los minutos que leíste.</p>
+
+    <div class="live" id="live" aria-live="polite">Aquí aparecerá lo que la app escucha.</div>
+    <div class="msg" id="msg" role="status"></div>
+  </section>
+
+  <section class="card" id="result" aria-label="Resultado">
+    <p class="celebrate" id="celebrate"></p>
+    <div class="chips" id="resultChips"></div>
+    <div id="resultChart"></div>
+  </section>
+
+  <section class="card" aria-label="Progreso por día">
+    <h2>📈 Mi progreso por día</h2>
+    <p class="hint">Promedio de palabras por minuto en los últimos 7 días.</p>
+    <div id="daily"></div>
+    <div class="streak" id="streak"></div>
+  </section>
+
+  <section class="card" aria-label="Historial">
+    <div class="hist-top">
+      <h2 style="margin:0">🗓 Mis lecturas</h2>
+      <span class="avg" id="avg"></span>
+    </div>
+    <p class="hint">Toca una lectura para ver su hora de inicio, hora de fin y lo que leíste minuto a minuto.</p>
+    <div id="list"></div>
+    <div class="tools">
+      <button class="ghost" id="csv">Descargar CSV</button>
+      <button class="ghost" id="clear">Borrar todo</button>
+    </div>
+  </section>
+
+  <footer class="credit">
+    <div>Herramienta creada por <b>Ingeniero Hugo David Ramos Espino</b></div>
+    <div class="links">
+      <a href="https://www.instagram.com/sickgeek_/" target="_blank" rel="noopener noreferrer">📸 Instagram @sickgeek_</a>
+      <a href="https://www.linkedin.com/search/results/all/?keywords=Hugo%20David%20Ramos%20Espino" target="_blank" rel="noopener noreferrer">💼 LinkedIn · Hugo David Ramos Espino</a>
+    </div>
+    <p class="note">Los datos se guardan solo en este dispositivo. Funciona mejor en Chrome, Edge o Safari, con internet y permiso de micrófono.</p>
+  </footer>
+</main>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const KEY = 'lectura-historial-v1';
+  const PREF = 'lectura-ajustes-v1';
+  const LANG = 'es-MX';
+  const MAXMIN = 15;
+  const TOTAL_MS = MAXMIN * 60000;
+  const C = 2 * Math.PI * 52;
+  const prog = $('prog');
+  prog.style.strokeDasharray = C;
+  prog.style.strokeDashoffset = C;
+
+  let rec = null, running = false, paused = false;
+  let elapsedMs = 0, lastTick = 0, tickId = null;
+  let finalWords = 0, interimWords = 0, perMinute = [], startedAt = null;
+  let wakeLock = null, wantRec = false;
+
+  // ---------- helpers ----------
+  const countWords = t => (t.trim().match(/\S+/g) || []).length;
+  const fmt = ms => {
+    const s = Math.max(0, Math.ceil(ms/1000));
+    return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
+  };
+  const esc = s => (s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch(e){ return []; } };
+  const save = a => { try { localStorage.setItem(KEY, JSON.stringify(a)); } catch(e){} };
+  const tFmt = d => new Date(d).toLocaleTimeString('es-MX',{hour:'numeric',minute:'2-digit'});
+  const dFmt = d => new Date(d).toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long'});
+  const dayKey = d => { const x = new Date(d); return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0'); };
+  const durText = sec => { const m=Math.floor(sec/60), s=sec%60; return m+' min'+(s?' '+s+' s':''); };
+  function showMsg(t, err){ const m=$('msg'); m.textContent=t; m.className='msg show'+(err?' err':''); }
+  function hideMsg(){ $('msg').className='msg'; }
+
+  // normaliza registros (incluye los guardados con la versión anterior)
+  function norm(e){
+    const end = e.end || e.date;
+    const start = e.start || (new Date(end).getTime() - e.seconds*1000);
+    return Object.assign({}, e, {start, end});
+  }
+
+  // saved name
+  try { const p = JSON.parse(localStorage.getItem(PREF)) || {}; if (p.name) $('name').value = p.name; } catch(e){}
+  const savePrefs = () => { try { localStorage.setItem(PREF, JSON.stringify({name:$('name').value})); } catch(e){} };
+  $('name').addEventListener('change', savePrefs);
+
+  function resetDisplay(){
+    $('time').textContent = fmt(TOTAL_MS);
+    prog.style.strokeDashoffset = C;
+    $('words').textContent = '0';
+    $('wpm').textContent = '0';
+    $('state').textContent = 'Listo para empezar';
+  }
+
+  // ---------- reconocimiento de voz ----------
+  function buildRec(){
+    const r = new SR();
+    r.lang = LANG;
+    r.continuous = true;
+    r.interimResults = true;
+    r.maxAlternatives = 1;
+
+    r.onresult = e => {
+      let interim = '';
+      for (let i = e.resultIndex; i < e.results.length; i++){
+        const res = e.results[i];
+        const txt = res[0].transcript;
+        if (res.isFinal){
+          const n = countWords(txt);
+          finalWords += n;
+          addToMinute(n);
+        } else {
+          interim += txt + ' ';
+        }
+      }
+      interimWords = countWords(interim);
+      $('live').textContent = interim.trim() || '…';
+      updateStats();
+    };
+
+    r.onerror = e => {
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed'){
+        wantRec = false;
+        showMsg('No hay permiso para usar el micrófono. Permítelo en el candado de la barra de direcciones y vuelve a intentar.', true);
+        pauseRun('Micrófono bloqueado');
+      } else if (e.error === 'audio-capture'){
+        wantRec = false;
+        showMsg('No se encontró un micrófono disponible.', true);
+        pauseRun('Sin micrófono');
+      } else if (e.error === 'network'){
+        showMsg('El reconocimiento de voz necesita conexión a internet.', true);
+      }
+    };
+
+    r.onend = () => {
+      if (wantRec && running){
+        try { r.start(); } catch(e){ setTimeout(()=>{ try{ r.start(); }catch(_){} }, 300); }
+      }
+    };
+    return r;
+  }
+
+  function addToMinute(n){
+    const idx = Math.min(Math.floor(elapsedMs/60000), MAXMIN-1);
+    perMinute[idx] = (perMinute[idx]||0) + n;
+  }
+  const currentWords = () => finalWords + interimWords;
+  function updateStats(){
+    const w = currentWords();
+    $('words').textContent = w;
+    const mins = elapsedMs/60000;
+    $('wpm').textContent = mins >= 0.1 ? Math.round(w/mins) : 0;
+  }
+
+  // ---------- cronómetro ----------
+  function tick(){
+    const now = performance.now();
+    elapsedMs += now - lastTick;
+    lastTick = now;
+    if (elapsedMs >= TOTAL_MS){ elapsedMs = TOTAL_MS; render(); finish(true); return; }
+    render();
+  }
+  function render(){
+    $('time').textContent = fmt(TOTAL_MS - elapsedMs);
+    prog.style.strokeDashoffset = C * (1 - elapsedMs/TOTAL_MS);
+    updateStats();
+  }
+
+  // ---------- controles ----------
+  async function startRun(){
+    if (!SR){
+      showMsg('Este navegador no permite reconocimiento de voz. Abre la página en Chrome, Edge o Safari.', true);
+      return;
+    }
+    hideMsg();
+    $('result').classList.remove('show');
+    if (!paused){
+      elapsedMs = 0; finalWords = 0; interimWords = 0;
+      perMinute = new Array(MAXMIN).fill(0);
+      startedAt = Date.now();
+      $('live').textContent = 'Escuchando…';
+    }
+    savePrefs();
+    rec = buildRec();
+    wantRec = true; running = true; paused = false;
+    try { rec.start(); } catch(e){}
+    lastTick = performance.now();
+    tickId = setInterval(tick, 250);
+    $('play').textContent = '⏸ Pausar';
+    $('stop').disabled = false;
+    $('state').textContent = 'Leyendo… 🎧';
+    $('name').disabled = true;
+    try { if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); } catch(e){}
+  }
+
+  function stopRec(){ wantRec = false; if (rec){ try { rec.stop(); } catch(e){} } }
+  function releaseLock(){ try { if (wakeLock){ wakeLock.release(); wakeLock = null; } } catch(e){} }
+
+  function pauseRun(label){
+    if (!running) return;
+    clearInterval(tickId);
+    stopRec();
+    running = false; paused = true;
+    interimWords = 0;
+    $('play').textContent = '▶ Continuar';
+    $('state').textContent = label || 'En pausa';
+    releaseLock();
+  }
+
+  function finish(auto){
+    clearInterval(tickId);
+    stopRec();
+    releaseLock();
+    const hadSession = running || paused;
+    running = false; paused = false;
+    interimWords = 0;
+    $('play').textContent = '▶ Empezar a leer';
+    $('stop').disabled = true;
+    $('name').disabled = false;
+    if (!hadSession) return;
+
+    const words = finalWords;
+    const seconds = Math.round(elapsedMs/1000);
+    if (seconds < 10 || words === 0){
+      $('state').textContent = 'Sin datos para guardar';
+      showMsg('La lectura fue muy corta o no se escuchó nada, así que no se guardó. ¡Inténtalo de nuevo!');
+      resetDisplay();
+      return;
+    }
+    const wpm = Math.round(words/(elapsedMs/60000));
+    const entry = {
+      id: Date.now(),
+      date: new Date().toISOString(),
+      start: startedAt,
+      end: Date.now(),
+      name: $('name').value.trim(),
+      seconds, words, wpm,
+      perMinute: perMinute.slice(0, MAXMIN)
+    };
+    const h = load(); h.unshift(entry); save(h);
+    $('state').textContent = auto ? '¡Tiempo completo! 🎉' : 'Lectura guardada';
+    $('wpm').textContent = wpm; $('words').textContent = words;
+    showResult(entry, auto);
+    renderAll();
+    if (auto && navigator.vibrate){ try{ navigator.vibrate([200,100,200]); }catch(e){} }
+  }
+
+  // ---------- gráfica por minuto (15 casillas) ----------
+  function minuteChart(e){
+    const minsRead = Math.min(MAXMIN, Math.max(1, Math.ceil(e.seconds/60)));
+    const partial = e.seconds < minsRead*60 - 5; // último minuto incompleto
+    const pm = e.perMinute || [];
+    const max = Math.max(1, ...pm.slice(0, minsRead));
+    let cols = '', labs = '';
+    for (let i=0;i<MAXMIN;i++){
+      const read = i < minsRead;
+      const v = pm[i] || 0;
+      const cls = !read ? 'unread' : (i===minsRead-1 && partial ? 'partial' : '');
+      const h = read ? Math.max(4, v/max*86) : 12;
+      cols += `<div class="mcol ${cls}" title="Minuto ${i+1}: ${v} palabras"><span class="mval">${read?v:''}</span><div class="mbar" style="height:${h}%"></div></div>`;
+      labs += `<span>${i+1}</span>`;
+    }
+    return `<div class="mgrid">${cols}</div><div class="mlab">${labs}</div>
+      <p class="mcap">Palabras leídas en cada minuto (1 al 15)${partial?'. El último minuto quedó incompleto.':'.'}</p>`;
+  }
+
+  function showResult(e, auto){
+    const minsRead = Math.min(MAXMIN, Math.ceil(e.seconds/60));
+    $('celebrate').textContent = auto
+      ? '🏆 ¡Completaste los 15 minutos! ¡Eres increíble!'
+      : `⭐ ¡Muy bien! Leíste ${durText(e.seconds)}. ¡Cada minuto cuenta!`;
+    $('resultChips').innerHTML = `
+      <span class="chip">📖 ${e.words} palabras</span>
+      <span class="chip">⚡ ${e.wpm} por minuto</span>
+      <span class="chip">🕒 ${tFmt(e.start)} a ${tFmt(e.end)}</span>
+      <span class="chip">⏱ ${minsRead} ${minsRead===1?'minuto':'minutos'}</span>`;
+    $('resultChart').innerHTML = minuteChart(e);
+    $('result').classList.add('show');
+    $('result').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  $('play').addEventListener('click', () => { running ? pauseRun() : startRun(); });
+  $('stop').addEventListener('click', () => { if (confirm('¿Terminar y guardar lo que leíste hasta ahora?')) finish(false); });
+
+  document.addEventListener('visibilitychange', async () => {
+    if (document.visibilityState === 'visible' && running && 'wakeLock' in navigator){
+      try { wakeLock = await navigator.wakeLock.request('screen'); } catch(e){}
+    }
+  });
+
+  // ---------- progreso por día ----------
+  function renderDaily(h){
+    const days = [];
+    for (let i=6;i>=0;i--){ const d = new Date(); d.setHours(12,0,0,0); d.setDate(d.getDate()-i); days.push(d); }
+    const byDay = {};
+    h.forEach(raw => {
+      const e = norm(raw), k = dayKey(e.end);
+      (byDay[k] = byDay[k] || {words:0, sec:0});
+      byDay[k].words += e.words; byDay[k].sec += e.seconds;
+    });
+    const data = days.map(d => {
+      const b = byDay[dayKey(d)];
+      return {d, ppm: b ? Math.round(b.words/(b.sec/60)) : 0, min: b ? Math.round(b.sec/60) : 0, has: !!b};
+    });
+    const max = Math.max(1, ...data.map(x=>x.ppm));
+    $('daily').innerHTML =
+      `<div class="dgrid">${data.map((x,i)=>`<div class="dcol ${x.has?'':'none'} ${i===6?'today':''}"><span class="dval">${x.ppm}</span><div class="dbar" style="height:${x.has?Math.max(8,x.ppm/max*78):6}%"></div></div>`).join('')}</div>
+       <div class="dlab">${data.map(x=>`<div><b>${x.d.toLocaleDateString('es-MX',{weekday:'short'}).replace('.','')}</b><span>${x.has?x.min+' min':'—'}</span></div>`).join('')}</div>`;
+
+    // racha y mejor marca
+    let streak = 0;
+    const t = new Date(); t.setHours(12,0,0,0);
+    if (!byDay[dayKey(t)]) t.setDate(t.getDate()-1); // si hoy aún no lee, no rompe la racha
+    while (byDay[dayKey(t)]){ streak++; t.setDate(t.getDate()-1); }
+    const best = h.length ? Math.max(...h.map(e=>e.wpm)) : 0;
+    $('streak').innerHTML = `
+      <div class="chip"><b>🔥 ${streak}</b>${streak===1?'día seguido':'días seguidos'}</div>
+      <div class="chip"><b>🏅 ${best}</b>mejor marca (ppm)</div>`;
+  }
+
+  // ---------- historial ----------
+  function renderHistory(h){
+    const list = $('list');
+    if (!h.length){
+      list.innerHTML = '<div class="empty">Todavía no hay lecturas. ¡Empieza la primera! 🚀</div>';
+      $('avg').textContent = '';
+      return;
+    }
+    const avg = Math.round(h.reduce((a,b)=>a+b.wpm,0)/h.length);
+    $('avg').textContent = `Promedio: ${avg} ppm · ${h.length} ${h.length===1?'lectura':'lecturas'}`;
+    list.innerHTML = h.map(raw=>{
+      const e = norm(raw);
+      const minsRead = Math.min(MAXMIN, Math.max(1, Math.ceil(e.seconds/60)));
+      return `<details class="item">
+        <summary>
+          <div class="wpm">${e.wpm}<small>ppm</small></div>
+          <div class="meta"><b>${esc(e.name)||'Lectura'}</b>
+            <span style="text-transform:capitalize">${dFmt(e.start)}</span>
+            <span>${tFmt(e.start)} a ${tFmt(e.end)} · ${minsRead} ${minsRead===1?'min':'min'}</span></div>
+          <span class="caret" aria-hidden="true">▶</span>
+        </summary>
+        <div class="detail">
+          <div class="times">
+            <div><b>🟢 Inicio</b>${tFmt(e.start)}</div>
+            <div><b>🔴 Fin</b>${tFmt(e.end)}</div>
+            <div><b>📖 Palabras</b>${e.words}</div>
+            <div><b>⏱ Duración</b>${durText(e.seconds)}</div>
+          </div>
+          ${minuteChart(e)}
+          <button class="del" data-id="${e.id}">🗑 Borrar esta lectura</button>
+        </div>
+      </details>`;
+    }).join('');
+  }
+
+  function renderAll(){ const h = load(); renderDaily(h); renderHistory(h); }
+
+  $('list').addEventListener('click', ev => {
+    const b = ev.target.closest('.del'); if (!b) return;
+    if (!confirm('¿Borrar esta lectura?')) return;
+    save(load().filter(x => String(x.id) !== b.dataset.id));
+    renderAll();
+  });
+  $('clear').addEventListener('click', () => {
+    if (load().length && confirm('¿Borrar TODO el historial? No se puede deshacer.')){ save([]); renderAll(); }
+  });
+  $('csv').addEventListener('click', () => {
+    const h = load();
+    if (!h.length){ showMsg('Aún no hay datos para descargar.'); return; }
+    const head = ['Fecha','Nombre','Hora inicio','Hora fin','Segundos','Palabras','Palabras por minuto']
+      .concat(Array.from({length:MAXMIN},(_,i)=>'Min '+(i+1)));
+    const rows = [head].concat(h.map(raw=>{
+      const e = norm(raw), pm = e.perMinute || [];
+      return [new Date(e.start).toLocaleDateString('es-MX'), '"'+(e.name||'').replace(/"/g,'""')+'"',
+        tFmt(e.start), tFmt(e.end), e.seconds, e.words, e.wpm]
+        .concat(Array.from({length:MAXMIN},(_,i)=> i < Math.ceil(e.seconds/60) ? (pm[i]||0) : ''));
+    }));
+    const blob = new Blob(['\ufeff'+rows.map(r=>r.join(',')).join('\n')], {type:'text/csv;charset=utf-8'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = 'historial-lectura.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+  });
+
+  // inicio
+  resetDisplay();
+  renderAll();
+  if (!SR) showMsg('Tu navegador no admite reconocimiento de voz. Usa Chrome, Edge o Safari para contar las palabras.', true);
+})();
+</script>
+</body>
+</html>
